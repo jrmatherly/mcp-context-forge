@@ -765,12 +765,6 @@ ignore_errors = true
 # C extension modules that pylint cannot introspect - trust their members
 extension-pkg-allow-list = ["orjson"]
 
-[tool.pylint.basic]
-# Names that are always acceptable, regardless of naming style.
-# - OTEL_AVAILABLE: module-level constant reassigned in try/except (pylint misclassifies as variable)
-# - SessionLocal: standard SQLAlchemy convention for sessionmaker factories (PascalCase)
-good-names = ["i", "j", "k", "v", "e", "f", "x", "db", "OTEL_AVAILABLE", "SessionLocal"]
-
 # --------------------------------------------------------------------
 #  Interrogate - Documentation coverage tool
 # --------------------------------------------------------------------

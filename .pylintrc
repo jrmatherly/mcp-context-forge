@@ -190,7 +190,9 @@ good-names=e,
            loglevel,
            timeout,
            Run,
-           _
+           _,
+           OTEL_AVAILABLE,
+           SessionLocal
 
 # Good variable names regexes, separated by a comma. If names match any regex,
 # they will always be accepted

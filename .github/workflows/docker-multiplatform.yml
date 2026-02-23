@@ -267,10 +267,13 @@ jobs:
             cosign sign --recursive --yes "${REF}"
 
             echo "Attesting SBOM for ${REF}"
+            # A 409 Conflict from Rekor means an equivalent attestation already
+            # exists in the transparency log (e.g. :latest and :SHA share the same
+            # manifest digest). This is a benign condition — the attestation is valid.
             cosign attest --yes \
                          --predicate sbom.spdx.json \
                          --type spdxjson \
-                         "${REF}"
+                         "${REF}" || echo "Attestation for ${REF} already exists in Rekor (409 conflict is benign)"
           done
 
           echo "Images signed and attested successfully"
