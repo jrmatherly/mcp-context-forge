@@ -158,7 +158,8 @@ describe("formatLastUsed", () => {
     });
 
     test("returns formatted date for old timestamps", () => {
-        const result = f()("2025-01-01T00:00:00Z");
+        // Use mid-day UTC to avoid timezone rollback to previous day
+        const result = f()("2025-01-15T12:00:00Z");
         // Should contain date components (locale-dependent)
         expect(result).toContain("2025");
         expect(result).toContain("Jan");
@@ -229,14 +230,16 @@ describe("formatDate", () => {
     const f = () => win.formatDate;
 
     test("formats ISO date string", () => {
-        const result = f()("2025-06-15T00:00:00Z");
+        // Use mid-day UTC to avoid timezone rollback to previous day
+        const result = f()("2025-06-15T12:00:00Z");
         expect(result).toContain("Jun");
         expect(result).toContain("15");
         expect(result).toContain("2025");
     });
 
     test("formats date-only string", () => {
-        const result = f()("2025-01-01");
+        // Use mid-month to avoid month boundary issues across timezones
+        const result = f()("2025-01-15");
         expect(result).toContain("Jan");
         expect(result).toContain("2025");
     });
