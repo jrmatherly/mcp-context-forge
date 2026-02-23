@@ -5,7 +5,7 @@ For specialized templates, append to your PR URL:
   ?template=docs.md      - Documentation
   ?template=plugin.md    - New plugins
 
-Example: https://github.com/IBM/mcp-context-forge/compare/main...your-branch?expand=1&template=bug_fix.md
+Example: https://github.com/jrmatherly/mcp-context-forge/compare/main...your-branch?expand=1&template=bug_fix.md
 -->
 
 ## 🔗 Related Issue

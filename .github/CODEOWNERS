@@ -1,5 +1,16 @@
-# All files in the repo
-* @crivetimihai
+# CODEOWNERS for jrmatherly/mcp-context-forge
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
 
-# Ownership for all tests
-/tests/ @crivetimihai @kevalmahajan @madhav165
+# Default: Jason owns everything
+* @jrmatherly
+
+# Infrastructure & deployment
+/docker-compose*.yml @jrmatherly
+/.env.bot42.* @jrmatherly
+/infra/ @jrmatherly
+
+# Security-sensitive files require explicit review
+/mcpgateway/auth.py @jrmatherly
+/mcpgateway/middleware/rbac.py @jrmatherly
+/mcpgateway/config.py @jrmatherly
+/mcpgateway/utils/sso_bootstrap.py @jrmatherly
