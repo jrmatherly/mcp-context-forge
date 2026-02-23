@@ -10,7 +10,7 @@ APP_VERSION := $(shell grep '^appVersion:' Chart.yaml | cut -d' ' -f2 | tr -d '"
 
 # Registry configuration
 REGISTRY := ghcr.io
-REPO := ibm/mcp-context-forge
+REPO := jrmatherly/mcp-context-forge
 CHART_REGISTRY := oci://$(REGISTRY)/$(REPO)
 
 # Directories

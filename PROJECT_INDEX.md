@@ -1,6 +1,6 @@
 # Project Index: mcp-context-forge
 
-Generated: 2026-02-22 | v1.0.0-RC-1 | Apache-2.0 | Python >=3.11
+Generated: 2026-02-22 | v1.0.0rc1 | Apache-2.0 | Python >=3.11
 
 ## Project Structure
 

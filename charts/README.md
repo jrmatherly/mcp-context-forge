@@ -1,6 +1,6 @@
 # MCP Gateway Stack - Helm Chart
 
-Deploy the full **MCP Gateway Stack**-MCP Context Forge gateway, PostgreSQL, Redis, and optional PgAdmin & Redis-Commander UIs-on any Kubernetes distribution with a single Helm release. The chart lives in [`charts/mcp-stack`](https://github.com/IBM/mcp-context-forge/tree/main/charts/mcp-stack).
+Deploy the full **MCP Gateway Stack**-MCP Context Forge gateway, PostgreSQL, Redis, and optional PgAdmin & Redis-Commander UIs-on any Kubernetes distribution with a single Helm release. The chart lives in [`charts/mcp-stack`](https://github.com/jrmatherly/mcp-context-forge/tree/main/charts/mcp-stack).
 
 ---
 
@@ -198,7 +198,7 @@ kubectl get pods -A | grep -E 'ingress|traefik|nginx' || echo "No ingress contro
 
 ```bash
 # Clone the repo and enter the chart directory
-git clone https://github.com/IBM/mcp-context-forge.git
+git clone https://github.com/jrmatherly/mcp-context-forge.git
 cd mcp-context-forge/charts/mcp-stack
 
 # (Optional) customise values
@@ -246,7 +246,7 @@ Below is a minimal example. Copy the default file and adjust for your environmen
 ```yaml
 mcpContextForge:
   image:
-    repository: ghcr.io/ibm/mcp-context-forge
+    repository: ghcr.io/jrmatherly/mcp-context-forge
     tag: 0.9.0
   ingress:
     enabled: true
@@ -321,7 +321,7 @@ migration:
   activeDeadlineSeconds: 600       # Job timeout (10 minutes)
 
   image:
-    repository: ghcr.io/ibm/mcp-context-forge
+    repository: ghcr.io/jrmatherly/mcp-context-forge
     tag: latest                    # Should match mcpContextForge.image.tag
 
   command:
@@ -349,13 +349,13 @@ helm lint .
 helm package . -d dist/
 
 # Push the package to GitHub Container Registry (only for mcp-context-forge release managers!)
-helm push dist/mcp-stack-*.tgz oci://ghcr.io/ibm/mcp-context-forge
+helm push dist/mcp-stack-*.tgz oci://ghcr.io/jrmatherly/mcp-context-forge
 ```
 
 Use the OCI URL below in Argo CD or Flux:
 
 ```
-oci://ghcr.io/ibm/mcp-context-forge
+oci://ghcr.io/jrmatherly/mcp-context-forge
 ```
 
 ---
@@ -595,7 +595,7 @@ helm template mcp-stack . -f my-values.yaml > /tmp/all.yaml
 | `redisCommander.enabled`          | `false`         | Deploy Redis-Commander UI      |
 | `rbac.create`                     | `true`          | Auto-create Role & RoleBinding |
 
-For every setting see the [full annotated `values.yaml`](https://github.com/IBM/mcp-context-forge/blob/main/charts/mcp-stack/values.yaml).
+For every setting see the [full annotated `values.yaml`](https://github.com/jrmatherly/mcp-context-forge/blob/main/charts/mcp-stack/values.yaml).
 
 ---
 

@@ -10,7 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 ### Added
 
-#### **🔐 ServiceAccount Support** ([#1718](https://github.com/IBM/mcp-context-forge/pull/1718))
+#### **🔐 ServiceAccount Support** ([#1718](https://github.com/jrmatherly/mcp-context-forge/pull/1718))
 * Optional ServiceAccount configuration for cloud IAM integration (AWS IRSA, GCP Workload Identity)
 * `serviceAccount.create` - Create a dedicated ServiceAccount for all pods (default: `false`)
 * `serviceAccount.name` - Custom ServiceAccount name (uses release fullname if empty)
@@ -19,7 +19,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 * Applied to all Deployments and Jobs in the chart
 * Disabled by default to maintain backward compatibility
 
-#### **🔧 Extra Environment Variables Support** ([#2047](https://github.com/IBM/mcp-context-forge/issues/2047))
+#### **🔧 Extra Environment Variables Support** ([#2047](https://github.com/jrmatherly/mcp-context-forge/issues/2047))
 * `extraEnv` - Inject additional environment variables directly into the gateway container
 * `extraEnvFrom` - Mount environment variables from existing Secrets or ConfigMaps
 * Enables injection of sensitive credentials (SSO secrets, external DB URLs) without modifying templates
@@ -28,11 +28,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 ### Fixed
 
-* **PgBouncer ServiceAccount** ([#1718](https://github.com/IBM/mcp-context-forge/pull/1718)) - Added missing `serviceAccountName` to pgbouncer deployment for consistency with other components
+* **PgBouncer ServiceAccount** ([#1718](https://github.com/jrmatherly/mcp-context-forge/pull/1718)) - Added missing `serviceAccountName` to pgbouncer deployment for consistency with other components
 
 ### Changed
 
-#### **⚡ Metrics Performance Defaults** ([#1799](https://github.com/IBM/mcp-context-forge/issues/1799))
+#### **⚡ Metrics Performance Defaults** ([#1799](https://github.com/jrmatherly/mcp-context-forge/issues/1799))
 * **Changed default behavior** - Raw metrics now deleted after hourly rollups exist (1 hour retention)
   - `METRICS_DELETE_RAW_AFTER_ROLLUP`: `false` → `true`
   - `METRICS_DELETE_RAW_AFTER_ROLLUP_DAYS` → `METRICS_DELETE_RAW_AFTER_ROLLUP_HOURS` (units now hours)
@@ -243,7 +243,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 ### Release Links
 
-* **Chart Repository**: [OCI Registry](https://github.com/IBM/mcp-context-forge/pkgs/container/mcp-context-forge%2Fmcp-stack)
-* **Documentation**: [Helm Deployment Guide](https://ibm.github.io/mcp-context-forge/deployment/helm/)
-* **Source Code**: [GitHub Repository](https://github.com/IBM/mcp-context-forge/tree/main/charts/mcp-stack)
-* **Issue Tracker**: [GitHub Issues](https://github.com/IBM/mcp-context-forge/issues)
+* **Chart Repository**: [OCI Registry](https://github.com/jrmatherly/mcp-context-forge/pkgs/container/mcp-context-forge%2Fmcp-stack)
+* **Documentation**: [Helm Deployment Guide](https://github.com/jrmatherly/mcp-context-forge/docs/docs/deployment/helm/)
+* **Source Code**: [GitHub Repository](https://github.com/jrmatherly/mcp-context-forge/tree/main/charts/mcp-stack)
+* **Issue Tracker**: [GitHub Issues](https://github.com/jrmatherly/mcp-context-forge/issues)

@@ -66,7 +66,7 @@ And is readily available as open source, published a container image and as a Py
       -e PLATFORM_ADMIN_EMAIL=admin@apollosai.dev \
       -e PLATFORM_ADMIN_PASSWORD=changeme \
       -e PLATFORM_ADMIN_FULL_NAME="Platform Administrator" \
-      ghcr.io/ibm/mcp-context-forge:1.0.0-RC-1
+      ghcr.io/ibm/mcp-context-forge:1.0.0rc1
     ```
 
     Please ⭐ the project on GitHub if you find this useful, it helps us grow!
@@ -86,7 +86,7 @@ And is readily available as open source, published a container image and as a Py
       -e PLATFORM_ADMIN_EMAIL=admin@apollosai.dev \
       -e PLATFORM_ADMIN_PASSWORD=changeme \
       -e PLATFORM_ADMIN_FULL_NAME="Platform Administrator" \
-      ghcr.io/ibm/mcp-context-forge:1.0.0-RC-1
+      ghcr.io/ibm/mcp-context-forge:1.0.0rc1
     ```
 
     **PyPI:**
@@ -127,7 +127,7 @@ And is readily available as open source, published a container image and as a Py
       -e PLATFORM_ADMIN_EMAIL=admin@apollosai.dev \
       -e PLATFORM_ADMIN_PASSWORD=changeme \
       -e PLATFORM_ADMIN_FULL_NAME="Platform Administrator" \
-      ghcr.io/ibm/mcp-context-forge:1.0.0-RC-1
+      ghcr.io/ibm/mcp-context-forge:1.0.0rc1
     ```
 
     **Or install via PyPI:**

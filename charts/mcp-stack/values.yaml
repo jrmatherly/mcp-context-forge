@@ -53,7 +53,7 @@ mcpContextForge:
         targetMemoryUtilizationPercentage: 90 # Scale up when avg memory > 90 % of *request*
 
     image:
-        repository: ghcr.io/ibm/mcp-context-forge
+        repository: ghcr.io/jrmatherly/mcp-context-forge
         tag: latest # pin a specific immutable tag in production
         #pullPolicy: IfNotPresent
         pullPolicy: Always # always pull the latest image; useful for dev/testing
@@ -507,7 +507,7 @@ mcpContextForge:
         # happens in anyio's _deliver_cancellation method.
         #
         # Documentation: docs/docs/operations/cpu-spin-loop-mitigation.md
-        # GitHub Issue: https://github.com/IBM/mcp-context-forge/issues/2360
+        # GitHub Issue: https://github.com/jrmatherly/mcp-context-forge/issues/2360
         # Upstream Issue: https://github.com/agronholm/anyio/issues/695
         #
         # ─ Layer 1: SSE Connection Protection ─
@@ -1034,7 +1034,7 @@ migration:
 
     # Use same image as mcpgateway
     image:
-        repository: ghcr.io/ibm/mcp-context-forge
+        repository: ghcr.io/jrmatherly/mcp-context-forge
         tag: latest # Should match mcpContextForge.image.tag
         #pullPolicy: IfNotPresent
         pullPolicy: Always # always pull the latest image; useful for dev/testing
@@ -1439,7 +1439,7 @@ mcpFastTimeServer:
     enabled: true # switch to true to deploy
     replicaCount: 2
     image:
-        repository: ghcr.io/ibm/fast-time-server
+        repository: ghcr.io/jrmatherly/fast-time-server
         tag: "latest"
         pullPolicy: IfNotPresent
     port: 8080

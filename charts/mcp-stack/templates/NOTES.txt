@@ -323,10 +323,10 @@ curl -s -H "Authorization: Bearer $GW_TOKEN" http://localhost:4444/gateways | jq
 ═══════════════════════════════════════════════════════════════════════════════
 
 📚 **Documentation & Support**
-  - Helm Chart    : https://github.com/IBM/mcp-context-forge/tree/main/charts/mcp-stack
-  - Documentation : https://ibm.github.io/mcp-context-forge/deployment/helm/
-  - API Testing   : https://ibm.github.io/mcp-context-forge/testing/basic/
-  - Issues        : https://github.com/IBM/mcp-context-forge/issues
+  - Helm Chart    : https://github.com/jrmatherly/mcp-context-forge/tree/main/charts/mcp-stack
+  - Documentation : https://github.com/jrmatherly/mcp-context-forge/docs/docs/deployment/helm/
+  - API Testing   : https://github.com/jrmatherly/mcp-context-forge/docs/docs/testing/basic/
+  - Issues        : https://github.com/jrmatherly/mcp-context-forge/issues
 
 📋 **Next Steps**
   1. Verify all pods are Running: `kubectl get pods -n {{ $ns }}`

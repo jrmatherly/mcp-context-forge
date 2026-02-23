@@ -111,7 +111,7 @@ Create a `server_config.json` file to define your MCP Context Forge Gateway conn
         "MCP_AUTH=${MCPGATEWAY_BEARER_TOKEN}",
         "--entrypoint",
         "uv",
-        "ghcr.io/ibm/mcp-context-forge:1.0.0-RC-1",
+        "ghcr.io/ibm/mcp-context-forge:1.0.0rc1",
         "run",
         "--directory",
         "mcpgateway-wrapper",
@@ -494,7 +494,7 @@ docker run -d --name mcpgateway \
   -e PLATFORM_ADMIN_EMAIL=admin@apollosai.dev \
   -e PLATFORM_ADMIN_PASSWORD=changeme \
   -e PLATFORM_ADMIN_FULL_NAME="Platform Administrator" \
-  ghcr.io/ibm/mcp-context-forge:1.0.0-RC-1
+  ghcr.io/ibm/mcp-context-forge:1.0.0rc1
 
 # Generate token
 export MCPGATEWAY_BEARER_TOKEN=$(docker exec mcpgateway python3 -m mcpgateway.utils.create_jwt_token --username admin@apollosai.dev --exp 10080 --secret my-secret-key)

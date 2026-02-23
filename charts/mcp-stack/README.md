@@ -1,25 +1,25 @@
 # mcp-stack
 
-![Version: 1.0.0-RC-1](https://img.shields.io/badge/Version-1.0.0--BETA--2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.0-RC-1](https://img.shields.io/badge/AppVersion-1.0.0--BETA--2-informational?style=flat-square)
+![Version: 1.0.0rc1](https://img.shields.io/badge/Version-1.0.0--BETA--2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.0rc1](https://img.shields.io/badge/AppVersion-1.0.0--BETA--2-informational?style=flat-square)
 
-A full-stack Helm chart for IBM's **Model Context Protocol (MCP) Gateway
+A full-stack Helm chart for the **Model Context Protocol (MCP) Gateway
 & Registry - Context-Forge**.  It bundles:
 - MCP Gateway application (HTTP / WebSocket server)
 - PostgreSQL database with persistent storage
 - Redis cache for sessions & completions
 - Optional PgAdmin and Redis-Commander web UIs
 
-**Homepage:** <https://github.com/IBM/mcp-context-forge>
+**Homepage:** <https://github.com/jrmatherly/mcp-context-forge>
 
 ## Maintainers
 
 | Name | Email | Url |
 | ---- | ------ | --- |
-| Mihai Criveti |  | <https://github.com/IBM> |
+| Jason Matherly |  | <https://github.com/jrmatherly> |
 
 ## Source Code
 
-- <https://github.com/IBM/mcp-context-forge>
+- <https://github.com/jrmatherly/mcp-context-forge>
 
 ## Requirements
 
@@ -445,7 +445,7 @@ Kubernetes: `>=1.21.0-0`
 | mcpContextForge.extraEnvFrom | list | `[]` |  |
 | mcpContextForge.hpa | object | `{"enabled":true,"maxReplicas":10,"minReplicas":2,"targetCPUUtilizationPercentage":90,"targetMemoryUtilizationPercentage":90}` | ------------------------------------------------------------------ |
 | mcpContextForge.image.pullPolicy | string | `"Always"` |  |
-| mcpContextForge.image.repository | string | `"ghcr.io/ibm/mcp-context-forge"` |  |
+| mcpContextForge.image.repository | string | `"ghcr.io/jrmatherly/mcp-context-forge"` |  |
 | mcpContextForge.image.tag | string | `"latest"` |  |
 | mcpContextForge.ingress.annotations | object | `{}` |  |
 | mcpContextForge.ingress.className | string | `"nginx"` |  |
@@ -644,7 +644,7 @@ Kubernetes: `>=1.21.0-0`
 | mcpContextForge.service.type | string | `"ClusterIP"` |  |
 | mcpFastTimeServer.enabled | bool | `true` |  |
 | mcpFastTimeServer.image.pullPolicy | string | `"IfNotPresent"` |  |
-| mcpFastTimeServer.image.repository | string | `"ghcr.io/ibm/fast-time-server"` |  |
+| mcpFastTimeServer.image.repository | string | `"ghcr.io/jrmatherly/fast-time-server"` |  |
 | mcpFastTimeServer.image.tag | string | `"latest"` |  |
 | mcpFastTimeServer.ingress.annotations | object | `{}` |  |
 | mcpFastTimeServer.ingress.className | string | `"nginx"` |  |
@@ -683,7 +683,7 @@ Kubernetes: `>=1.21.0-0`
 | migration.command.waitForDb | string | `"python3 /app/mcpgateway/utils/db_isready.py --max-tries 30 --interval 2 --timeout 5"` |  |
 | migration.enabled | bool | `true` |  |
 | migration.image.pullPolicy | string | `"Always"` |  |
-| migration.image.repository | string | `"ghcr.io/ibm/mcp-context-forge"` |  |
+| migration.image.repository | string | `"ghcr.io/jrmatherly/mcp-context-forge"` |  |
 | migration.image.tag | string | `"latest"` |  |
 | migration.resources.limits.cpu | string | `"200m"` |  |
 | migration.resources.limits.memory | string | `"512Mi"` |  |

@@ -15,7 +15,7 @@ Thank you for your interest in contributing to the MCP Stack Helm Chart! This do
 
 ## Code of Conduct
 
-This project follows the [IBM Code of Conduct](https://github.com/IBM/mcp-context-forge/blob/main/CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code.
+This project follows the [Code of Conduct](https://github.com/jrmatherly/mcp-context-forge/blob/main/CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code.
 
 ## Getting Started
 
@@ -63,7 +63,7 @@ cd mcp-context-forge/charts/mcp-stack
 
 ```bash
 # Add the upstream remote
-git remote add upstream https://github.com/IBM/mcp-context-forge.git
+git remote add upstream https://github.com/jrmatherly/mcp-context-forge.git
 
 # Create a development branch
 git checkout -b feature/your-feature-name
@@ -279,15 +279,15 @@ appVersion: "0.9.0"     # Application version
 
 ### Resources
 
-- **Documentation**: [MCP Context Forge Docs](https://ibm.github.io/mcp-context-forge/)
+- **Documentation**: [MCP Context Forge Docs](https://github.com/jrmatherly/mcp-context-forge/docs/docs/)
 - **Helm Documentation**: [https://helm.sh/docs/](https://helm.sh/docs/)
 - **Kubernetes Documentation**: [https://kubernetes.io/docs/](https://kubernetes.io/docs/)
 
 ### Support Channels
 
-- **Issues**: [GitHub Issues](https://github.com/IBM/mcp-context-forge/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/IBM/mcp-context-forge/discussions)
-- **Main Project**: [MCP Context Forge](https://github.com/IBM/mcp-context-forge)
+- **Issues**: [GitHub Issues](https://github.com/jrmatherly/mcp-context-forge/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/jrmatherly/mcp-context-forge/discussions)
+- **Main Project**: [MCP Context Forge](https://github.com/jrmatherly/mcp-context-forge)
 
 ### Common Issues
 
@@ -302,4 +302,4 @@ Your contributions help make the MCP ContextForge Stack easier to deploy and man
 
 ---
 
-*This document is based on the [MCP Context Forge](https://github.com/IBM/mcp-context-forge) project and follows established open-source contribution practices.*
+*This document is based on the [MCP Context Forge](https://github.com/jrmatherly/mcp-context-forge) project and follows established open-source contribution practices.*

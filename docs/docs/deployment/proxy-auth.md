@@ -95,7 +95,7 @@ services:
         network_mode: host
 
     context-forge:
-        image: ghcr.io/ibm/mcp-context-forge:1.0.0-RC-1
+        image: ghcr.io/ibm/mcp-context-forge:1.0.0rc1
         ports:
 
             - 4444:4444
@@ -150,7 +150,7 @@ services:
       OAUTH2_PROXY_SET_XAUTHREQUEST: true
 
   mcp-gateway:
-    image: ghcr.io/ibm/mcp-context-forge:1.0.0-RC-1
+    image: ghcr.io/ibm/mcp-context-forge:1.0.0rc1
     environment:
       MCP_CLIENT_AUTH_ENABLED: false
       TRUST_PROXY_AUTH: true
@@ -173,7 +173,7 @@ services:
       TZ: America/New_York
 
   mcp-gateway:
-    image: ghcr.io/ibm/mcp-context-forge:1.0.0-RC-1
+    image: ghcr.io/ibm/mcp-context-forge:1.0.0rc1
     environment:
       MCP_CLIENT_AUTH_ENABLED: false
       TRUST_PROXY_AUTH: true
