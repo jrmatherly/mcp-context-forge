@@ -1,0 +1,100 @@
+# ----------------------------------------------------------------
+# 💡 Build system (PEP 517)
+#     - setuptools ≥ 77 gives SPDX licence support (PEP 639)
+#     - wheel is needed by most build front-ends
+# ----------------------------------------------------------------
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
+# ----------------------------------------------------------------
+# 📦 Core project metadata (PEP 621)
+# ----------------------------------------------------------------
+[project]
+name = "llmguardplugin"
+version = "0.1.0"
+description = "A plugin that leverages the capabilities of llmguard library to apply guardrails on input and output prompts"
+keywords = ["MCP","API","gateway","tools",
+  "agents","agentic ai","model context protocol","multi-agent","fastapi",
+  "json-rpc","sse","websocket","federation","security","authentication"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Framework :: FastAPI",
+    "Framework :: AsyncIO",
+    "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
+    "Topic :: Software Development :: Libraries :: Application Frameworks"
+]
+readme = "README.md"
+requires-python = ">=3.11,<3.14"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+
+maintainers = [
+    {name = "Shriti Priya", email = "shritip@ibm.com"}
+]
+
+authors = [
+    {name = "Shriti Priya", email = "shritip@ibm.com"}
+]
+
+dependencies = [
+    "llm-guard>=0.3.16",
+    "mcp>=1.26.0",
+    "orjson>=3.11.7",
+    "rapidfuzz>=3.14.3",
+    "redis>=7.2.0",
+]
+
+# URLs
+[project.urls]
+Homepage = "https://ibm.github.io/mcp-context-forge/"
+Documentation = "https://ibm.github.io/mcp-context-forge/"
+Repository = "https://github.com/IBM/mcp-context-forge"
+"Bug Tracker" = "https://github.com/IBM/mcp-context-forge/issues"
+Changelog = "https://github.com/IBM/mcp-context-forge/blob/main/CHANGELOG.md"
+
+# Note: mcp-contextforge-gateway is provided at runtime by the gateway process.
+# It is not listed as a direct dependency to avoid cryptography version conflicts
+# with llm-guard's transitive dependency on presidio-anonymizer.
+
+# ----------------------------------------------------------------
+# Optional dependency groups (extras)
+# ----------------------------------------------------------------
+[project.optional-dependencies]
+dev = [
+    "black>=26.1.0",
+    "pytest>=9.0.2",
+    "pytest-asyncio>=1.3.0",
+    "pytest-cov>=7.0.0",
+    "pytest-dotenv>=0.5.2",
+    "pytest-env>=1.5.0",
+    "pytest-examples>=0.0.18",
+    "pytest-rerunfailures>=16.1",
+    "pytest-trio>=0.8.0",
+    "pytest-xdist>=3.8.0",
+    "ruff>=0.15.1",
+    "uv>=0.10.4",
+]
+
+# --------------------------------------------------------------------
+#  🔧 setuptools-specific configuration
+# --------------------------------------------------------------------
+[tool.setuptools]
+include-package-data = true          # ensure wheels include the data files
+
+# Automatic discovery: keep every package that starts with "llmguardplugin"
+[tool.setuptools.packages.find]
+include = ["llmguardplugin*"]
+exclude = ["tests*"]
+
+##  Runtime data files  ------------------------------------------------
+[tool.setuptools.package-data]
+llmguardplugin = [
+  "resources/plugins/config.yaml",
+]
