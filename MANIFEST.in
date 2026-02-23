@@ -82,6 +82,7 @@ include mcpgateway/services/import_service.py
 # 📦 Migration scripts (v0.7.0 multitenancy migration tools)
 recursive-include scripts *.py
 recursive-include scripts *.sh
+recursive-include scripts *.json
 
 # 🧪 Testing documentation and plans
 recursive-include tests/manual *.py *.md
@@ -131,6 +132,7 @@ prune .github
 prune .hypothesis
 prune .benchmarks
 prune .claude
+prune .serena
 prune todo
 prune reports
 prune logs

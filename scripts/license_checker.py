@@ -726,7 +726,7 @@ def evaluate_license(
 
 
 def _iter_files_with_name(root: Path, filename: str) -> Iterable[Path]:
-    ignored = {".git", ".github", ".tox", ".venv", "node_modules", ".ruff_cache", ".mypy_cache", ".pytest_cache", "todo"}
+    ignored = {".git", ".github", ".tox", ".venv", "node_modules", ".ruff_cache", ".mypy_cache", ".pytest_cache", "todo", "{{cookiecutter.plugin_slug}}", "{{cookiecutter.project_slug}}"}
     for path in root.rglob(filename):
         if not path.is_file():
             continue

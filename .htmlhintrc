@@ -1,5 +1,5 @@
 {
-  "attr-value-double-quotes": true,
+  "attr-value-double-quotes": false,
   "tag-pair": true,
   "doctype-first": true,
   "id-unique": true,
