@@ -3,6 +3,9 @@
 # ========================================
 .env
 .env.*
+!.env.example
+!.env.ce.example
+!.env.make
 .envrc
 .ica.env
 .htpasswd
