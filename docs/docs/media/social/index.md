@@ -2,7 +2,7 @@
 
 > Check out these social media highlights, and write your own!
 
-## LinkedIn Posts:
+## LinkedIn Posts
 
 !!! details "[MCP Context Forge Collaboration & Open-Source Release (LinkedIn)](https://www.linkedin.com/posts/mgupta76_github-ibmmcp-context-forge-a-model-context-activity-7340773401583632384-ZiLi)"
 
@@ -43,7 +43,7 @@
     [Read on Medium](https://medium.com/@manojjahgirdar/model-context-protocol-mcp-gateway-a-middleware-meant-to-productionize-mcp-for-an-enterprise-bbdb2bc350be)
 
     !!! quote
-        "Learn how ContextForge MCP Gateway works - a secure, unified middleware for scaling agentic AI integrations in the enterprise."
+        "Learn how Apollos AI Gateway works - a secure, unified middleware for scaling agentic AI integrations in the enterprise."
 
 !!! details "QA Automation Gateway — Intelligent Performance & Test Orchestration using IBM MCP Context Forge"
     **Author:** Sumit Ghosh - Performance/Automation Lead, Agentic AI @ IBM | **Date:** Oct 31, 2025 | **10 min read**

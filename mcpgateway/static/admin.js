@@ -19636,7 +19636,7 @@ async function fetchToolsForGateway(gatewayId, gatewayName) {
 // Expose fetch tools function to global scope
 window.fetchToolsForGateway = fetchToolsForGateway;
 
-console.log("🛡️ ContextForge MCP Gateway admin.js initialized");
+console.log("🛡️ Apollos AI Gateway admin.js initialized");
 
 // ===================================================================
 // BULK IMPORT TOOLS — MODAL WIRING

@@ -1,4 +1,4 @@
-# ContextForge MCP Gateway - Frequently Asked Questions
+# Apollos AI Gateway - Frequently Asked Questions
 
 ## ⚡ Quickstart
 
@@ -49,7 +49,7 @@
     See the provided [media kit](../media/index.md)
 
 ???+ tip "📄 How do I describe the gateway in boilerplate copy?"
-    > "ContextForge MCP Gateway is an open-source reverse-proxy that unifies MCP and REST tool servers under a single secure HTTPS endpoint with discovery, auth and observability baked in."
+    > "Apollos AI Gateway is an open-source reverse-proxy that unifies MCP and REST tool servers under a single secure HTTPS endpoint with discovery, auth and observability baked in."
 
 ---
 
