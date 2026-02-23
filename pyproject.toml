@@ -406,7 +406,8 @@ exclude = [
     "site-packages",
     "venv",
     "docs",
-    "test"
+    "test",
+    "mcp-servers/templates",
 ]
 
 # 200 line length
