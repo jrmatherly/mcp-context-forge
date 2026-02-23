@@ -1744,7 +1744,7 @@ SPIN_DETECTOR_WORKERS ?= $(LOADTEST_PROCESSES)
 
 load-test-spin-detector:                   ## CPU spin loop detector (spike/drop pattern, issue #2360)
 	@echo "🔄 CPU SPIN LOOP DETECTOR (Escalating load pattern)"
-	@echo "   Issue: https://github.com/IBM/mcp-context-forge/issues/2360"
+	@echo "   Issue: https://github.com/jrmatherly/mcp-context-forge/issues/2360"
 	@echo ""
 	@echo "   ESCALATING PATTERN (1000/s spawn rate):"
 	@echo "   ┌─────────┬─────────┬────────────┬────────────┐"
@@ -2507,7 +2507,7 @@ docs: images sbom
 	@test -d "$(VENV_DIR)" || $(MAKE) venv
 	@/bin/bash -c "source $(VENV_DIR)/bin/activate && \
 		uv pip install -q handsdown && \
-		python3 -m handsdown --external https://github.com/IBM/mcp-context-forge/ \
+		python3 -m handsdown --external https://github.com/jrmatherly/mcp-context-forge/ \
 		         -o $(DOCS_DIR)/docs \
 		         -n app --name '$(PROJECT_NAME)' --cleanup"
 
@@ -4625,7 +4625,7 @@ container-inspect-manifest:
 	@echo "🔍 Inspecting multiplatform manifest..."
 	@if [ -z "$(REGISTRY)" ]; then \
 		echo "Usage: make container-inspect-manifest REGISTRY=ghcr.io/org/repo:tag"; \
-		echo "Example: make container-inspect-manifest REGISTRY=ghcr.io/ibm/mcp-context-forge:latest"; \
+		echo "Example: make container-inspect-manifest REGISTRY=ghcr.io/jrmatherly/mcp-context-forge:latest"; \
 	elif [ "$(CONTAINER_RUNTIME)" = "docker" ]; then \
 		docker buildx imagetools inspect $(REGISTRY); \
 	elif [ "$(CONTAINER_RUNTIME)" = "podman" ]; then \
@@ -5460,9 +5460,9 @@ MINIKUBE_ADDONS  ?= ingress ingress-dns metrics-server dashboard registry regist
 # OCI image tag to preload into the cluster.
 # - By default we point to the *local* image built via `make docker-prod`, e.g.
 #   mcpgateway/mcpgateway:latest.  Override with IMAGE=<repo:tag> to use a
-#   remote registry (e.g. ghcr.io/ibm/mcp-context-forge:v0.9.0).
+#   remote registry (e.g. ghcr.io/jrmatherly/mcp-context-forge:v0.9.0).
 TAG              ?= latest         # override with TAG=<ver>
-IMAGE            ?= $(IMG):$(TAG)  # or IMAGE=ghcr.io/ibm/mcp-context-forge:$(TAG)
+IMAGE            ?= $(IMG):$(TAG)  # or IMAGE=ghcr.io/jrmatherly/mcp-context-forge:$(TAG)
 
 # -----------------------------------------------------------------------------
 # 🆘  HELP TARGETS (parsed by `make help`)
@@ -7339,7 +7339,7 @@ fuzz-all: fuzz-hypothesis fuzz-atheris fuzz-api fuzz-security fuzz-report  ## �
 # Migration testing configuration
 MIGRATION_TEST_DIR := tests/migration
 MIGRATION_REPORTS_DIR := $(MIGRATION_TEST_DIR)/reports
-UPGRADE_BASE_IMAGE ?= ghcr.io/ibm/mcp-context-forge:1.0.0-BETA-2
+UPGRADE_BASE_IMAGE ?= ghcr.io/jrmatherly/mcp-context-forge:1.0.0-BETA-2
 UPGRADE_TARGET_IMAGE ?= mcpgateway/mcpgateway:latest
 
 # Get supported versions from version config (n-2 policy)
@@ -7401,8 +7401,8 @@ migration-setup:                           ## Setup migration test environment
 	@echo "📦 Pulling required container images..."
 	@if command -v docker >/dev/null 2>&1; then \
 		for version in $(MIGRATION_VERSIONS); do \
-			echo "  🔄 Pulling ghcr.io/ibm/mcp-context-forge:$$version..."; \
-			docker pull ghcr.io/ibm/mcp-context-forge:$$version || true; \
+			echo "  🔄 Pulling ghcr.io/jrmatherly/mcp-context-forge:$$version..."; \
+			docker pull ghcr.io/jrmatherly/mcp-context-forge:$$version || true; \
 		done; \
 	else \
 		echo "⚠️  Docker not available - tests may fail"; \
@@ -7434,7 +7434,7 @@ migration-debug:                           ## Debug migration test failures with
 		echo "  Running containers:"; \
 		docker ps --filter "name=migration-test-" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"; \
 		echo "  Available images:"; \
-		docker images --filter "reference=ghcr.io/ibm/mcp-context-forge" --format "table {{.Repository}}\t{{.Tag}}\t{{.Size}}"; \
+		docker images --filter "reference=ghcr.io/jrmatherly/mcp-context-forge" --format "table {{.Repository}}\t{{.Tag}}\t{{.Size}}"; \
 	else \
 		echo "  ❌ Docker not available"; \
 	fi

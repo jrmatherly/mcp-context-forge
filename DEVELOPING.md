@@ -20,7 +20,7 @@ This guide provides comprehensive information for developers working on the MCP 
 
 ```bash
 # Clone and setup
-git clone https://github.com/IBM/mcp-context-forge.git
+git clone https://github.com/jrmatherly/mcp-context-forge.git
 cd mcp-context-forge
 
 # Complete setup with uv (recommended)
@@ -687,8 +687,8 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/):
 ### Getting Help
 
 - **Documentation**: [docs/](docs/)
-- **Issues**: [GitHub Issues](https://github.com/IBM/mcp-context-forge/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/IBM/mcp-context-forge/discussions)
+- **Issues**: [GitHub Issues](https://github.com/jrmatherly/mcp-context-forge/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/jrmatherly/mcp-context-forge/discussions)
 - **Contributing Guide**: [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## Advanced Topics

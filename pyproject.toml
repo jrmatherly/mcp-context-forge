@@ -160,7 +160,7 @@ dev = [
     "yamllint>=1.37.1",
     # Required by other packages but here for security version control (CVEs)
     # Can be removed once the associated packages update their dependencies
-    "pyasn1>=0.6.2", # a2a-sdk; https://github.com/IBM/mcp-context-forge/security/dependabot/73
+    "pyasn1>=0.6.2", # a2a-sdk; https://github.com/jrmatherly/mcp-context-forge/security/dependabot/73
     # gRPC plugin framework testing (optional at runtime, required for test coverage)
     "grpcio>=1.76.0",
     "grpcio-reflection>=1.76.0",
@@ -310,11 +310,11 @@ name = "Mihai Criveti"
 email = "redacted@ibm.com"
 
 [project.urls]
-Homepage = "https://ibm.github.io/mcp-context-forge/"
-Documentation = "https://ibm.github.io/mcp-context-forge/"
-Repository = "https://github.com/IBM/mcp-context-forge"
-"Bug Tracker" = "https://github.com/IBM/mcp-context-forge/issues"
-Changelog = "https://github.com/IBM/mcp-context-forge/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/jrmatherly/mcp-context-forge/docs/docs/"
+Documentation = "https://github.com/jrmatherly/mcp-context-forge/docs/docs/"
+Repository = "https://github.com/jrmatherly/mcp-context-forge"
+"Bug Tracker" = "https://github.com/jrmatherly/mcp-context-forge/issues"
+Changelog = "https://github.com/jrmatherly/mcp-context-forge/blob/main/CHANGELOG.md"
 
 # --------------------------------------------------------------------
 #  💻 Project scripts (cli entrypoint)

@@ -29,16 +29,16 @@ Apollos AI Gateway is a feature-rich gateway, proxy and MCP Registry that federa
 
 | Resource | Description |
 |----------|-------------|
-| **[5-Minute Setup](https://github.com/IBM/mcp-context-forge/issues/2503)** | Get started fast — uvx, Docker, Compose, or local dev |
-| **[Getting Help](https://github.com/IBM/mcp-context-forge/issues/2504)** | Support options, FAQ, community channels |
-| **[Issue Guide](https://github.com/IBM/mcp-context-forge/issues/2502)** | How to file bugs, request features, contribute |
-| **[Full Documentation](https://ibm.github.io/mcp-context-forge/)** | Complete guides, tutorials, API reference |
+| **[5-Minute Setup](https://github.com/jrmatherly/mcp-context-forge/issues/2503)** | Get started fast — uvx, Docker, Compose, or local dev |
+| **[Getting Help](https://github.com/jrmatherly/mcp-context-forge/issues/2504)** | Support options, FAQ, community channels |
+| **[Issue Guide](https://github.com/jrmatherly/mcp-context-forge/issues/2502)** | How to file bugs, request features, contribute |
+| **[Full Documentation](https://github.com/jrmatherly/mcp-context-forge/docs/docs/)** | Complete guides, tutorials, API reference |
 
 ---
 
 ## Overview & Goals
 
-**ContextForge** is a gateway, registry, and proxy that sits in front of any [Model Context Protocol](https://modelcontextprotocol.io) (MCP) server, A2A server or REST API-exposing a unified endpoint for all your AI clients. See the [project roadmap](https://ibm.github.io/mcp-context-forge/architecture/roadmap/) for more details.
+**ContextForge** is a gateway, registry, and proxy that sits in front of any [Model Context Protocol](https://modelcontextprotocol.io) (MCP) server, A2A server or REST API-exposing a unified endpoint for all your AI clients. See the [project roadmap](https://github.com/jrmatherly/mcp-context-forge/docs/docs/architecture/roadmap/) for more details.
 
 It currently supports:
 
@@ -52,9 +52,9 @@ It currently supports:
 - **OpenTelemetry observability** with Phoenix, Jaeger, Zipkin, and other OTLP backends
 - Scalable deployments via Docker or PyPI, Redis-backed caching, and multi-cluster federation
 
-![MCP Gateway Architecture](https://ibm.github.io/mcp-context-forge/images/mcpgateway.svg)
+![MCP Gateway Architecture](https://github.com/jrmatherly/mcp-context-forge/docs/docs/images/mcpgateway.svg)
 
-For a list of upcoming features, check out the [ContextForge Roadmap](https://ibm.github.io/mcp-context-forge/architecture/roadmap/)
+For a list of upcoming features, check out the [ContextForge Roadmap](https://github.com/jrmatherly/mcp-context-forge/docs/docs/architecture/roadmap/)
 
 ---
 
@@ -118,7 +118,7 @@ For a list of upcoming features, check out the [ContextForge Roadmap](https://ib
 - **LLM-specific metrics**: Token usage, costs, model performance
 - **Zero-overhead when disabled** with graceful degradation
 
-See **[Observability Documentation](https://ibm.github.io/mcp-context-forge/manage/observability/)** for setup guides with Phoenix, Jaeger, and other backends.
+See **[Observability Documentation](https://github.com/jrmatherly/mcp-context-forge/docs/docs/manage/observability/)** for setup guides with Phoenix, Jaeger, and other backends.
 
 </details>
 
@@ -249,7 +249,7 @@ uv pip install mcp-contextforge-gateway
 <details>
 <summary><strong>More configuration</strong></summary>
 
-Copy [.env.example](https://github.com/IBM/mcp-context-forge/blob/main/.env.example) to `.env` and tweak any of the settings (or use them as env variables).
+Copy [.env.example](https://github.com/jrmatherly/mcp-context-forge/blob/main/.env.example) to `.env` and tweak any of the settings (or use them as env variables).
 
 </details>
 
@@ -259,7 +259,7 @@ Copy [.env.example](https://github.com/IBM/mcp-context-forge/blob/main/.env.exam
 ```bash
 # 1️⃣  Spin up the sample GO MCP time server using mcpgateway.translate & docker (replace docker with podman if needed)
 python3 -m mcpgateway.translate \
-     --stdio "docker run --rm -i ghcr.io/ibm/fast-time-server:latest -transport=stdio" \
+     --stdio "docker run --rm -i ghcr.io/jrmatherly/fast-time-server:latest -transport=stdio" \
      --expose-sse \
      --port 8003
 
@@ -372,7 +372,7 @@ Get a full stack running with MariaDB and Redis in under 30 seconds:
 
 ```bash
 # Clone and start the stack
-git clone https://github.com/IBM/mcp-context-forge.git
+git clone https://github.com/jrmatherly/mcp-context-forge.git
 cd mcp-context-forge
 
 # Start with MariaDB (recommended for production)
@@ -427,11 +427,11 @@ Deploy to Kubernetes with enterprise-grade features:
 
 ```bash
 # Add Helm repository (when available)
-# helm repo add mcp-context-forge https://ibm.github.io/mcp-context-forge
+# helm repo add mcp-context-forge https://github.com/jrmatherly/mcp-context-forge/docs/docs
 # helm repo update
 
 # For now, use local chart
-git clone https://github.com/IBM/mcp-context-forge.git
+git clone https://github.com/jrmatherly/mcp-context-forge.git
 cd mcp-context-forge/charts/mcp-stack
 
 # Install with MariaDB
@@ -486,11 +486,11 @@ docker run -d --name mcpgateway \
   -e PLATFORM_ADMIN_FULL_NAME="Platform Administrator" \
   -e DATABASE_URL=sqlite:///./mcp.db \
   -e SECURE_COOKIES=false \
-  ghcr.io/ibm/mcp-context-forge:1.0.0rc1
+  ghcr.io/jrmatherly/mcp-context-forge:1.0.0rc1
 
 # Tail logs and generate API key
 docker logs -f mcpgateway
-docker run --rm -it ghcr.io/ibm/mcp-context-forge:1.0.0rc1 \
+docker run --rm -it ghcr.io/jrmatherly/mcp-context-forge:1.0.0rc1 \
   python3 -m mcpgateway.utils.create_jwt_token --username admin@apollosai.dev --exp 10080 --secret my-test-key
 ```
 
@@ -508,7 +508,7 @@ docker run -d --name mcpgateway --restart unless-stopped \
   -e MCPGATEWAY_UI_ENABLED=true -e MCPGATEWAY_ADMIN_API_ENABLED=true \
   -e HOST=0.0.0.0 -e JWT_SECRET_KEY=my-test-key \
   -e PLATFORM_ADMIN_EMAIL=admin@apollosai.dev -e PLATFORM_ADMIN_PASSWORD=changeme \
-  ghcr.io/ibm/mcp-context-forge:1.0.0rc1
+  ghcr.io/jrmatherly/mcp-context-forge:1.0.0rc1
 ```
 
 **Host networking** (access local MCP servers):
@@ -516,7 +516,7 @@ docker run -d --name mcpgateway --restart unless-stopped \
 docker run -d --name mcpgateway --network=host \
   -v $(pwd)/data:/data -e DATABASE_URL=sqlite:////data/mcp.db \
   -e MCPGATEWAY_UI_ENABLED=true -e HOST=0.0.0.0 -e PORT=4444 \
-  ghcr.io/ibm/mcp-context-forge:1.0.0rc1
+  ghcr.io/jrmatherly/mcp-context-forge:1.0.0rc1
 ```
 
 **Airgapped deployment** (no internet):
@@ -537,7 +537,7 @@ docker run -d --name mcpgateway -p 4444:4444 \
 ```bash
 podman run -d --name mcpgateway \
   -p 4444:4444 -e HOST=0.0.0.0 -e DATABASE_URL=sqlite:///./mcp.db \
-  ghcr.io/ibm/mcp-context-forge:1.0.0rc1
+  ghcr.io/jrmatherly/mcp-context-forge:1.0.0rc1
 ```
 
 <details>
@@ -549,14 +549,14 @@ mkdir -p $(pwd)/data && chmod 777 $(pwd)/data
 podman run -d --name mcpgateway --restart=on-failure \
   -p 4444:4444 -v $(pwd)/data:/data \
   -e DATABASE_URL=sqlite:////data/mcp.db \
-  ghcr.io/ibm/mcp-context-forge:1.0.0rc1
+  ghcr.io/jrmatherly/mcp-context-forge:1.0.0rc1
 ```
 
 **Host networking:**
 ```bash
 podman run -d --name mcpgateway --network=host \
   -v $(pwd)/data:/data -e DATABASE_URL=sqlite:////data/mcp.db \
-  ghcr.io/ibm/mcp-context-forge:1.0.0rc1
+  ghcr.io/jrmatherly/mcp-context-forge:1.0.0rc1
 ```
 
 </details>
@@ -566,7 +566,7 @@ podman run -d --name mcpgateway --network=host \
 <details>
 <summary><strong>✏️ Docker/Podman tips</strong></summary>
 
-- **.env files** - Put all the `-e FOO=` lines into a file and replace them with `--env-file .env`. See the provided [.env.example](https://github.com/IBM/mcp-context-forge/blob/main/.env.example) for reference.
+- **.env files** - Put all the `-e FOO=` lines into a file and replace them with `--env-file .env`. See the provided [.env.example](https://github.com/jrmatherly/mcp-context-forge/blob/main/.env.example) for reference.
 - **Pinned tags** - Use an explicit version (e.g. `1.0.0rc1`) instead of `latest` for reproducible builds.
 - **JWT tokens** - Generate one in the running container:
 
@@ -613,7 +613,7 @@ docker run --rm -i \
   -e MCP_SERVER_URL=http://host.docker.internal:4444/servers/UUID_OF_SERVER_1/mcp \
   -e MCP_TOOL_CALL_TIMEOUT=120 \
   -e MCP_WRAPPER_LOG_LEVEL=DEBUG \
-  ghcr.io/ibm/mcp-context-forge:1.0.0rc1 \
+  ghcr.io/jrmatherly/mcp-context-forge:1.0.0rc1 \
   python3 -m mcpgateway.wrapper
 ```
 
@@ -625,7 +625,7 @@ docker run --rm -i \
 
 Clone the repo and open in VS Code—it will detect `.devcontainer` and prompt to **"Reopen in Container"**. The container includes Python 3.11, Docker CLI, and all project dependencies.
 
-For detailed setup, workflows, and GitHub Codespaces instructions, see **[Developer Onboarding](https://ibm.github.io/mcp-context-forge/development/developer-onboarding/)**.
+For detailed setup, workflows, and GitHub Codespaces instructions, see **[Developer Onboarding](https://github.com/jrmatherly/mcp-context-forge/docs/docs/development/developer-onboarding/)**.
 
 ---
 
@@ -681,7 +681,7 @@ docker run --name mcp-postgres \
 
 For upgrade instructions, migration guides, and rollback procedures, see:
 
-- **[Upgrade Guide](https://ibm.github.io/mcp-context-forge/manage/upgrade/)** — General upgrade procedures
+- **[Upgrade Guide](https://github.com/jrmatherly/mcp-context-forge/docs/docs/manage/upgrade/)** — General upgrade procedures
 - **[CHANGELOG.md](./CHANGELOG.md)** — Version history and breaking changes
 - **[MIGRATION-0.7.0.md](./MIGRATION-0.7.0.md)** — Multi-tenancy migration (v0.6.x → v0.7.x)
 
@@ -691,7 +691,7 @@ For upgrade instructions, migration guides, and rollback procedures, see:
 
 > ⚠️ If any required `.env` variable is missing or invalid, the gateway will fail fast at startup with a validation error via Pydantic.
 
-Copy the provided [.env.example](https://github.com/IBM/mcp-context-forge/blob/main/.env.example) to `.env` and update the security-sensitive values below.
+Copy the provided [.env.example](https://github.com/jrmatherly/mcp-context-forge/blob/main/.env.example) to `.env` and update the security-sensitive values below.
 
 ### 🔐 Required: Change Before Use
 
@@ -731,7 +731,7 @@ These values differ from code defaults to provide a working local/dev setup:
 
 ### 📚 Full Configuration Reference
 
-For the complete list of 300+ environment variables organized by category (authentication, caching, SSO, observability, etc.), see the **[Configuration Reference](https://ibm.github.io/mcp-context-forge/manage/configuration/)**.
+For the complete list of 300+ environment variables organized by category (authentication, caching, SSO, observability, etc.), see the **[Configuration Reference](https://github.com/jrmatherly/mcp-context-forge/docs/docs/manage/configuration/)**.
 
 ---
 
@@ -799,14 +799,14 @@ MCP Gateway can be deployed to any major cloud platform:
 
 | Platform | Guide |
 |----------|-------|
-| **AWS** | [ECS/EKS Deployment](https://ibm.github.io/mcp-context-forge/deployment/aws/) |
-| **Azure** | [AKS Deployment](https://ibm.github.io/mcp-context-forge/deployment/azure/) |
-| **Google Cloud** | [Cloud Run](https://ibm.github.io/mcp-context-forge/deployment/google-cloud-run/) |
-| **IBM Cloud** | [Code Engine](https://ibm.github.io/mcp-context-forge/deployment/ibm-code-engine/) |
-| **Kubernetes** | [Helm Charts](https://ibm.github.io/mcp-context-forge/deployment/minikube/) |
-| **OpenShift** | [OpenShift Deployment](https://ibm.github.io/mcp-context-forge/deployment/openshift/) |
+| **AWS** | [ECS/EKS Deployment](https://github.com/jrmatherly/mcp-context-forge/docs/docs/deployment/aws/) |
+| **Azure** | [AKS Deployment](https://github.com/jrmatherly/mcp-context-forge/docs/docs/deployment/azure/) |
+| **Google Cloud** | [Cloud Run](https://github.com/jrmatherly/mcp-context-forge/docs/docs/deployment/google-cloud-run/) |
+| **IBM Cloud** | [Code Engine](https://github.com/jrmatherly/mcp-context-forge/docs/docs/deployment/ibm-code-engine/) |
+| **Kubernetes** | [Helm Charts](https://github.com/jrmatherly/mcp-context-forge/docs/docs/deployment/minikube/) |
+| **OpenShift** | [OpenShift Deployment](https://github.com/jrmatherly/mcp-context-forge/docs/docs/deployment/openshift/) |
 
-For comprehensive deployment guides, see **[Deployment Documentation](https://ibm.github.io/mcp-context-forge/deployment/)**.
+For comprehensive deployment guides, see **[Deployment Documentation](https://github.com/jrmatherly/mcp-context-forge/docs/docs/deployment/)**.
 
 ---
 
@@ -827,7 +827,7 @@ export TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token \
 curl -H "Authorization: Bearer $TOKEN" http://localhost:4444/health
 ```
 
-For comprehensive curl examples covering all endpoints, see the **[API Usage Guide](https://ibm.github.io/mcp-context-forge/manage/api-usage/)**.
+For comprehensive curl examples covering all endpoints, see the **[API Usage Guide](https://github.com/jrmatherly/mcp-context-forge/docs/docs/manage/api-usage/)**.
 
 ---
 
@@ -840,7 +840,7 @@ make doctest         # Run doctests
 make coverage        # Generate coverage report
 ```
 
-See [Doctest Coverage Guide](https://ibm.github.io/mcp-context-forge/development/doctest-coverage/) for documentation testing details.
+See [Doctest Coverage Guide](https://github.com/jrmatherly/mcp-context-forge/docs/docs/development/doctest-coverage/) for documentation testing details.
 
 ---
 
@@ -879,8 +879,8 @@ make coverage        # Generate coverage report
 Run `make` to see all 75+ available targets.
 
 For development workflows, see:
-- **[Developer Workstation Setup](https://ibm.github.io/mcp-context-forge/development/developer-workstation/)**
-- **[Building & Packaging](https://ibm.github.io/mcp-context-forge/development/building/)**
+- **[Developer Workstation Setup](https://github.com/jrmatherly/mcp-context-forge/docs/docs/development/developer-workstation/)**
+- **[Building & Packaging](https://github.com/jrmatherly/mcp-context-forge/docs/docs/development/building/)**
 
 ---
 
@@ -895,7 +895,7 @@ Common issues and solutions:
 | Gateway exits immediately | Copy `.env.example` to `.env` and configure required vars |
 | `ModuleNotFoundError` | Run `make install-dev` |
 
-For detailed troubleshooting guides, see **[Troubleshooting Documentation](https://ibm.github.io/mcp-context-forge/manage/troubleshooting/)**.
+For detailed troubleshooting guides, see **[Troubleshooting Documentation](https://github.com/jrmatherly/mcp-context-forge/docs/docs/manage/troubleshooting/)**.
 
 ---
 
@@ -906,7 +906,7 @@ For detailed troubleshooting guides, see **[Troubleshooting Documentation](https
 3. Keep `make test` green.
 4. Open a PR with signed commits (`git commit -s`).
 
-See **[CONTRIBUTING.md](CONTRIBUTING.md)** for full guidelines and **[Issue Guide #2502](https://github.com/IBM/mcp-context-forge/issues/2502)** for how to file bugs, request features, and find issues to work on.
+See **[CONTRIBUTING.md](CONTRIBUTING.md)** for full guidelines and **[Issue Guide #2502](https://github.com/jrmatherly/mcp-context-forge/issues/2502)** for how to file bugs, request features, and find issues to work on.
 
 ---
 

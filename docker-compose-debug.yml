@@ -82,8 +82,8 @@ services:
     # ──────────────────────────────────────────────────────────────────────
     gateway:
         image: ${IMAGE_LOCAL:-mcpgateway/mcpgateway:latest} # Use the local latest image. Run `make docker-prod` to build it.
-        #image: ghcr.io/ibm/mcp-context-forge:1.0.0-BETA-2 # Use the release MCP Context Forge image
-        #image: ghcr.io/ibm/mcp-context-forge:0.7.0 # Testing migration from 0.7.0
+        #image: ghcr.io/jrmatherly/mcp-context-forge:1.0.0-BETA-2 # Use the release MCP Context Forge image
+        #image: ghcr.io/jrmatherly/mcp-context-forge:0.7.0 # Testing migration from 0.7.0
         build:
             context: .
             dockerfile: Containerfile.lite # Same one the Makefile builds
@@ -698,7 +698,7 @@ services:
     #   networks: [mcpnet]
 
     # migration:
-    #   #image: ghcr.io/ibm/mcp-context-forge:0.7.0 # Testing migration from 0.7.0
+    #   #image: ghcr.io/jrmatherly/mcp-context-forge:0.7.0 # Testing migration from 0.7.0
     #   image: mcpgateway/mcpgateway:latest # Use the local latest image. Run `make docker-prod` to build it.
     #   build:
     #     context: .
@@ -1045,7 +1045,7 @@ services:
     # emulation may not work properly.
     ###############################################################################
     fast_time_server:
-        image: ghcr.io/ibm/fast-time-server:latest
+        image: ghcr.io/jrmatherly/fast-time-server:latest
         restart: unless-stopped
         networks: [mcpnet]
         ports:

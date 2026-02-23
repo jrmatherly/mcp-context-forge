@@ -103,7 +103,6 @@ This script utilizes the `mcp-stdio-wrapper` to send requests to the MCP Gateway
 ./scripts/test-fast-time-wrapper.sh
 ```
 
-
 ```
 
 **Note** Update the PORT and SERVER_ID variables at the top of each script to match your environment, or set them as environment variables before execution.

@@ -15,14 +15,14 @@ MCP Gateway is currently in beta and should be treated as such until the 1.0 rel
 - **Single-user administration** without access controls
 
 For production deployments:
-- **Disable features not used by your application**: use feature flags to disable unused features (ex: roots, resources, prompts) as per [537](https://github.com/IBM/mcp-context-forge/issues/537)
+- **Disable features not used by your application**: use feature flags to disable unused features (ex: roots, resources, prompts) as per [537](https://github.com/jrmatherly/mcp-context-forge/issues/537)
 - **Disable the Admin UI and APIs completely** (`MCPGATEWAY_UI_ENABLED=false` and `MCPGATEWAY_ADMIN_API_ENABLED=false` in `.env`)
 - **Use only the REST API** with proper authentication
 - **Build your own production-grade UI** with appropriate security controls
 
 ### 🚀 Deployment Recommendations
 
-- **Disable unused features** using environment variables and feature flags (`MCPGATEWAY_ENABLE_PROMPTS=false`, etc.) as per [537](https://github.com/IBM/mcp-context-forge/issues/537)
+- **Disable unused features** using environment variables and feature flags (`MCPGATEWAY_ENABLE_PROMPTS=false`, etc.) as per [537](https://github.com/jrmatherly/mcp-context-forge/issues/537)
 - **Use the REST API only**, with strict input validation and authentication
 - **Disable Admin UI and Admin API** in production (`MCPGATEWAY_UI_ENABLED=false`, `MCPGATEWAY_ADMIN_API_ENABLED=false`)
 - **Run containers as non-root users**, with read-only filesystems and minimal base images
@@ -54,7 +54,7 @@ For production deployments:
 
 ### Multi-Tenancy Considerations
 
-Please review https://ibm.github.io/mcp-context-forge/architecture/multitenancy/
+Please review https://github.com/jrmatherly/mcp-context-forge/docs/docs/architecture/multitenancy/
 
 ### General Beta Limitations
 
@@ -520,7 +520,7 @@ flowchart TD
 - The Admin UI and Admin API are intended solely as development conveniences and **must be disabled in production**
 - Bug fixes and security patches are provided on a **best-effort basis**, without SLAs
 - Security hardening efforts prioritize the **REST API**; the Admin UI remains **unsupported**
-- Currently, roots, resources and prompts are considered alpha, and require additional security hardening and resource limits. They should be disabled through feature flags as per [537](https://github.com/IBM/mcp-context-forge/issues/537)
+- Currently, roots, resources and prompts are considered alpha, and require additional security hardening and resource limits. They should be disabled through feature flags as per [537](https://github.com/jrmatherly/mcp-context-forge/issues/537)
 
 ### Security Update Process
 

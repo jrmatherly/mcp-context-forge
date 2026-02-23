@@ -3,7 +3,7 @@
 ##################################
 resource "helm_release" "mcpgw" {
   name       = "mcpgateway"
-  repository = "oci://ghcr.io/ibm/mcp-context-forge-chart/mcp-context-forge-chart"
+  repository = "oci://ghcr.io/jrmatherly/mcp-context-forge-chart/mcp-context-forge-chart"
   chart      = "mcpgateway"
   version    = "1.0.0rc1"
 

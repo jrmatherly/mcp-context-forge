@@ -102,8 +102,8 @@ services:
     # ──────────────────────────────────────────────────────────────────────
     gateway:
         image: ${IMAGE_LOCAL:-mcpgateway/mcpgateway:latest} # Use the local latest image. Run `make docker-prod` to build it.
-        #image: ghcr.io/ibm/mcp-context-forge:1.0.0-BETA-2 # Use the release MCP Context Forge image
-        #image: ghcr.io/ibm/mcp-context-forge:0.7.0 # Testing migration from 0.7.0
+        #image: ghcr.io/jrmatherly/mcp-context-forge:1.0.0-BETA-2 # Use the release MCP Context Forge image
+        #image: ghcr.io/jrmatherly/mcp-context-forge:0.7.0 # Testing migration from 0.7.0
         build:
             context: .
             dockerfile: Containerfile.lite # Same one the Makefile builds
@@ -365,7 +365,7 @@ services:
             # Workaround for granian issue where SSE connections may not be properly
             # closed after client disconnect, causing CPU spin loops. See:
             # - https://github.com/emmett-framework/granian/issues/286
-            # - https://github.com/IBM/mcp-context-forge/issues/2357
+            # - https://github.com/jrmatherly/mcp-context-forge/issues/2357
             #
             # GRANIAN_WORKERS_LIFETIME: Restart workers after this duration (min 60s)
             # GRANIAN_WORKERS_MAX_RSS: Restart workers exceeding this memory (MiB)
@@ -412,7 +412,7 @@ services:
             # happens in anyio's _deliver_cancellation method.
             #
             # See documentation: docs/docs/operations/cpu-spin-loop-mitigation.md
-            # GitHub Issue: https://github.com/IBM/mcp-context-forge/issues/2360
+            # GitHub Issue: https://github.com/jrmatherly/mcp-context-forge/issues/2360
             # Upstream Issue: https://github.com/agronholm/anyio/issues/695
             #
             # ─────────────────────────────────────────────────────────────────────────
@@ -754,7 +754,7 @@ services:
                     memory: 128M
 
     # migration:
-    #   #image: ghcr.io/ibm/mcp-context-forge:0.7.0 # Testing migration from 0.7.0
+    #   #image: ghcr.io/jrmatherly/mcp-context-forge:0.7.0 # Testing migration from 0.7.0
     #   image: mcpgateway/mcpgateway:latest # Use the local latest image. Run `make docker-prod` to build it.
     #   build:
     #     context: .
@@ -1076,7 +1076,7 @@ services:
     #   FAST_TIME_IMAGE=mcpgateway/fast-time-server:local docker compose build fast_time_server
     ###############################################################################
     fast_time_server:
-        image: ${FAST_TIME_IMAGE:-ghcr.io/ibm/fast-time-server:latest}
+        image: ${FAST_TIME_IMAGE:-ghcr.io/jrmatherly/fast-time-server:latest}
         build:
             context: ./mcp-servers/go/fast-time-server
             dockerfile: Dockerfile

@@ -32,7 +32,7 @@ spec:
       containerConcurrency: 100
       containers:
       - name: gateway
-        image: ghcr.io/ibm/mcp-context-forge:latest
+        image: ghcr.io/jrmatherly/mcp-context-forge:latest
         ports:
         - containerPort: 4444
           protocol: TCP

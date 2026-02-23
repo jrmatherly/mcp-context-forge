@@ -20,7 +20,7 @@ make container-build-multi
 make container-build-multi REGISTRY=ghcr.io/your-org
 
 # Inspect a multiplatform manifest
-make container-inspect-manifest REGISTRY=ghcr.io/ibm/mcp-context-forge:latest
+make container-inspect-manifest REGISTRY=ghcr.io/jrmatherly/mcp-context-forge:latest
 ```
 
 ## Containerfiles
@@ -66,16 +66,16 @@ When someone pulls the image, Docker automatically selects the correct architect
 
 ```bash
 # On amd64 machine - pulls amd64 image
-docker pull ghcr.io/ibm/mcp-context-forge:latest
+docker pull ghcr.io/jrmatherly/mcp-context-forge:latest
 
 # On arm64 machine - pulls arm64 image
-docker pull ghcr.io/ibm/mcp-context-forge:latest
+docker pull ghcr.io/jrmatherly/mcp-context-forge:latest
 
 # On s390x machine - pulls s390x image
-docker pull ghcr.io/ibm/mcp-context-forge:latest
+docker pull ghcr.io/jrmatherly/mcp-context-forge:latest
 
 # On ppc64le machine - pulls ppc64le image
-docker pull ghcr.io/ibm/mcp-context-forge:latest
+docker pull ghcr.io/jrmatherly/mcp-context-forge:latest
 ```
 
 ## GitHub Actions
@@ -132,33 +132,33 @@ The `Containerfile.lite` uses `ubi10-minimal` as the runtime base:
 
 ```bash
 # Using make
-make container-inspect-manifest REGISTRY=ghcr.io/ibm/mcp-context-forge:latest
+make container-inspect-manifest REGISTRY=ghcr.io/jrmatherly/mcp-context-forge:latest
 
 # Using docker directly
-docker buildx imagetools inspect ghcr.io/ibm/mcp-context-forge:latest
+docker buildx imagetools inspect ghcr.io/jrmatherly/mcp-context-forge:latest
 ```
 
 Example output:
 
 ```
-Name:      ghcr.io/ibm/mcp-context-forge:latest
+Name:      ghcr.io/jrmatherly/mcp-context-forge:latest
 MediaType: application/vnd.oci.image.index.v1+json
 Digest:    sha256:abc123...
 
 Manifests:
-  Name:      ghcr.io/ibm/mcp-context-forge:latest@sha256:def456...
+  Name:      ghcr.io/jrmatherly/mcp-context-forge:latest@sha256:def456...
   MediaType: application/vnd.oci.image.manifest.v1+json
   Platform:  linux/amd64
 
-  Name:      ghcr.io/ibm/mcp-context-forge:latest@sha256:ghi789...
+  Name:      ghcr.io/jrmatherly/mcp-context-forge:latest@sha256:ghi789...
   MediaType: application/vnd.oci.image.manifest.v1+json
   Platform:  linux/arm64
 
-  Name:      ghcr.io/ibm/mcp-context-forge:latest@sha256:jkl012...
+  Name:      ghcr.io/jrmatherly/mcp-context-forge:latest@sha256:jkl012...
   MediaType: application/vnd.oci.image.manifest.v1+json
   Platform:  linux/s390x
 
-  Name:      ghcr.io/ibm/mcp-context-forge:latest@sha256:mno345...
+  Name:      ghcr.io/jrmatherly/mcp-context-forge:latest@sha256:mno345...
   MediaType: application/vnd.oci.image.manifest.v1+json
   Platform:  linux/ppc64le
 ```
