@@ -39,9 +39,9 @@ class TestPermissionFallback:
         """Test that admin users bypass all permission checks."""
         with patch.object(permission_service, "_is_user_admin", return_value=True):
             # Admin should have access to any permission
-            assert await permission_service.check_permission("admin@example.com", "teams.create") == True
-            assert await permission_service.check_permission("admin@example.com", "teams.delete", team_id="team-123") == True
-            assert await permission_service.check_permission("admin@example.com", "any.permission") == True
+            assert await permission_service.check_permission("admin@apollosai.dev", "teams.create") == True
+            assert await permission_service.check_permission("admin@apollosai.dev", "teams.delete", team_id="team-123") == True
+            assert await permission_service.check_permission("admin@apollosai.dev", "any.permission") == True
 
     @pytest.mark.asyncio
     async def test_team_create_permission_for_regular_users(self, permission_service):
@@ -109,7 +109,7 @@ class TestPermissionFallback:
         # First-Party
         from mcpgateway.config import settings
 
-        platform_admin_email = getattr(settings, "platform_admin_email", "admin@example.com")
+        platform_admin_email = getattr(settings, "platform_admin_email", "admin@apollosai.dev")
 
         # Mock database query to return None (user not in database)
         with patch.object(permission_service.db, "execute") as mock_execute:
@@ -127,7 +127,7 @@ class TestPermissionFallback:
         # First-Party
         from mcpgateway.config import settings
 
-        platform_admin_email = getattr(settings, "platform_admin_email", "admin@example.com")
+        platform_admin_email = getattr(settings, "platform_admin_email", "admin@apollosai.dev")
 
         # Mock _is_user_admin to return True (our fix working)
         with patch.object(permission_service, "_is_user_admin", return_value=True):
@@ -158,7 +158,7 @@ class TestPermissionFallback:
 
             # Mock empty platform admin email setting
             with patch("mcpgateway.services.permission_service.getattr", return_value=""):
-                result = await permission_service._is_user_admin("admin@example.com")
+                result = await permission_service._is_user_admin("admin@apollosai.dev")
                 assert result == False, "Should not grant admin privileges when platform_admin_email is empty"
 
 
@@ -198,7 +198,7 @@ class TestTokenPermissionFallback:
         """Test that admin users have all token permissions."""
         with patch.object(permission_service, "_is_user_admin", return_value=True):
             # Admin should have all permissions
-            assert await permission_service.check_permission("admin@example.com", "tokens.create") is True
-            assert await permission_service.check_permission("admin@example.com", "tokens.read") is True
-            assert await permission_service.check_permission("admin@example.com", "tokens.update") is True
-            assert await permission_service.check_permission("admin@example.com", "tokens.revoke") is True
+            assert await permission_service.check_permission("admin@apollosai.dev", "tokens.create") is True
+            assert await permission_service.check_permission("admin@apollosai.dev", "tokens.read") is True
+            assert await permission_service.check_permission("admin@apollosai.dev", "tokens.update") is True
+            assert await permission_service.check_permission("admin@apollosai.dev", "tokens.revoke") is True

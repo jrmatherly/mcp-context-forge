@@ -94,7 +94,7 @@ LANGFLOW_DATABASE_URL=sqlite:///./langflow.db
 
 # Optional: Authentication
 LANGFLOW_SECRET_KEY=your-secret-key
-LANGFLOW_SUPERUSER=admin@example.com
+LANGFLOW_SUPERUSER=admin@apollosai.dev
 LANGFLOW_SUPERUSER_PASSWORD=admin123
 
 # Optional: LLM Provider Keys
@@ -579,7 +579,7 @@ telnet localhost 7860
 ```bash
 # Configure Langflow authentication if enabled
 LANGFLOW_SECRET_KEY=your-secret-key
-LANGFLOW_SUPERUSER=admin@example.com
+LANGFLOW_SUPERUSER=admin@apollosai.dev
 
 # Update MCP Gateway auth configuration
 auth:

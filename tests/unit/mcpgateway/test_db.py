@@ -2053,12 +2053,12 @@ def test_email_api_token_get_effective_permissions_team_token():
 def test_email_team_invitation_is_expired_handles_timezone_mismatch(monkeypatch):
     # expires_at naive, now aware
     expires_at = (db.utc_now() - timedelta(minutes=1)).replace(tzinfo=None)
-    inv = db.EmailTeamInvitation(team_id="t", email="u@example.com", invited_by="admin@example.com", expires_at=expires_at, token="tok")
+    inv = db.EmailTeamInvitation(team_id="t", email="u@example.com", invited_by="admin@apollosai.dev", expires_at=expires_at, token="tok")
     assert inv.is_expired() is True
 
     # now naive, expires_at aware
     aware_expires = db.utc_now() + timedelta(minutes=1)
-    inv2 = db.EmailTeamInvitation(team_id="t", email="u2@example.com", invited_by="admin@example.com", expires_at=aware_expires, token="tok2")
+    inv2 = db.EmailTeamInvitation(team_id="t", email="u2@example.com", invited_by="admin@apollosai.dev", expires_at=aware_expires, token="tok2")
     monkeypatch.setattr(db, "utc_now", lambda: datetime.now(timezone.utc).replace(tzinfo=None, microsecond=0))  # naive now (UTC-based)
     assert inv2.is_expired() is False
 
@@ -2423,21 +2423,21 @@ def test_email_auth_event_factory_methods():
 
 def test_pending_user_approval_approve_and_reject():
     approval = db.PendingUserApproval(email="user@example.com", full_name="User", auth_provider="github", expires_at=db.utc_now() + timedelta(minutes=5), status="pending")
-    approval.approve(admin_email="admin@example.com", notes="ok")
+    approval.approve(admin_email="admin@apollosai.dev", notes="ok")
     assert approval.status == "approved"
-    assert approval.approved_by == "admin@example.com"
+    assert approval.approved_by == "admin@apollosai.dev"
     assert approval.approved_at is not None
     assert approval.admin_notes == "ok"
 
     approval2 = db.PendingUserApproval(email="user2@example.com", full_name="User2", auth_provider="github", expires_at=db.utc_now() + timedelta(minutes=5), status="pending")
-    approval2.reject(admin_email="admin@example.com", reason="nope", notes="details")
+    approval2.reject(admin_email="admin@apollosai.dev", reason="nope", notes="details")
     assert approval2.status == "rejected"
     assert approval2.rejection_reason == "nope"
     assert approval2.admin_notes == "details"
 
 
 def test_email_team_invitation_is_valid():
-    inv = db.EmailTeamInvitation(team_id="t", email="u@example.com", invited_by="admin@example.com", expires_at=db.utc_now() + timedelta(minutes=5), token="tok", is_active=True)
+    inv = db.EmailTeamInvitation(team_id="t", email="u@example.com", invited_by="admin@apollosai.dev", expires_at=db.utc_now() + timedelta(minutes=5), token="tok", is_active=True)
     assert inv.is_valid() is True
 
 

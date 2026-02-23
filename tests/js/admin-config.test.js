@@ -101,8 +101,8 @@ describe("getAuthenticatedUserId", () => {
     });
 
     test("returns string when CURRENT_USER is a string", () => {
-        win.CURRENT_USER = "admin@example.com";
-        expect(f()()).toBe("admin@example.com");
+        win.CURRENT_USER = "admin@apollosai.dev";
+        expect(f()()).toBe("admin@apollosai.dev");
     });
 
     test("extracts id from object", () => {

@@ -827,7 +827,7 @@ class TestGatewayServiceExtended:
         mock_gateway.id = "test-gateway-id"
         mock_gateway.name = "test-gateway"
         mock_gateway.team_id = None
-        mock_gateway.owner_email = "admin@example.com"
+        mock_gateway.owner_email = "admin@apollosai.dev"
         mock_gateway.visibility = "private"
         mock_gateway.prompts = []  # Empty prompts list
 

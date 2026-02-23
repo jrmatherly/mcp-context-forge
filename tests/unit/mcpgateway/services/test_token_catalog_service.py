@@ -350,7 +350,7 @@ class TestTokenCatalogService:
             mock_create_jwt.return_value = "jwt_token_admin"
             jti = str(uuid.uuid4())
 
-            token = await token_service._generate_token("admin@example.com", jti=jti, user=mock_user)
+            token = await token_service._generate_token("admin@apollosai.dev", jti=jti, user=mock_user)
 
             assert token == "jwt_token_admin"
             call_kwargs = mock_create_jwt.call_args.kwargs
@@ -971,7 +971,7 @@ class TestTokenCatalogService:
     async def test_admin_revoke_token_not_found(self, token_service):
         with patch.object(token_service, "get_token", new_callable=AsyncMock) as mock_get:
             mock_get.return_value = None
-            result = await token_service.admin_revoke_token("missing", revoked_by="admin@example.com")
+            result = await token_service.admin_revoke_token("missing", revoked_by="admin@apollosai.dev")
         assert result is False
 
     @pytest.mark.asyncio
@@ -988,7 +988,7 @@ class TestTokenCatalogService:
                     raise RuntimeError("boom")
 
                 with patch.object(asyncio, "create_task", side_effect=_boom_create_task):
-                    result = await token_service.admin_revoke_token("token-123", revoked_by="admin@example.com", reason="test")
+                    result = await token_service.admin_revoke_token("token-123", revoked_by="admin@apollosai.dev", reason="test")
 
         assert result is True
         assert mock_api_token.is_active is False
@@ -1122,7 +1122,7 @@ class TestTokenCatalogService:
         """Test get_token_revocation method - revocation found."""
         mock_revocation = MagicMock(spec=TokenRevocation)
         mock_revocation.jti = "jti-123"
-        mock_revocation.revoked_by = "admin@example.com"
+        mock_revocation.revoked_by = "admin@apollosai.dev"
         mock_revocation.reason = "Compromised"
         mock_db.execute.return_value.scalar_one_or_none.return_value = mock_revocation
 

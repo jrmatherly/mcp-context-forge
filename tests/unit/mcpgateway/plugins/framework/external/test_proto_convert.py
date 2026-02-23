@@ -57,9 +57,9 @@ class TestPydanticGlobalContextToProto:
 
     def test_user_string(self):
         """Test conversion with string user field."""
-        ctx = GlobalContext(request_id="req-1", user="admin@example.com")
+        ctx = GlobalContext(request_id="req-1", user="admin@apollosai.dev")
         proto = pydantic_global_context_to_proto(ctx)
-        assert proto.user_string == "admin@example.com"
+        assert proto.user_string == "admin@apollosai.dev"
 
     def test_user_dict(self):
         """Test conversion with dict user field."""
@@ -114,9 +114,9 @@ class TestProtoGlobalContextToPydantic:
     def test_user_string(self):
         """Test conversion with user_string field."""
         proto = plugin_service_pb2.GlobalContext(request_id="req-1")
-        proto.user_string = "admin@example.com"
+        proto.user_string = "admin@apollosai.dev"
         ctx = proto_global_context_to_pydantic(proto)
-        assert ctx.user == "admin@example.com"
+        assert ctx.user == "admin@apollosai.dev"
 
     def test_user_struct(self):
         """Test conversion with user_struct field."""

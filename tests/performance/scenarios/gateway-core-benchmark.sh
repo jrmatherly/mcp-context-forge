@@ -192,7 +192,7 @@ output_file="$RESULTS_DIR/gateway_token_generation_${PROFILE}_${TIMESTAMP}.txt"
 # Create login payload
 LOGIN_PAYLOAD=$(cat <<EOF
 {
-    "username": "admin@example.com",
+    "username": "admin@apollosai.dev",
     "password": "changeme"
 }
 EOF

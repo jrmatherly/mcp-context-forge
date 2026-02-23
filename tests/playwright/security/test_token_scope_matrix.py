@@ -79,7 +79,7 @@ def _create_server(admin_api: APIRequestContext, name: str, visibility: str, tea
 
 @pytest.fixture
 def scope_matrix_resources(playwright: Playwright):
-    admin_ctx = _api_context(playwright, _make_jwt("admin@example.com", is_admin=True, teams=None))
+    admin_ctx = _api_context(playwright, _make_jwt("admin@apollosai.dev", is_admin=True, teams=None))
     team_id: str | None = None
     public_server_id: str | None = None
     team_server_id: str | None = None
@@ -116,15 +116,15 @@ class TestTokenTeamsMatrix:
 
         tokens = {
             # Missing teams key -> public-only
-            "teams_missing": _make_jwt("admin@example.com", is_admin=True),
+            "teams_missing": _make_jwt("admin@apollosai.dev", is_admin=True),
             # Explicit empty teams -> public-only
-            "teams_empty": _make_jwt("admin@example.com", is_admin=True, teams=[]),
+            "teams_empty": _make_jwt("admin@apollosai.dev", is_admin=True, teams=[]),
             # Explicit null teams + admin=true -> unrestricted admin bypass
-            "teams_null_admin_true": _make_jwt("admin@example.com", is_admin=True, teams=None),
+            "teams_null_admin_true": _make_jwt("admin@apollosai.dev", is_admin=True, teams=None),
             # Explicit null teams + admin=false -> public-only
-            "teams_null_admin_false": _make_jwt("admin@example.com", is_admin=False, teams=None),
+            "teams_null_admin_false": _make_jwt("admin@apollosai.dev", is_admin=False, teams=None),
             # Team-scoped token -> public + team
-            "teams_scoped": _make_jwt("admin@example.com", is_admin=False, teams=[team_id]),
+            "teams_scoped": _make_jwt("admin@apollosai.dev", is_admin=False, teams=[team_id]),
         }
 
         results: dict[str, set[str]] = {}

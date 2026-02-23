@@ -1042,7 +1042,7 @@ class EmailAuthService:
 
         Examples:
             # admin = await service.create_platform_admin(
-            #     "admin@example.com",
+            #     "admin@apollosai.dev",
             #     "admin_password",
             #     "Platform Administrator"
             # )

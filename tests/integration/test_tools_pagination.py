@@ -125,7 +125,7 @@ class TestToolsPagination:
                 description=f"Test tool {i}",
                 input_schema={"type": "object"},
                 enabled=True,
-                owner_email="admin@example.com",
+                owner_email="admin@apollosai.dev",
                 visibility="public",
             )
             db.add(tool)
@@ -134,11 +134,11 @@ class TestToolsPagination:
 
         # Set up user context
         mock_user = MagicMock()
-        mock_user.email = "admin@example.com"
+        mock_user.email = "admin@apollosai.dev"
 
-        app.dependency_overrides[require_auth] = lambda: "admin@example.com"
+        app.dependency_overrides[require_auth] = lambda: "admin@apollosai.dev"
         app.dependency_overrides[get_current_user] = lambda: mock_user
-        app.dependency_overrides[get_current_user_with_permissions] = create_user_context("admin@example.com", TestSessionLocal=TestSessionLocal)
+        app.dependency_overrides[get_current_user_with_permissions] = create_user_context("admin@apollosai.dev", TestSessionLocal=TestSessionLocal)
 
         client = TestClient(app)
 
@@ -191,7 +191,7 @@ class TestToolsPagination:
                 description=f"Test tool {i}",
                 input_schema={"type": "object"},
                 enabled=True,
-                owner_email="admin@example.com",
+                owner_email="admin@apollosai.dev",
                 visibility="public",
             )
             db.add(tool)
@@ -200,11 +200,11 @@ class TestToolsPagination:
 
         # Set up user context
         mock_user = MagicMock()
-        mock_user.email = "admin@example.com"
+        mock_user.email = "admin@apollosai.dev"
 
-        app.dependency_overrides[require_auth] = lambda: "admin@example.com"
+        app.dependency_overrides[require_auth] = lambda: "admin@apollosai.dev"
         app.dependency_overrides[get_current_user] = lambda: mock_user
-        app.dependency_overrides[get_current_user_with_permissions] = create_user_context("admin@example.com", TestSessionLocal=TestSessionLocal)
+        app.dependency_overrides[get_current_user_with_permissions] = create_user_context("admin@apollosai.dev", TestSessionLocal=TestSessionLocal)
 
         client = TestClient(app)
 
@@ -242,7 +242,7 @@ class TestToolsPagination:
                 description=f"Test tool {i}",
                 input_schema={"type": "object"},
                 enabled=True,
-                owner_email="admin@example.com",
+                owner_email="admin@apollosai.dev",
                 visibility="public",
             )
             db.add(tool)
@@ -251,11 +251,11 @@ class TestToolsPagination:
 
         # Set up user context
         mock_user = MagicMock()
-        mock_user.email = "admin@example.com"
+        mock_user.email = "admin@apollosai.dev"
 
-        app.dependency_overrides[require_auth] = lambda: "admin@example.com"
+        app.dependency_overrides[require_auth] = lambda: "admin@apollosai.dev"
         app.dependency_overrides[get_current_user] = lambda: mock_user
-        app.dependency_overrides[get_current_user_with_permissions] = create_user_context("admin@example.com", TestSessionLocal=TestSessionLocal)
+        app.dependency_overrides[get_current_user_with_permissions] = create_user_context("admin@apollosai.dev", TestSessionLocal=TestSessionLocal)
 
         client = TestClient(app)
 
@@ -287,11 +287,11 @@ class TestToolsPagination:
 
         # Set up user context (no tools created)
         mock_user = MagicMock()
-        mock_user.email = "admin@example.com"
+        mock_user.email = "admin@apollosai.dev"
 
-        app.dependency_overrides[require_auth] = lambda: "admin@example.com"
+        app.dependency_overrides[require_auth] = lambda: "admin@apollosai.dev"
         app.dependency_overrides[get_current_user] = lambda: mock_user
-        app.dependency_overrides[get_current_user_with_permissions] = create_user_context("admin@example.com", TestSessionLocal=TestSessionLocal)
+        app.dependency_overrides[get_current_user_with_permissions] = create_user_context("admin@apollosai.dev", TestSessionLocal=TestSessionLocal)
 
         client = TestClient(app)
 
@@ -327,7 +327,7 @@ class TestToolsPagination:
                 description=f"Test tool {i}",
                 input_schema={"type": "object"},
                 enabled=(i % 2 == 0),  # Even: enabled, Odd: disabled
-                owner_email="admin@example.com",
+                owner_email="admin@apollosai.dev",
                 visibility="public",
             )
             db.add(tool)
@@ -336,11 +336,11 @@ class TestToolsPagination:
 
         # Set up user context
         mock_user = MagicMock()
-        mock_user.email = "admin@example.com"
+        mock_user.email = "admin@apollosai.dev"
 
-        app.dependency_overrides[require_auth] = lambda: "admin@example.com"
+        app.dependency_overrides[require_auth] = lambda: "admin@apollosai.dev"
         app.dependency_overrides[get_current_user] = lambda: mock_user
-        app.dependency_overrides[get_current_user_with_permissions] = create_user_context("admin@example.com", TestSessionLocal=TestSessionLocal)
+        app.dependency_overrides[get_current_user_with_permissions] = create_user_context("admin@apollosai.dev", TestSessionLocal=TestSessionLocal)
 
         client = TestClient(app)
 
@@ -374,7 +374,7 @@ class TestToolsPagination:
                 description=f"Test tool {i}",
                 input_schema={"type": "object"},
                 enabled=True,
-                owner_email="admin@example.com",
+                owner_email="admin@apollosai.dev",
                 visibility="public",
             )
             db.add(tool)
@@ -383,11 +383,11 @@ class TestToolsPagination:
 
         # Set up user context
         mock_user = MagicMock()
-        mock_user.email = "admin@example.com"
+        mock_user.email = "admin@apollosai.dev"
 
-        app.dependency_overrides[require_auth] = lambda: "admin@example.com"
+        app.dependency_overrides[require_auth] = lambda: "admin@apollosai.dev"
         app.dependency_overrides[get_current_user] = lambda: mock_user
-        app.dependency_overrides[get_current_user_with_permissions] = create_user_context("admin@example.com", TestSessionLocal=TestSessionLocal)
+        app.dependency_overrides[get_current_user_with_permissions] = create_user_context("admin@apollosai.dev", TestSessionLocal=TestSessionLocal)
 
         client = TestClient(app)
 

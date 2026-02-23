@@ -6,22 +6,22 @@ Copy and paste these commands to test the outputSchema implementation:
 
 ### 1. Generate Token and List Tools
 ```bash
-TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token --username admin@example.com --exp 0 --secret changeme123 2>/dev/null | head -1) && curl -s -H "Authorization: Bearer $TOKEN" http://localhost:4444/tools | python3 -m json.tool | grep -A 30 "add_numbers"
+TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token --username admin@apollosai.dev --exp 0 --secret changeme123 2>/dev/null | head -1) && curl -s -H "Authorization: Bearer $TOKEN" http://localhost:4444/tools | python3 -m json.tool | grep -A 30 "add_numbers"
 ```
 
 ### 2. Check for outputSchema Field
 ```bash
-TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token --username admin@example.com --exp 0 --secret changeme123 2>/dev/null | head -1) && curl -s -H "Authorization: Bearer $TOKEN" http://localhost:4444/tools | python3 -m json.tool | grep -B 2 -A 20 "outputSchema"
+TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token --username admin@apollosai.dev --exp 0 --secret changeme123 2>/dev/null | head -1) && curl -s -H "Authorization: Bearer $TOKEN" http://localhost:4444/tools | python3 -m json.tool | grep -B 2 -A 20 "outputSchema"
 ```
 
 ### 3. Invoke add_numbers Tool
 ```bash
-TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token --username admin@example.com --exp 0 --secret changeme123 2>/dev/null | head -1) && curl -s -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" http://localhost:4444/tools/invoke -d '{"name":"add_numbers","arguments":{"a":10,"b":5}}' | python3 -m json.tool
+TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token --username admin@apollosai.dev --exp 0 --secret changeme123 2>/dev/null | head -1) && curl -s -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" http://localhost:4444/tools/invoke -d '{"name":"add_numbers","arguments":{"a":10,"b":5}}' | python3 -m json.tool
 ```
 
 ### 4. Export Tools and Check output_schema
 ```bash
-TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token --username admin@example.com --exp 0 --secret changeme123 2>/dev/null | head -1) && curl -s -H "Authorization: Bearer $TOKEN" http://localhost:4444/bulk/export | python3 -m json.tool | grep -B 2 -A 10 "output_schema"
+TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token --username admin@apollosai.dev --exp 0 --secret changeme123 2>/dev/null | head -1) && curl -s -H "Authorization: Bearer $TOKEN" http://localhost:4444/bulk/export | python3 -m json.tool | grep -B 2 -A 10 "output_schema"
 ```
 
 ### 5. Check Database for output_schema Column
@@ -35,7 +35,7 @@ For easier testing, save the token in your shell:
 
 ```bash
 # Generate and save token
-export TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token --username admin@example.com --exp 0 --secret changeme123 2>/dev/null | head -1)
+export TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token --username admin@apollosai.dev --exp 0 --secret changeme123 2>/dev/null | head -1)
 
 # Now you can use $TOKEN in commands:
 curl -s -H "Authorization: Bearer $TOKEN" http://localhost:4444/tools | python3 -m json.tool
@@ -51,7 +51,7 @@ curl -s -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/
 
 ### ✅ Step 1: Verify outputSchema in API Response
 ```bash
-export TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token --username admin@example.com --exp 0 --secret changeme123 2>/dev/null | head -1)
+export TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token --username admin@apollosai.dev --exp 0 --secret changeme123 2>/dev/null | head -1)
 curl -s -H "Authorization: Bearer $TOKEN" http://localhost:4444/tools | python3 -c "
 import json, sys
 tools = json.load(sys.stdin)
@@ -68,7 +68,7 @@ for tool in tools:
 
 ### ✅ Step 2: Verify Tool Invocation
 ```bash
-export TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token --username admin@example.com --exp 0 --secret changeme123 2>/dev/null | head -1)
+export TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token --username admin@apollosai.dev --exp 0 --secret changeme123 2>/dev/null | head -1)
 curl -s -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
   http://localhost:4444/tools/invoke \
   -d '{"name":"add_numbers","arguments":{"a":15,"b":7}}' | python3 -c "
@@ -87,7 +87,7 @@ if 'content' in result:
 
 ### ✅ Step 3: Verify Export Includes output_schema
 ```bash
-export TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token --username admin@example.com --exp 0 --secret changeme123 2>/dev/null | head -1)
+export TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token --username admin@apollosai.dev --exp 0 --secret changeme123 2>/dev/null | head -1)
 curl -s -H "Authorization: Bearer $TOKEN" http://localhost:4444/bulk/export | python3 -c "
 import json, sys
 data = json.load(sys.stdin)
@@ -109,7 +109,7 @@ sqlite3 mcp.db "SELECT name, CASE WHEN output_schema IS NOT NULL THEN 'HAS SCHEM
 
 ### ✅ Step 5: Compare Tool With and Without Schema
 ```bash
-export TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token --username admin@example.com --exp 0 --secret changeme123 2>/dev/null | head -1)
+export TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token --username admin@apollosai.dev --exp 0 --secret changeme123 2>/dev/null | head -1)
 curl -s -H "Authorization: Bearer $TOKEN" http://localhost:4444/tools | python3 -c "
 import json, sys
 tools = json.load(sys.stdin)
@@ -133,14 +133,14 @@ echo                 outputSchema: ✗ Null (expected)
 ### No tools showing up
 ```bash
 # Check gateway registration
-export TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token --username admin@example.com --exp 0 --secret changeme123 2>/dev/null | head -1)
+export TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token --username admin@apollosai.dev --exp 0 --secret changeme123 2>/dev/null | head -1)
 curl -s -H "Authorization: Bearer $TOKEN" http://localhost:4444/gateways | python3 -m json.tool
 ```
 
 ### Authorization errors
 ```bash
 # Regenerate token
-export TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token --username admin@example.com --exp 0 --secret changeme123 2>/dev/null | head -1)
+export TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token --username admin@apollosai.dev --exp 0 --secret changeme123 2>/dev/null | head -1)
 echo "New token: $TOKEN"
 ```
 
@@ -164,5 +164,5 @@ The key curl commands you need:
 
 Always set `$TOKEN` first:
 ```bash
-export TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token --username admin@example.com --exp 0 --secret changeme123 2>/dev/null | head -1)
+export TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token --username admin@apollosai.dev --exp 0 --secret changeme123 2>/dev/null | head -1)
 ```

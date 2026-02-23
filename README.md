@@ -22,7 +22,6 @@
 [![PyPI](https://img.shields.io/pypi/v/mcp-contextforge-gateway)](https://pypi.org/project/mcp-contextforge-gateway/)&nbsp;
 [![Docker Image](https://img.shields.io/badge/docker-ghcr.io%2Fibm%2Fmcp--context--forge-blue)](https://github.com/ibm/mcp-context-forge/pkgs/container/mcp-context-forge)&nbsp;
 
-
 ContextForge MCP Gateway is a feature-rich gateway, proxy and MCP Registry that federates MCP and REST services - unifying discovery, auth, rate-limiting, observability, virtual servers, multi-transport protocols, and an optional Admin UI into one clean endpoint for your AI clients. It runs as a fully compliant MCP server, deployable via PyPI or Docker, and scales to multi-cluster environments on Kubernetes with Redis-backed federation and caching.
 
 ![MCP Gateway](https://ibm.github.io/mcp-context-forge/images/mcpgateway.gif)
@@ -66,15 +65,15 @@ ContextForge MCP Gateway is a feature-rich gateway, proxy and MCP Registry that 
 
 It currently supports:
 
-* Federation across multiple MCP and REST services
-* **A2A (Agent-to-Agent) integration** for external AI agents (OpenAI, Anthropic, custom)
-* **gRPC-to-MCP translation** via automatic reflection-based service discovery
-* Virtualization of legacy APIs as MCP-compliant tools and servers
-* Transport over HTTP, JSON-RPC, WebSocket, SSE (with configurable keepalive), stdio and streamable-HTTP
-* An Admin UI for real-time management, configuration, and log monitoring (with airgapped deployment support)
-* Built-in auth, retries, and rate-limiting with user-scoped OAuth tokens and unconditional X-Upstream-Authorization header support
-* **OpenTelemetry observability** with Phoenix, Jaeger, Zipkin, and other OTLP backends
-* Scalable deployments via Docker or PyPI, Redis-backed caching, and multi-cluster federation
+- Federation across multiple MCP and REST services
+- **A2A (Agent-to-Agent) integration** for external AI agents (OpenAI, Anthropic, custom)
+- **gRPC-to-MCP translation** via automatic reflection-based service discovery
+- Virtualization of legacy APIs as MCP-compliant tools and servers
+- Transport over HTTP, JSON-RPC, WebSocket, SSE (with configurable keepalive), stdio and streamable-HTTP
+- An Admin UI for real-time management, configuration, and log monitoring (with airgapped deployment support)
+- Built-in auth, retries, and rate-limiting with user-scoped OAuth tokens and unconditional X-Upstream-Authorization header support
+- **OpenTelemetry observability** with Phoenix, Jaeger, Zipkin, and other OTLP backends
+- Scalable deployments via Docker or PyPI, Redis-backed caching, and multi-cluster federation
 
 ![MCP Gateway Architecture](https://ibm.github.io/mcp-context-forge/images/mcpgateway.svg)
 
@@ -85,62 +84,62 @@ For a list of upcoming features, check out the [ContextForge Roadmap](https://ib
 <details>
 <summary><strong>🔌 Gateway Layer with Protocol Flexibility</strong></summary>
 
-* Sits in front of any MCP server or REST API
-* Lets you choose your MCP protocol version (e.g., `2025-06-18`)
-* Exposes a single, unified interface for diverse backends
+- Sits in front of any MCP server or REST API
+- Lets you choose your MCP protocol version (e.g., `2025-06-18`)
+- Exposes a single, unified interface for diverse backends
 
 </details>
 
 <details>
 <summary><strong>🧩 Virtualization of REST/gRPC Services</strong></summary>
 
-* Wraps non-MCP services as virtual MCP servers
-* Registers tools, prompts, and resources with minimal configuration
-* **gRPC-to-MCP translation** via server reflection protocol
-* Automatic service discovery and method introspection
+- Wraps non-MCP services as virtual MCP servers
+- Registers tools, prompts, and resources with minimal configuration
+- **gRPC-to-MCP translation** via server reflection protocol
+- Automatic service discovery and method introspection
 
 </details>
 
 <details>
 <summary><strong>🔁 REST-to-MCP Tool Adapter</strong></summary>
 
-* Adapts REST APIs into tools with:
+- Adapts REST APIs into tools with:
 
-  * Automatic JSON Schema extraction
-  * Support for headers, tokens, and custom auth
-  * Retry, timeout, and rate-limit policies
+    - Automatic JSON Schema extraction
+    - Support for headers, tokens, and custom auth
+    - Retry, timeout, and rate-limit policies
 
 </details>
 
 <details>
 <summary><strong>🧠 Unified Registries</strong></summary>
 
-* **Prompts**: Jinja2 templates, multimodal support, rollback/versioning
-* **Resources**: URI-based access, MIME detection, caching, SSE updates
-* **Tools**: Native or adapted, with input validation and concurrency controls
+- **Prompts**: Jinja2 templates, multimodal support, rollback/versioning
+- **Resources**: URI-based access, MIME detection, caching, SSE updates
+- **Tools**: Native or adapted, with input validation and concurrency controls
 
 </details>
 
 <details>
 <summary><strong>📈 Admin UI, Observability & Dev Experience</strong></summary>
 
-* Admin UI built with HTMX + Alpine.js
-* Real-time log viewer with filtering, search, and export capabilities
-* Auth: Basic, JWT, or custom schemes
-* Structured logs, health endpoints, metrics
-* 400+ tests, Makefile targets, live reload, pre-commit hooks
+- Admin UI built with HTMX + Alpine.js
+- Real-time log viewer with filtering, search, and export capabilities
+- Auth: Basic, JWT, or custom schemes
+- Structured logs, health endpoints, metrics
+- 400+ tests, Makefile targets, live reload, pre-commit hooks
 
 </details>
 
 <details>
 <summary><strong>🔍 OpenTelemetry Observability</strong></summary>
 
-* **Vendor-agnostic tracing** with OpenTelemetry (OTLP) protocol support
-* **Multiple backend support**: Phoenix (LLM-focused), Jaeger, Zipkin, Tempo, DataDog, New Relic
-* **Distributed tracing** across federated gateways and services
-* **Automatic instrumentation** of tools, prompts, resources, and gateway operations
-* **LLM-specific metrics**: Token usage, costs, model performance
-* **Zero-overhead when disabled** with graceful degradation
+- **Vendor-agnostic tracing** with OpenTelemetry (OTLP) protocol support
+- **Multiple backend support**: Phoenix (LLM-focused), Jaeger, Zipkin, Tempo, DataDog, New Relic
+- **Distributed tracing** across federated gateways and services
+- **Automatic instrumentation** of tools, prompts, resources, and gateway operations
+- **LLM-specific metrics**: Token usage, costs, model performance
+- **Zero-overhead when disabled** with graceful degradation
 
 See **[Observability Documentation](https://ibm.github.io/mcp-context-forge/manage/observability/)** for setup guides with Phoenix, Jaeger, and other backends.
 
@@ -162,7 +161,7 @@ ContextForge is published on [PyPI](https://pypi.org/project/mcp-contextforge-ga
 BASIC_AUTH_PASSWORD=pass \
 MCPGATEWAY_UI_ENABLED=true \
 MCPGATEWAY_ADMIN_API_ENABLED=true \
-PLATFORM_ADMIN_EMAIL=admin@example.com \
+PLATFORM_ADMIN_EMAIL=admin@apollosai.dev \
 PLATFORM_ADMIN_PASSWORD=changeme \
 PLATFORM_ADMIN_FULL_NAME="Platform Administrator" \
 uvx --from mcp-contextforge-gateway mcpgateway --host 0.0.0.0 --port 4444
@@ -176,8 +175,8 @@ uvx --from mcp-contextforge-gateway mcpgateway --host 0.0.0.0 --port 4444
 <details>
 <summary><strong>📋 Prerequisites</strong></summary>
 
-* **Python ≥ 3.10** (3.11 recommended)
-* **curl + jq** - only for the last smoke-test step
+- **Python ≥ 3.10** (3.11 recommended)
+- **curl + jq** - only for the last smoke-test step
 
 </details>
 
@@ -199,7 +198,7 @@ cp .env.example .env
 # Or set environment variables directly:
 export MCPGATEWAY_UI_ENABLED=true
 export MCPGATEWAY_ADMIN_API_ENABLED=true
-export PLATFORM_ADMIN_EMAIL=admin@example.com
+export PLATFORM_ADMIN_EMAIL=admin@apollosai.dev
 export PLATFORM_ADMIN_PASSWORD=changeme
 export PLATFORM_ADMIN_FULL_NAME="Platform Administrator"
 
@@ -208,7 +207,7 @@ BASIC_AUTH_PASSWORD=pass JWT_SECRET_KEY=my-test-key \
 
 # 3️⃣  Generate a bearer token & smoke-test the API
 export MCPGATEWAY_BEARER_TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token \
-    --username admin@example.com --exp 10080 --secret my-test-key)
+    --username admin@apollosai.dev --exp 10080 --secret my-test-key)
 
 curl -s -H "Authorization: Bearer $MCPGATEWAY_BEARER_TOKEN" \
      http://127.0.0.1:4444/version | jq
@@ -235,7 +234,7 @@ $Env:MCPGATEWAY_UI_ENABLED        = "true"
 $Env:MCPGATEWAY_ADMIN_API_ENABLED = "true"
 # Note: Basic auth for API is disabled by default (API_ALLOW_BASIC_AUTH=false)
 $Env:JWT_SECRET_KEY               = "my-test-key"
-$Env:PLATFORM_ADMIN_EMAIL         = "admin@example.com"
+$Env:PLATFORM_ADMIN_EMAIL         = "admin@apollosai.dev"
 $Env:PLATFORM_ADMIN_PASSWORD      = "changeme"
 $Env:PLATFORM_ADMIN_FULL_NAME     = "Platform Administrator"
 
@@ -247,7 +246,7 @@ mcpgateway.exe --host 0.0.0.0 --port 4444
 
 # 4️⃣  Bearer token and smoke-test
 $Env:MCPGATEWAY_BEARER_TOKEN = python3 -m mcpgateway.utils.create_jwt_token `
-    --username admin@example.com --exp 10080 --secret my-test-key
+    --username admin@apollosai.dev --exp 10080 --secret my-test-key
 
 curl -s -H "Authorization: Bearer $Env:MCPGATEWAY_BEARER_TOKEN" `
      http://127.0.0.1:4444/version | jq
@@ -363,7 +362,6 @@ command as `python`
 Arguments as `-m mcpgateway.wrapper --url "http://localhost:4444/servers/UUID_OF_SERVER_1/mcp" --auth "Bearer <your token>"`
 ```
 
-
 When using a MCP Client such as Claude with stdio:
 
 ```json
@@ -416,7 +414,7 @@ docker compose logs -f gateway
 # Access Admin UI: http://localhost:4444/admin (login with PLATFORM_ADMIN_EMAIL/PASSWORD)
 # Generate API token
 docker compose exec gateway python3 -m mcpgateway.utils.create_jwt_token \
-  --username admin@example.com --exp 10080 --secret my-test-key
+  --username admin@apollosai.dev --exp 10080 --secret my-test-key
 ```
 
 **What you get:**
@@ -506,7 +504,7 @@ docker run -d --name mcpgateway \
   -e HOST=0.0.0.0 \
   -e JWT_SECRET_KEY=my-test-key \
   -e AUTH_REQUIRED=true \
-  -e PLATFORM_ADMIN_EMAIL=admin@example.com \
+  -e PLATFORM_ADMIN_EMAIL=admin@apollosai.dev \
   -e PLATFORM_ADMIN_PASSWORD=changeme \
   -e PLATFORM_ADMIN_FULL_NAME="Platform Administrator" \
   -e DATABASE_URL=sqlite:///./mcp.db \
@@ -516,7 +514,7 @@ docker run -d --name mcpgateway \
 # Tail logs and generate API key
 docker logs -f mcpgateway
 docker run --rm -it ghcr.io/ibm/mcp-context-forge:1.0.0-RC-1 \
-  python3 -m mcpgateway.utils.create_jwt_token --username admin@example.com --exp 10080 --secret my-test-key
+  python3 -m mcpgateway.utils.create_jwt_token --username admin@apollosai.dev --exp 10080 --secret my-test-key
 ```
 
 Browse to **[http://localhost:4444/admin](http://localhost:4444/admin)** and login with `PLATFORM_ADMIN_EMAIL` / `PLATFORM_ADMIN_PASSWORD`.
@@ -532,7 +530,7 @@ docker run -d --name mcpgateway --restart unless-stopped \
   -e DATABASE_URL=sqlite:////data/mcp.db \
   -e MCPGATEWAY_UI_ENABLED=true -e MCPGATEWAY_ADMIN_API_ENABLED=true \
   -e HOST=0.0.0.0 -e JWT_SECRET_KEY=my-test-key \
-  -e PLATFORM_ADMIN_EMAIL=admin@example.com -e PLATFORM_ADMIN_PASSWORD=changeme \
+  -e PLATFORM_ADMIN_EMAIL=admin@apollosai.dev -e PLATFORM_ADMIN_PASSWORD=changeme \
   ghcr.io/ibm/mcp-context-forge:1.0.0-RC-1
 ```
 
@@ -591,14 +589,14 @@ podman run -d --name mcpgateway --network=host \
 <details>
 <summary><strong>✏️ Docker/Podman tips</strong></summary>
 
-* **.env files** - Put all the `-e FOO=` lines into a file and replace them with `--env-file .env`. See the provided [.env.example](https://github.com/IBM/mcp-context-forge/blob/main/.env.example) for reference.
-* **Pinned tags** - Use an explicit version (e.g. `1.0.0-RC-1`) instead of `latest` for reproducible builds.
-* **JWT tokens** - Generate one in the running container:
+- **.env files** - Put all the `-e FOO=` lines into a file and replace them with `--env-file .env`. See the provided [.env.example](https://github.com/IBM/mcp-context-forge/blob/main/.env.example) for reference.
+- **Pinned tags** - Use an explicit version (e.g. `1.0.0-RC-1`) instead of `latest` for reproducible builds.
+- **JWT tokens** - Generate one in the running container:
 
   ```bash
-  docker exec mcpgateway python3 -m mcpgateway.utils.create_jwt_token --username admin@example.com --exp 10080 --secret my-test-key
+  docker exec mcpgateway python3 -m mcpgateway.utils.create_jwt_token --username admin@apollosai.dev --exp 10080 --secret my-test-key
   ```
-* **Upgrades** - Stop, remove, and rerun with the same `-v $(pwd)/data:/data` mount; your DB and config stay intact.
+- **Upgrades** - Stop, remove, and rerun with the same `-v $(pwd)/data:/data` mount; your DB and config stay intact.
 
 </details>
 
@@ -627,7 +625,7 @@ The `mcpgateway.wrapper` lets you connect to the gateway over **stdio** while ke
 
 ```bash
 # Set environment variables
-export MCPGATEWAY_BEARER_TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token --username admin@example.com --exp 10080 --secret my-test-key)
+export MCPGATEWAY_BEARER_TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token --username admin@apollosai.dev --exp 10080 --secret my-test-key)
 export MCP_AUTH="Bearer ${MCPGATEWAY_BEARER_TOKEN}"
 export MCP_SERVER_URL='http://localhost:4444/servers/UUID_OF_SERVER_1/mcp'
 export MCP_TOOL_CALL_TIMEOUT=120
@@ -645,7 +643,6 @@ docker run --rm -i \
 </details>
 
 ---
-
 
 ## Quick Start: VS Code Dev Container
 
@@ -668,11 +665,7 @@ make serve                 # gunicorn on :4444
 ```bash
 # UV (faster)
 uv venv && source .venv/bin/activate
-uv pip install -e '.[dev]'
-
-# pip
-python3 -m venv .venv && source .venv/bin/activate
-pip install -e ".[dev]"
+uv sync --group dev --extra postgres --extra redis --extra llmchat --extra observability
 ```
 
 </details>
@@ -733,7 +726,7 @@ These variables have insecure defaults and **must be changed** before production
 | `AUTH_ENCRYPTION_SECRET` | Passphrase for encrypting stored credentials | `my-test-salt` | Generate with `openssl rand -hex 32` |
 | `BASIC_AUTH_USER` | Username for HTTP Basic auth | `admin` | Change for production |
 | `BASIC_AUTH_PASSWORD` | Password for HTTP Basic auth | `changeme` | Set a strong password |
-| `PLATFORM_ADMIN_EMAIL` | Email for bootstrap admin user | `admin@example.com` | Use real admin email |
+| `PLATFORM_ADMIN_EMAIL` | Email for bootstrap admin user | `admin@apollosai.dev` | Use real admin email |
 | `PLATFORM_ADMIN_PASSWORD` | Password for bootstrap admin user | `changeme` | Set a strong password |
 | `PLATFORM_ADMIN_FULL_NAME` | Display name for bootstrap admin | `Admin User` | Set admin name |
 
@@ -851,7 +844,7 @@ Interactive API documentation is available when the server is running:
 ```bash
 # Generate a JWT token
 export TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token \
-  --username admin@example.com --exp 10080 --secret my-test-key)
+  --username admin@apollosai.dev --exp 10080 --secret my-test-key)
 
 # Test API access
 curl -H "Authorization: Bearer $TOKEN" http://localhost:4444/health
@@ -947,7 +940,6 @@ A complete changelog can be found here: [CHANGELOG.md](./CHANGELOG.md)
 ## License
 
 Licensed under the **Apache License 2.0** - see [LICENSE](./LICENSE)
-
 
 ## Core Authors and Maintainers
 

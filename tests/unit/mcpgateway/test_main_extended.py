@@ -612,7 +612,7 @@ class TestAdminAuthMiddleware:
 
         monkeypatch.setattr(settings, "auth_required", True)
         monkeypatch.setattr(settings, "require_user_in_db", False)
-        monkeypatch.setattr(settings, "platform_admin_email", "admin@example.com")
+        monkeypatch.setattr(settings, "platform_admin_email", "admin@apollosai.dev")
 
         mock_db = MagicMock()
 
@@ -623,7 +623,7 @@ class TestAdminAuthMiddleware:
         mock_auth_service.get_user_by_email = AsyncMock(return_value=None)
 
         with (
-            patch("mcpgateway.main.verify_jwt_token", new=AsyncMock(return_value={"sub": "admin@example.com"})),
+            patch("mcpgateway.main.verify_jwt_token", new=AsyncMock(return_value={"sub": "admin@apollosai.dev"})),
             patch("mcpgateway.main.get_db", _db_gen),
             patch("mcpgateway.main.EmailAuthService", return_value=mock_auth_service),
         ):
@@ -812,7 +812,7 @@ class TestAdminAuthMiddleware:
         with (
             patch("mcpgateway.main.get_db", _db_gen),
             patch("mcpgateway.main.verify_jwt_token", new=AsyncMock(side_effect=Exception("bad"))),
-            patch("mcpgateway.main._lookup_api_token_sync", return_value={"user_email": "admin@example.com"}),
+            patch("mcpgateway.main._lookup_api_token_sync", return_value={"user_email": "admin@apollosai.dev"}),
             patch("mcpgateway.main.EmailAuthService", return_value=mock_auth_service),
             patch("mcpgateway.main.PermissionService", return_value=mock_permission_service),
         ):

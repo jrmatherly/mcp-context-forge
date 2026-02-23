@@ -30,7 +30,7 @@ Pick an install method below, generate an auth token, then walk through a real t
     JWT_SECRET_KEY=my-test-key \
     MCPGATEWAY_UI_ENABLED=true \
     MCPGATEWAY_ADMIN_API_ENABLED=true \
-    PLATFORM_ADMIN_EMAIL=admin@example.com \
+    PLATFORM_ADMIN_EMAIL=admin@apollosai.dev \
     PLATFORM_ADMIN_PASSWORD=changeme \
     PLATFORM_ADMIN_FULL_NAME="Platform Administrator" \
     uvx --from mcp-contextforge-gateway mcpgateway --host 0.0.0.0 --port 4444
@@ -77,7 +77,7 @@ Pick an install method below, generate an auth token, then walk through a real t
         export JWT_SECRET_KEY=my-test-key
         export MCPGATEWAY_UI_ENABLED=true
         export MCPGATEWAY_ADMIN_API_ENABLED=true
-        export PLATFORM_ADMIN_EMAIL=admin@example.com
+        export PLATFORM_ADMIN_EMAIL=admin@apollosai.dev
         export PLATFORM_ADMIN_PASSWORD=changeme
         export PLATFORM_ADMIN_FULL_NAME="Platform Administrator"
         mcpgateway --host 0.0.0.0 --port 4444
@@ -92,7 +92,7 @@ Pick an install method below, generate an auth token, then walk through a real t
 
         ```bash
         export MCPGATEWAY_BEARER_TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token \
-            --username admin@example.com --exp 10080 --secret my-test-key)
+            --username admin@apollosai.dev --exp 10080 --secret my-test-key)
         ```
 
         !!! tip "Non-expiring tokens require `REQUIRE_TOKEN_EXPIRATION=false`"
@@ -119,7 +119,7 @@ Pick an install method below, generate an auth token, then walk through a real t
           -p 4444:4444 \
           -e HOST=0.0.0.0 \
           -e JWT_SECRET_KEY=my-test-key \
-          -e PLATFORM_ADMIN_EMAIL=admin@example.com \
+          -e PLATFORM_ADMIN_EMAIL=admin@apollosai.dev \
           -e PLATFORM_ADMIN_PASSWORD=changeme \
           -e PLATFORM_ADMIN_FULL_NAME="Platform Administrator" \
           ghcr.io/ibm/mcp-context-forge:1.0.0-RC-1
@@ -135,7 +135,7 @@ Pick an install method below, generate an auth token, then walk through a real t
               -v $(pwd)/data:/data \
               -e DATABASE_URL=sqlite:////data/mcp.db \
               -e JWT_SECRET_KEY=my-test-key \
-              -e PLATFORM_ADMIN_EMAIL=admin@example.com \
+              -e PLATFORM_ADMIN_EMAIL=admin@apollosai.dev \
               -e PLATFORM_ADMIN_PASSWORD=changeme \
               -e PLATFORM_ADMIN_FULL_NAME="Platform Administrator" \
               ghcr.io/ibm/mcp-context-forge:1.0.0-RC-1
@@ -158,7 +158,7 @@ Pick an install method below, generate an auth token, then walk through a real t
               --link mysql-db:mysql \
               -e DATABASE_URL=mysql+pymysql://mysql:changeme@mysql:3306/mcp \
               -e JWT_SECRET_KEY=my-test-key \
-              -e PLATFORM_ADMIN_EMAIL=admin@example.com \
+              -e PLATFORM_ADMIN_EMAIL=admin@apollosai.dev \
               -e PLATFORM_ADMIN_PASSWORD=changeme \
               -e PLATFORM_ADMIN_FULL_NAME="Platform Administrator" \
               ghcr.io/ibm/mcp-context-forge:1.0.0-RC-1
@@ -180,7 +180,7 @@ Pick an install method below, generate an auth token, then walk through a real t
               --link postgres-db:postgres \
               -e DATABASE_URL=postgresql+psycopg://postgres:mysecretpassword@postgres:5432/mcp \
               -e JWT_SECRET_KEY=my-test-key \
-              -e PLATFORM_ADMIN_EMAIL=admin@example.com \
+              -e PLATFORM_ADMIN_EMAIL=admin@apollosai.dev \
               -e PLATFORM_ADMIN_PASSWORD=changeme \
               -e PLATFORM_ADMIN_FULL_NAME="Platform Administrator" \
               ghcr.io/ibm/mcp-context-forge:1.0.0-RC-1
@@ -190,7 +190,7 @@ Pick an install method below, generate an auth token, then walk through a real t
 
         ```bash
         docker exec mcpgateway python3 -m mcpgateway.utils.create_jwt_token \
-          --username admin@example.com --exp 10080 --secret my-test-key
+          --username admin@apollosai.dev --exp 10080 --secret my-test-key
         ```
 
     4. **Smoke-test**

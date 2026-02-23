@@ -482,11 +482,11 @@ def _generate_jwt_token():
 
     now = int(time_module.time())
     payload = {
-        "username": "admin@example.com",
+        "username": "admin@apollosai.dev",
         "iat": now,
         "iss": "mcpgateway",
         "aud": "mcpgateway-api",
-        "sub": "admin@example.com",
+        "sub": "admin@apollosai.dev",
         "exp": now + 86400  # 24 hours
     }
 

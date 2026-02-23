@@ -110,7 +110,7 @@ SET password_hash = 'PASTE_HASH_HERE',
     failed_login_attempts = 0,
     locked_until = NULL,
     password_changed_at = CURRENT_TIMESTAMP
-WHERE email = 'admin@example.com';
+WHERE email = 'admin@apollosai.dev';
 ```
 
 ## Emergency Full Lockout Procedure
@@ -124,9 +124,9 @@ FROM email_users
 WHERE is_admin = true;
 ```
 
-3. Reset password hash + unlock fields (query above).
-4. Validate login via `/admin/login`.
-5. Document incident and rotate temporary credentials.
+1. Reset password hash + unlock fields (query above).
+2. Validate login via `/admin/login`.
+3. Document incident and rotate temporary credentials.
 
 ## Configuration
 

@@ -1595,7 +1595,7 @@ class AdminAuthMiddleware(BaseHTTPMiddleware):
 
                 if not user:
                     # Platform admin bootstrap (when REQUIRE_USER_IN_DB=false)
-                    platform_admin_email = getattr(settings, "platform_admin_email", "admin@example.com")
+                    platform_admin_email = getattr(settings, "platform_admin_email", "admin@apollosai.dev")
                     if not settings.require_user_in_db and username == platform_admin_email:
                         logger.info(f"Platform admin bootstrap authentication for {username}")
                         # Allow platform admin through - they have implicit admin privileges

@@ -808,7 +808,7 @@ class TestEmailAuthServiceUserManagement:
         with patch("mcpgateway.services.email_auth_service.settings") as mock_settings:
             mock_settings.protect_all_admins = True
 
-            result = await service.authenticate_user(email="admin@example.com", password="correct_password")
+            result = await service.authenticate_user(email="admin@apollosai.dev", password="correct_password")
 
             assert result == mock_user
             mock_user.reset_failed_attempts.assert_called()
@@ -825,7 +825,7 @@ class TestEmailAuthServiceUserManagement:
         with patch("mcpgateway.services.email_auth_service.settings") as mock_settings:
             mock_settings.protect_all_admins = True
 
-            result = await service.authenticate_user(email="admin@example.com", password="wrong_password")
+            result = await service.authenticate_user(email="admin@apollosai.dev", password="wrong_password")
 
             assert result is None
             mock_user.increment_failed_attempts.assert_not_called()
@@ -841,7 +841,7 @@ class TestEmailAuthServiceUserManagement:
         with patch("mcpgateway.services.email_auth_service.settings") as mock_settings:
             mock_settings.protect_all_admins = False
 
-            result = await service.authenticate_user(email="admin@example.com", password="correct_password")
+            result = await service.authenticate_user(email="admin@apollosai.dev", password="correct_password")
 
             assert result is None
 
@@ -1200,7 +1200,7 @@ class TestEmailAuthServiceUserManagement:
         user.locked_until = datetime.now(timezone.utc) + timedelta(minutes=5)
 
         with patch.object(service, "get_user_by_email", new=AsyncMock(return_value=user)):
-            result = await service.unlock_user_account("user@example.com", unlocked_by="admin@example.com")
+            result = await service.unlock_user_account("user@example.com", unlocked_by="admin@apollosai.dev")
 
         assert result is user
         assert user.failed_login_attempts == 0
@@ -1466,7 +1466,7 @@ class TestEmailAuthServiceUserManagement:
             mock_settings.password_require_numbers = False
             mock_settings.password_require_special = False
 
-            result = await service.create_platform_admin(email="admin@example.com", password="AdminPass123!", full_name="Platform Admin")
+            result = await service.create_platform_admin(email="admin@apollosai.dev", password="AdminPass123!", full_name="Platform Admin")
 
             mock_db.add.assert_called()
             mock_db.commit.assert_called()
@@ -2144,7 +2144,7 @@ class TestEmailAuthServiceUserUpdates:
         monkeypatch.setattr(settings, "protect_all_admins", True)
 
         admin_user = MagicMock(spec=EmailUser)
-        admin_user.email = "admin@example.com"
+        admin_user.email = "admin@apollosai.dev"
         admin_user.is_admin = True
         admin_user.is_active = True
 
@@ -2153,7 +2153,7 @@ class TestEmailAuthServiceUserUpdates:
         mock_db.execute.return_value = mock_result
 
         with pytest.raises(ValueError, match="Admin protection is enabled"):
-            await service.update_user(email="admin@example.com", is_admin=False)
+            await service.update_user(email="admin@apollosai.dev", is_admin=False)
 
     @pytest.mark.asyncio
     async def test_update_user_protect_all_admins_blocks_deactivate(self, service, mock_db, monkeypatch):
@@ -2164,7 +2164,7 @@ class TestEmailAuthServiceUserUpdates:
         monkeypatch.setattr(settings, "protect_all_admins", True)
 
         admin_user = MagicMock(spec=EmailUser)
-        admin_user.email = "admin@example.com"
+        admin_user.email = "admin@apollosai.dev"
         admin_user.is_admin = True
         admin_user.is_active = True
 
@@ -2173,7 +2173,7 @@ class TestEmailAuthServiceUserUpdates:
         mock_db.execute.return_value = mock_result
 
         with pytest.raises(ValueError, match="Admin protection is enabled"):
-            await service.update_user(email="admin@example.com", is_active=False)
+            await service.update_user(email="admin@apollosai.dev", is_active=False)
 
     @pytest.mark.asyncio
     async def test_update_user_protect_all_admins_allows_other_updates(self, service, mock_db, monkeypatch):
@@ -2184,7 +2184,7 @@ class TestEmailAuthServiceUserUpdates:
         monkeypatch.setattr(settings, "protect_all_admins", True)
 
         admin_user = MagicMock(spec=EmailUser)
-        admin_user.email = "admin@example.com"
+        admin_user.email = "admin@apollosai.dev"
         admin_user.is_admin = True
         admin_user.is_active = True
         admin_user.password_hash = "old_hash"
@@ -2193,7 +2193,7 @@ class TestEmailAuthServiceUserUpdates:
         mock_result.scalar_one_or_none.return_value = admin_user
         mock_db.execute.return_value = mock_result
 
-        result = await service.update_user(email="admin@example.com", full_name="New Name")
+        result = await service.update_user(email="admin@apollosai.dev", full_name="New Name")
         assert admin_user.full_name == "New Name"
         mock_db.commit.assert_called()
 
@@ -2206,7 +2206,7 @@ class TestEmailAuthServiceUserUpdates:
         monkeypatch.setattr(settings, "protect_all_admins", False)
 
         admin_user = MagicMock(spec=EmailUser)
-        admin_user.email = "admin@example.com"
+        admin_user.email = "admin@apollosai.dev"
         admin_user.is_admin = True
         admin_user.is_active = True
 
@@ -2216,7 +2216,7 @@ class TestEmailAuthServiceUserUpdates:
 
         with patch.object(service, "is_last_active_admin", new=AsyncMock(return_value=True)):
             with pytest.raises(ValueError, match="last remaining active admin"):
-                await service.update_user(email="admin@example.com", is_admin=False)
+                await service.update_user(email="admin@apollosai.dev", is_admin=False)
 
     @pytest.mark.asyncio
     async def test_activate_user_success(self, service, mock_db, mock_user):
@@ -2577,7 +2577,7 @@ class TestEmailAuthServiceAdminCounting:
 
         mock_db.execute.side_effect = [mock_user_result, mock_count_result]
 
-        result = await service.is_last_active_admin("admin@example.com")
+        result = await service.is_last_active_admin("admin@apollosai.dev")
 
         assert result is True
 
@@ -2596,7 +2596,7 @@ class TestEmailAuthServiceAdminCounting:
 
         mock_db.execute.side_effect = [mock_user_result, mock_count_result]
 
-        result = await service.is_last_active_admin("admin@example.com")
+        result = await service.is_last_active_admin("admin@apollosai.dev")
 
         assert result is False
 
@@ -2626,7 +2626,7 @@ class TestEmailAuthServiceAdminCounting:
         mock_result.scalar_one_or_none.return_value = mock_user
         mock_db.execute.return_value = mock_result
 
-        result = await service.is_last_active_admin("admin@example.com")
+        result = await service.is_last_active_admin("admin@apollosai.dev")
 
         assert result is False
 

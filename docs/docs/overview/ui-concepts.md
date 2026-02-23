@@ -24,7 +24,6 @@
     - Expose ports to the host machine.
     - Make sure internal container IPs are reachable from the gateway.
 
-
 ## 📦 Virtual Servers
 
 > A virtual server is a logical wrapper that combines selected tools, resources, and prompts under one context-specific endpoint.
@@ -34,8 +33,6 @@
     - A Virtual Server defines a project-specific toolset.
     - Each one is backed by a real SSE or STDIO interface.
     - You can activate/deactivate, view metrics, and invoke tools from this server.
-
-
 
 ---
 
@@ -50,8 +47,6 @@
     - Input Schema: JSON Schema defines valid input.
     - Supports Basic Auth, Bearer, or Custom headers.
 
-
-
 ---
 
 ## 📁 Global Resources
@@ -63,8 +58,6 @@
     - Text and Binary data supported.
     - Exposed via unique URI (`file:///`, `db://`, etc.).
     - Resources can be listed, templated, or subscribed to.
-
-
 
 ---
 
@@ -78,8 +71,6 @@
     - Arguments are defined with name, description, and required status.
     - Used to enforce consistency across tool use or system messaging.
 
-
-
 ---
 
 ## 🌐 Gateways (MCP Servers)
@@ -91,8 +82,6 @@
     - Syncs public tools from a remote MCP server.
     - Peer tools show up in your catalog with `gateway_id`.
     - Can be toggled active/inactive.
-
-
 
 ---
 
@@ -106,8 +95,6 @@
     - Prevent tools from referencing outside their sandbox.
     - Deleting a root invalidates its associated resources.
 
-
-
 ---
 
 ## 📈 Metrics
@@ -120,8 +107,6 @@
     - Latency, failure rate, and hot paths.
     - Top tools, resources, prompts, and servers.
 
-
-
 ---
 
 ## 🧪 Version & Diagnostics
@@ -133,8 +118,6 @@
     - MCP protocol version and server metadata.
     - Live system metrics (CPU, memory).
     - Environment checks and service readiness.
-
-
 
 ---
 

@@ -303,7 +303,7 @@ Generated when users log in via the Admin UI:
 
 ```json
 {
-  "sub": "admin@example.com",
+  "sub": "admin@apollosai.dev",
   "is_admin": true,
   "teams": null,
   "iss": "mcpgateway",
@@ -357,7 +357,7 @@ For CI/CD, monitoring, or public API access:
 ```bash
 # Unrestricted admin token (no teams key)
 python3 -m mcpgateway.utils.create_jwt_token \
-  --username admin@example.com \
+  --username admin@apollosai.dev \
   --exp 60 \
   --secret $JWT_SECRET_KEY
 

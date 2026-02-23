@@ -39,7 +39,7 @@ def _make_jwt(email: str, is_admin: bool = False, teams=None) -> str:
 @pytest.fixture(scope="module")
 def admin_api(playwright: Playwright):
     """Admin-authenticated API context."""
-    token = _make_jwt("admin@example.com", is_admin=True)
+    token = _make_jwt("admin@apollosai.dev", is_admin=True)
     ctx = playwright.request.new_context(
         base_url=BASE_URL,
         extra_http_headers={"Authorization": f"Bearer {token}", "Accept": "application/json"},

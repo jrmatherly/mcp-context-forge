@@ -59,7 +59,7 @@ class TestTeamsRouter:
     def mock_admin_user(self):
         """Create mock admin user."""
         user = EmailUserResponse(
-            email="admin@example.com", full_name="Admin User", is_admin=True, is_active=True, auth_provider="basic", created_at=datetime.now(timezone.utc), last_login=datetime.now(timezone.utc)
+            email="admin@apollosai.dev", full_name="Admin User", is_admin=True, is_active=True, auth_provider="basic", created_at=datetime.now(timezone.utc), last_login=datetime.now(timezone.utc)
         )
         return user
 
@@ -72,7 +72,7 @@ class TestTeamsRouter:
     def mock_admin_context(self, mock_db):
         """Create mock admin user context."""
         return {
-            "email": "admin@example.com",
+            "email": "admin@apollosai.dev",
             "full_name": "Admin User",
             "is_admin": True,
             "db": mock_db,

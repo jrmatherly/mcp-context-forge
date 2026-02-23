@@ -1,0 +1,800 @@
+# Apollos MCP Gateway Plugin Configuration
+# Created: 2026-02-22 by Bot42
+#
+# Plugins are ordered by priority (lower = runs first).
+# Modes: enforce (block on violation), permissive (warn only), disabled
+#
+# Pipeline flow:
+#   pre_invoke → [ArgumentNormalizer → RateLimiter → SQLSanitizer → PII → Secrets →
+#   EncodedExfil → URLReputation → CircuitBreaker → Watchdog → SchemaGuard] →
+#   EXECUTE →
+#   post_invoke → [CircuitBreaker → Watchdog → SchemaGuard → SafeHTML →
+#   CodeSafetyLinter → JSONRepair → OutputLengthGuard → Summarizer →
+#   TimezoneTranslator → RetryWithBackoff → ToolsTelemetryExporter]
+
+# Plugin directories to scan
+plugin_dirs:
+    - "plugins/native"
+    - "plugins/custom"
+    - "/etc/mcpgateway/plugins"
+
+# Global plugin settings
+plugin_settings:
+    parallel_execution_within_band: true
+    plugin_timeout: 120
+    fail_on_plugin_error: false
+    enable_plugin_api: true
+    plugin_health_check_interval: 120
+    include_user_info: false
+
+plugins:
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TIER 1: INPUT SANITIZATION & ACCESS CONTROL (priority 20-52)
+    # Runs first — clean and validate inputs before anything else
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    # Rate Limiter — per-user/tenant/tool throttling
+    - name: "RateLimiterPlugin"
+      kind: "plugins.rate_limiter.rate_limiter.RateLimiterPlugin"
+      description: "Per-user/tenant/tool rate limits"
+      version: "0.1.0"
+      author: "Mihai Criveti"
+      hooks: ["prompt_pre_fetch", "tool_pre_invoke"]
+      tags: ["limits", "throttle"]
+      mode: "enforce"
+      priority: 20
+      conditions: []
+      config:
+          by_user: "60/m"
+          by_tenant: "600/m"
+          by_tool:
+              search: "20/m"
+
+    # Argument Normalizer — clean unicode, whitespace, dates, numbers
+    - name: "ArgumentNormalizer"
+      kind: "plugins.argument_normalizer.argument_normalizer.ArgumentNormalizerPlugin"
+      description: "Normalizes Unicode, whitespace, casing, dates, and numbers in args"
+      version: "0.1.0"
+      author: "Mihai Criveti"
+      hooks: ["prompt_pre_fetch", "tool_pre_invoke"]
+      tags: ["normalize", "inputs", "whitespace", "unicode", "dates", "numbers"]
+      mode: "permissive"
+      priority: 40
+      conditions: []
+      config:
+          enable_unicode: true
+          unicode_form: "NFC"
+          remove_control_chars: true
+          enable_whitespace: true
+          trim: true
+          collapse_internal: true
+          normalize_newlines: true
+          collapse_blank_lines: false
+          enable_casing: false
+          case_strategy: "none"
+          enable_dates: true
+          day_first: false
+          year_first: false
+          enable_numbers: true
+          decimal_detection: "auto"
+          field_overrides: []
+
+    # SQL Sanitizer — block dangerous SQL patterns
+    - name: "SQLSanitizer"
+      kind: "plugins.sql_sanitizer.sql_sanitizer.SQLSanitizerPlugin"
+      description: "Detects risky SQL and optionally strips comments or blocks"
+      version: "0.1.0"
+      author: "ContextForge"
+      hooks: ["prompt_pre_fetch", "tool_pre_invoke"]
+      tags: ["security", "sql", "validation"]
+      mode: "enforce"
+      priority: 45
+      conditions: []
+      config:
+          fields: ["sql", "query", "statement"]
+          blocked_statements:
+              [
+                  "\\bDROP\\b",
+                  "\\bTRUNCATE\\b",
+                  "\\bALTER\\b",
+                  "\\bGRANT\\b",
+                  "\\bREVOKE\\b",
+              ]
+          block_delete_without_where: true
+          block_update_without_where: true
+          strip_comments: true
+          require_parameterization: false
+          block_on_violation: true
+
+    # PII Filter — detect and mask personally identifiable information
+    - name: "PIIFilterPlugin"
+      kind: "plugins.pii_filter.pii_filter.PIIFilterPlugin"
+      description: "Detects and masks Personally Identifiable Information"
+      version: "0.1.0"
+      author: "Mihai Criveti"
+      hooks:
+          [
+              "prompt_pre_fetch",
+              "prompt_post_fetch",
+              "tool_pre_invoke",
+              "tool_post_invoke",
+          ]
+      tags: ["security", "pii", "compliance", "filter", "gdpr", "hipaa"]
+      mode: "enforce"
+      priority: 50
+      conditions:
+          - prompts: []
+            server_ids: []
+            tenant_ids: []
+      config:
+          detect_ssn: true
+          detect_credit_card: true
+          detect_email: true
+          detect_phone: true
+          detect_ip_address: false
+          detect_aws_keys: true
+          detect_api_keys: true
+          default_mask_strategy: "partial"
+          redaction_text: "[PII_REDACTED]"
+          block_on_detection: false
+          log_detections: true
+          include_detection_details: true
+          whitelist_patterns:
+              - "test@example.com"
+              - "admin@apollosai.dev"
+
+    # Secrets Detection — catch leaked credentials
+    - name: "SecretsDetection"
+      kind: "plugins.secrets_detection.secrets_detection.SecretsDetectionPlugin"
+      description: "Detects keys/tokens/secrets in inputs/outputs; optional redaction/blocking"
+      version: "0.1.0"
+      author: "ContextForge"
+      hooks: ["prompt_pre_fetch", "tool_post_invoke", "resource_post_fetch"]
+      tags: ["security", "secrets", "dlp"]
+      mode: "enforce"
+      priority: 51
+      conditions: []
+      config:
+          enabled:
+              aws_access_key_id: true
+              aws_secret_access_key: true
+              google_api_key: true
+              slack_token: true
+              private_key_block: true
+              jwt_like: true
+              hex_secret_32: true
+              base64_24: true
+          redact: true
+          redaction_text: "***REDACTED***"
+          block_on_detection: true
+          min_findings_to_block: 1
+
+    # Encoded Exfiltration Detector — catch base64/hex data exfil attempts
+    - name: "EncodedExfilDetector"
+      kind: "plugins.encoded_exfil_detector.encoded_exfil_detector.EncodedExfilDetectorPlugin"
+      description: "Detects suspicious encoded exfiltration patterns in prompt args and tool outputs"
+      version: "0.1.0"
+      author: "Mihai Criveti"
+      hooks: ["prompt_pre_fetch", "tool_post_invoke"]
+      tags: ["security", "exfiltration", "dlp", "encoding"]
+      mode: "enforce"
+      priority: 52
+      conditions: []
+      config:
+          enabled:
+              base64: true
+              base64url: true
+              hex: true
+              percent_encoding: true
+              escaped_hex: true
+          min_encoded_length: 24
+          min_decoded_length: 12
+          min_entropy: 3.3
+          min_printable_ratio: 0.70
+          min_suspicion_score: 3
+          max_scan_string_length: 200000
+          max_findings_per_value: 50
+          redact: false
+          redaction_text: "***ENCODED_REDACTED***"
+          block_on_detection: true
+          min_findings_to_block: 1
+          include_detection_details: true
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TIER 2: RESOURCE PROTECTION (priority 58-65)
+    # Guards resource fetching — URLs, file types, HTML safety
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    # Header Injector — standard headers for outbound resource fetches
+    - name: "HeaderInjector"
+      kind: "plugins.header_injector.header_injector.HeaderInjectorPlugin"
+      description: "Injects configured HTTP headers into resource fetch metadata"
+      version: "0.1.0"
+      author: "ContextForge"
+      hooks: ["resource_pre_fetch"]
+      tags: ["headers", "network", "enhancement"]
+      mode: "permissive"
+      priority: 58
+      conditions: []
+      config:
+          headers:
+              User-Agent: "Apollos-MCP-Gateway/1.0"
+          uri_prefixes: []
+
+    # URL Reputation — block known-bad domains
+    - name: "URLReputationPlugin"
+      kind: "plugins.url_reputation.url_reputation.URLReputationPlugin"
+      description: "Blocks known-bad domains or patterns before fetch"
+      version: "0.1.0"
+      author: "Mihai Criveti"
+      hooks: ["resource_pre_fetch"]
+      tags: ["security", "url", "reputation"]
+      mode: "enforce"
+      priority: 60
+      conditions: []
+      config:
+          blocked_domains:
+              - malicious.example.com
+          blocked_patterns: []
+
+    # Robots & License Guard — respect robots.txt/noai directives
+    - name: "RobotsLicenseGuard"
+      kind: "plugins.robots_license_guard.robots_license_guard.RobotsLicenseGuardPlugin"
+      description: "Honor robots/noai and license meta from HTML content"
+      version: "0.1.0"
+      author: "ContextForge"
+      hooks: ["resource_pre_fetch", "resource_post_fetch"]
+      tags: ["compliance", "robots", "license"]
+      mode: "permissive"
+      priority: 63
+      conditions: []
+      config:
+          user_agent: "Apollos-MCP-Gateway/1.0"
+          respect_noai_meta: true
+          block_on_violation: false
+          license_required: false
+          allow_overrides: []
+
+    # File Type Allowlist — restrict fetchable file types
+    - name: "FileTypeAllowlistPlugin"
+      kind: "plugins.file_type_allowlist.file_type_allowlist.FileTypeAllowlistPlugin"
+      description: "Allow only configured file types for resource fetching"
+      version: "0.1.0"
+      author: "ContextForge"
+      hooks: ["resource_pre_fetch", "resource_post_fetch"]
+      tags: ["security", "content", "mime"]
+      mode: "enforce"
+      priority: 65
+      conditions: []
+      config:
+          allowed_mime_types:
+              - "text/plain"
+              - "text/markdown"
+              - "text/html"
+              - "text/csv"
+              - "application/json"
+              - "application/xml"
+              - "application/pdf"
+          allowed_extensions:
+              - ".md"
+              - ".txt"
+              - ".html"
+              - ".json"
+              - ".csv"
+              - ".xml"
+              - ".pdf"
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TIER 3: RELIABILITY & SLO ENFORCEMENT (priority 70-85)
+    # Circuit breakers, watchdogs, execution guards
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    # Circuit Breaker — trip on high error rates per tool
+    - name: "CircuitBreaker"
+      kind: "plugins.circuit_breaker.circuit_breaker.CircuitBreakerPlugin"
+      description: "Trip per-tool breaker on high error rates; cooldown blocks"
+      version: "0.1.0"
+      author: "ContextForge"
+      hooks: ["tool_pre_invoke", "tool_post_invoke"]
+      tags: ["reliability", "sre"]
+      mode: "enforce"
+      priority: 70
+      conditions: []
+      config:
+          error_rate_threshold: 0.7
+          window_seconds: 120
+          min_calls: 10
+          consecutive_failure_threshold: 8
+          cooldown_seconds: 30
+          tool_overrides: {}
+
+    # Resource Filter — validate resource URIs and content
+    - name: "ResourceFilterExample"
+      kind: "plugins.resource_filter.resource_filter.ResourceFilterPlugin"
+      description: "Validates resource URIs, size limits, and redacts sensitive content patterns"
+      version: "1.0.0"
+      author: "MCP Gateway Team"
+      hooks:
+          [
+              "resource_pre_fetch",
+              "resource_post_fetch",
+              "prompt_post_fetch",
+              "tool_post_invoke",
+          ]
+      tags: ["resource", "filter", "security"]
+      mode: "enforce"
+      priority: 75
+      conditions: []
+      config:
+          max_content_size: 10485760 # 10MB
+          allowed_protocols:
+              - test
+              - time
+              - timezone
+              - http
+              - https
+          blocked_domains:
+              - malicious.example.com
+          content_filters:
+              - pattern: "password\\s*[:=]\\s*\\S+"
+                replacement: "password: [REDACTED]"
+              - pattern: "api[_-]?key\\s*[:=]\\s*\\S+"
+                replacement: "api_key: [REDACTED]"
+              - pattern: "secret\\s*[:=]\\s*\\S+"
+                replacement: "secret: [REDACTED]"
+
+    # Watchdog — enforce max execution time per tool
+    - name: "Watchdog"
+      kind: "plugins.watchdog.watchdog.WatchdogPlugin"
+      description: "Enforce max runtime per tool; warn or block"
+      version: "0.1.0"
+      author: "ContextForge"
+      hooks: ["tool_pre_invoke", "tool_post_invoke"]
+      tags: ["latency", "slo"]
+      mode: "enforce"
+      priority: 85
+      conditions: []
+      config:
+          max_duration_ms: 30000
+          action: "warn"
+          tool_overrides: {}
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TIER 4: COMPLIANCE & CONTENT SAFETY (priority 90-96)
+    # Privacy notices, harmful content detection
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    # Privacy Notice Injector — compliance notice on prompts
+    - name: "PrivacyNoticeInjector"
+      kind: "plugins.privacy_notice_injector.privacy_notice_injector.PrivacyNoticeInjectorPlugin"
+      description: "Injects a configurable privacy notice into rendered prompts"
+      version: "0.1.0"
+      author: "ContextForge"
+      hooks: ["prompt_post_fetch"]
+      tags: ["compliance", "notice", "prompt"]
+      mode: "permissive"
+      priority: 90
+      conditions: []
+      config:
+          notice_text: "Notice: Do not include PII, secrets, or confidential information in prompts or outputs. Data may be logged for compliance."
+          placement: "append"
+          marker: "[PRIVACY]"
+
+    # Harmful Content Detector — keyword-based safety filter
+    - name: "HarmfulContentDetector"
+      kind: "plugins.harmful_content_detector.harmful_content_detector.HarmfulContentDetectorPlugin"
+      description: "Detect self-harm, violence, hate categories"
+      version: "0.1.0"
+      author: "ContextForge"
+      hooks: ["prompt_pre_fetch", "tool_post_invoke"]
+      tags: ["safety", "moderation"]
+      mode: "enforce"
+      priority: 96
+      conditions: []
+      config:
+          categories:
+              self_harm:
+                  [
+                      "\\bkill myself\\b",
+                      "\\bsuicide\\b",
+                      "\\bself-harm\\b",
+                      "\\bwant to die\\b",
+                  ]
+              violence:
+                  [
+                      "\\bkill (?:him|her|them|someone)\\b",
+                      "\\bshoot (?:him|her|them|someone)\\b",
+                      "\\bstab (?:him|her|them|someone)\\b",
+                  ]
+              hate:
+                  [
+                      "\\b(?:kill|eradicate) (?:[a-z]+) people\\b",
+                      "\\b(?:racial slur|hate speech)\\b",
+                  ]
+          block_on: ["self_harm", "violence", "hate"]
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TIER 5: VALIDATION & SCHEMA (priority 110-122)
+    # Validate structure of inputs and outputs
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    # Schema Guard — validate tool args/results against JSON schema
+    - name: "SchemaGuardPlugin"
+      kind: "plugins.schema_guard.schema_guard.SchemaGuardPlugin"
+      description: "Validate tool args/results against simple schema"
+      version: "0.1.0"
+      author: "Mihai Criveti"
+      hooks: ["tool_pre_invoke", "tool_post_invoke"]
+      tags: ["schema", "validation"]
+      mode: "permissive"
+      priority: 110
+      conditions: []
+      config:
+          arg_schemas: {}
+          result_schemas: {}
+          block_on_violation: false
+
+    # Safe HTML Sanitizer — strip XSS vectors from HTML content
+    - name: "SafeHTMLSanitizer"
+      kind: "plugins.safe_html_sanitizer.safe_html_sanitizer.SafeHTMLSanitizerPlugin"
+      description: "Sanitize HTML to remove XSS vectors; optional text conversion"
+      version: "0.1.0"
+      author: "ContextForge"
+      hooks: ["resource_post_fetch"]
+      tags: ["security", "html", "xss", "sanitize"]
+      mode: "enforce"
+      priority: 119
+      conditions: []
+      config:
+          allowed_tags:
+              [
+                  "a",
+                  "p",
+                  "div",
+                  "span",
+                  "strong",
+                  "em",
+                  "code",
+                  "pre",
+                  "ul",
+                  "ol",
+                  "li",
+                  "h1",
+                  "h2",
+                  "h3",
+                  "h4",
+                  "h5",
+                  "h6",
+                  "blockquote",
+                  "img",
+                  "br",
+                  "hr",
+                  "table",
+                  "thead",
+                  "tbody",
+                  "tr",
+                  "th",
+                  "td",
+              ]
+          allowed_attrs:
+              "*": ["id", "class", "title", "alt"]
+              a: ["href", "rel", "target"]
+              img: ["src", "width", "height", "alt", "title"]
+          remove_comments: true
+          drop_unknown_tags: true
+          strip_event_handlers: true
+          sanitize_css: true
+          allow_data_images: false
+          remove_bidi_controls: true
+          to_text: false
+
+    # HTML to Markdown — convert fetched HTML for cleaner consumption
+    - name: "HTMLToMarkdownPlugin"
+      kind: "plugins.html_to_markdown.html_to_markdown.HTMLToMarkdownPlugin"
+      description: "Converts HTML ResourceContent to Markdown"
+      version: "0.1.0"
+      author: "Mihai Criveti"
+      hooks: ["resource_post_fetch"]
+      tags: ["transform", "markdown", "html"]
+      mode: "permissive"
+      priority: 120
+      conditions: []
+      config: {}
+
+    # Citation Validator — check links are valid
+    - name: "CitationValidator"
+      kind: "plugins.citation_validator.citation_validator.CitationValidatorPlugin"
+      description: "Validates citations/links by checking status and keywords"
+      version: "0.1.0"
+      author: "ContextForge"
+      hooks: ["resource_post_fetch", "tool_post_invoke"]
+      tags: ["citation", "links", "validation"]
+      mode: "permissive"
+      priority: 122
+      conditions: []
+      config:
+          fetch_timeout: 6.0
+          require_200: true
+          content_keywords: []
+          max_links: 20
+          block_on_all_fail: false
+          block_on_any_fail: false
+          user_agent: "Apollos-MCP-Gateway/1.0 CitationValidator"
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TIER 6: OUTPUT PROCESSING & FORMATTING (priority 140-175)
+    # Clean, repair, truncate, and format outputs
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    # Markdown Cleaner — tidy markdown formatting
+    - name: "MarkdownCleanerPlugin"
+      kind: "plugins.markdown_cleaner.markdown_cleaner.MarkdownCleanerPlugin"
+      description: "Tidy Markdown formatting in prompts/resources"
+      version: "0.1.0"
+      author: "Mihai Criveti"
+      hooks: ["prompt_post_fetch", "resource_post_fetch"]
+      tags: ["markdown", "format"]
+      mode: "permissive"
+      priority: 140
+      conditions: []
+      config: {}
+
+    # JSON Repair — fix nearly-valid JSON from LLM outputs
+    - name: "JSONRepairPlugin"
+      kind: "plugins.json_repair.json_repair.JSONRepairPlugin"
+      description: "Attempts to repair nearly JSON outputs into valid JSON"
+      version: "0.1.0"
+      author: "Mihai Criveti"
+      hooks: ["tool_post_invoke"]
+      tags: ["json", "repair"]
+      mode: "permissive"
+      priority: 145
+      conditions: []
+      config: {}
+
+    # Code Safety Linter — detect dangerous code patterns in outputs
+    - name: "CodeSafetyLinterPlugin"
+      kind: "plugins.code_safety_linter.code_safety_linter.CodeSafetyLinterPlugin"
+      description: "Detect unsafe code patterns in outputs"
+      version: "0.1.0"
+      author: "ContextForge"
+      hooks: ["tool_post_invoke"]
+      tags: ["security", "code"]
+      mode: "enforce"
+      priority: 155
+      conditions: []
+      config:
+          blocked_patterns:
+              - "\\beval\\s*\\("
+              - "\\bexec\\s*\\("
+              - "\\bos\\.system\\s*\\("
+              - "\\bsubprocess\\.(Popen|call|run)\\s*\\("
+              - "\\brm\\s+-rf\\b"
+
+    # Output Length Guard — prevent token blowout from oversized responses
+    - name: "OutputLengthGuardPlugin"
+      kind: "plugins.output_length_guard.output_length_guard.OutputLengthGuardPlugin"
+      description: "Guards tool outputs by enforcing min/max length; block or truncate"
+      version: "0.1.0"
+      author: "ContextForge"
+      hooks: ["tool_post_invoke"]
+      tags: ["guard", "length", "outputs", "truncate", "block"]
+      mode: "enforce"
+      priority: 160
+      conditions: []
+      config:
+          min_chars: 0
+          max_chars: 15000
+          strategy: "truncate"
+          ellipsis: "…"
+
+    # Summarizer — LLM-powered summarization of long content (via LiteLLM)
+    - name: "Summarizer"
+      kind: "plugins.summarizer.summarizer.SummarizerPlugin"
+      description: "Summarize long text content using an LLM"
+      version: "0.1.0"
+      author: "ContextForge"
+      hooks: ["resource_post_fetch", "tool_post_invoke"]
+      tags: ["summarize", "llm", "content"]
+      mode: "permissive"
+      priority: 170
+      conditions: []
+      config:
+          provider: "openai"
+          openai:
+              api_base: "https://llms.matherly.net/v1"
+              api_key_env: "OPENAI_API_KEY"
+              model: "gpt-5-nano"
+              temperature: 0.2
+              max_tokens: 512
+              use_responses_api: false
+          prompt_template: |
+              You are a helpful assistant. Summarize the following content succinctly
+              in no more than {max_tokens} tokens. Focus on key points, remove
+              redundancy, and preserve critical details.
+          include_bullets: true
+          language: null
+          threshold_chars: 800
+          hard_truncate_chars: 24000
+          tool_allowlist: []
+          resource_uri_prefixes: ["http://", "https://"]
+
+    # Retry with Backoff — annotate retry policy for failed tool calls
+    - name: "RetryWithBackoffPlugin"
+      kind: "plugins.retry_with_backoff.retry_with_backoff.RetryWithBackoffPlugin"
+      description: "Annotates retry/backoff policy in metadata"
+      version: "0.1.0"
+      author: "Mihai Criveti"
+      hooks: ["tool_post_invoke", "resource_post_fetch"]
+      tags: ["reliability", "retry"]
+      mode: "permissive"
+      priority: 171
+      conditions: []
+      config:
+          max_retries: 2
+          backoff_base_ms: 200
+          max_backoff_ms: 5000
+          retry_on_status: [429, 500, 502, 503, 504]
+
+    # Timezone Translator — convert timestamps to user's timezone
+    - name: "TimezoneTranslator"
+      kind: "plugins.timezone_translator.timezone_translator.TimezoneTranslatorPlugin"
+      description: "Convert ISO-like timestamps between server and user timezones"
+      version: "0.1.0"
+      author: "ContextForge"
+      hooks: ["tool_pre_invoke", "tool_post_invoke"]
+      tags: ["localization", "timezone"]
+      mode: "permissive"
+      priority: 175
+      conditions: []
+      config:
+          user_tz: "America/New_York"
+          server_tz: "UTC"
+          direction: "to_user"
+          fields:
+              [
+                  "start_time",
+                  "end_time",
+                  "timestamp",
+                  "created_at",
+                  "updated_at",
+              ]
+
+    # Code Formatter — normalize code output formatting
+    - name: "CodeFormatter"
+      kind: "plugins.code_formatter.code_formatter.CodeFormatterPlugin"
+      description: "Formats code/text outputs (indentation, trailing whitespace, newline, JSON pretty-print)"
+      version: "0.1.0"
+      author: "ContextForge"
+      hooks: ["tool_post_invoke", "resource_post_fetch"]
+      tags: ["format", "enhancement", "postprocess"]
+      mode: "permissive"
+      priority: 180
+      conditions: []
+      config:
+          languages:
+              [
+                  "plaintext",
+                  "python",
+                  "javascript",
+                  "typescript",
+                  "json",
+                  "markdown",
+                  "shell",
+              ]
+          tab_width: 4
+          trim_trailing: true
+          ensure_newline: true
+          dedent_code: true
+          format_json: true
+          format_code_fences: true
+          max_size_kb: 1024
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TIER 7: OBSERVABILITY (priority 200)
+    # Telemetry export — runs last to capture full context
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    # Tools Telemetry Exporter — OTEL traces for every tool invocation
+    - name: "ToolsTelemetryExporter"
+      kind: "plugins.tools_telemetry_exporter.telemetry_exporter.ToolsTelemetryExporterPlugin"
+      description: "Export comprehensive tool invocation telemetry to OpenTelemetry"
+      version: "0.1.0"
+      author: "Bar Haim"
+      hooks: ["tool_pre_invoke", "tool_post_invoke"]
+      tags: ["telemetry", "observability", "opentelemetry", "monitoring"]
+      mode: "enforce"
+      priority: 200
+      conditions: []
+      config:
+          export_full_payload: true
+          max_payload_bytes_size: 10000
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # DISABLED — Available but not active
+    # Uncomment and set mode to "enforce" or "permissive" to enable
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    # # VirusTotal — requires VT_API_KEY env var
+    # - name: "VirusTotalURLCheckerPlugin"
+    #   kind: "plugins.virus_total_checker.virus_total_checker.VirusTotalURLCheckerPlugin"
+    #   mode: "disabled"
+    #   priority: 61
+
+    # # Content Moderation (Granite Guardian) — requires Ollama + granite3-guardian
+    # - name: "ContentModeration"
+    #   kind: "plugins.content_moderation.content_moderation.ContentModerationPlugin"
+    #   mode: "disabled"
+    #   priority: 30
+
+    # # Vault Plugin — requires vault infrastructure
+    # - name: "VaultPlugin"
+    #   kind: "plugins.vault.vault_plugin.Vault"
+    #   mode: "disabled"
+    #   priority: 10
+
+    # # Unified PDP (Cedar/OPA/RBAC/MAC) — requires policy engine setup
+    # - name: "UnifiedPDPPlugin"
+    #   kind: "plugins.unified_pdp.unified_pdp.UnifiedPDPPlugin"
+    #   mode: "disabled"
+    #   priority: 10
+
+    # # Webhook Notification — requires webhook receiver URL
+    # - name: "WebhookNotification"
+    #   kind: "plugins.webhook_notification.webhook_notification.WebhookNotificationPlugin"
+    #   mode: "disabled"
+    #   priority: 900
+
+    # # ALTK JSON Processor — requires watsonx/ollama provider
+    # - name: "ALTKJsonProcessor"
+    #   kind: "plugins.altk_json_processor.json_processor.ALTKJsonProcessor"
+    #   mode: "disabled"
+    #   priority: 150
+
+    # # Cached Tool Result — enable after identifying idempotent tools
+    # - name: "CachedToolResultPlugin"
+    #   kind: "plugins.cached_tool_result.cached_tool_result.CachedToolResultPlugin"
+    #   mode: "disabled"
+    #   priority: 130
+
+    # # TOON Encoder — 30-70% token reduction for JSON outputs
+    # - name: "ToonEncoder"
+    #   kind: "plugins.toon_encoder.toon_encoder.ToonEncoderPlugin"
+    #   mode: "disabled"
+    #   priority: 900
+
+    # # Response Cache by Prompt — cosine similarity cache
+    # - name: "ResponseCacheByPrompt"
+    #   kind: "plugins.response_cache_by_prompt.response_cache_by_prompt.ResponseCacheByPromptPlugin"
+    #   mode: "disabled"
+    #   priority: 128
+
+    # # SPARC Static Validator — requires altk extra
+    # - name: "SPARCStaticValidator"
+    #   kind: "plugins.sparc_static_validator.sparc_static_validator.SPARCStaticValidatorPlugin"
+    #   mode: "disabled"
+    #   priority: 65
+
+    # # JWT Claims Extraction — for downstream Cedar/OPA authorization
+    # - name: "JwtClaimsExtractionPlugin"
+    #   kind: "plugins.jwt_claims_extraction.jwt_claims_extraction.JwtClaimsExtractionPlugin"
+    #   mode: "disabled"
+    #   priority: 10
+
+    # # License Header Injector — for code generation tools
+    # - name: "LicenseHeaderInjector"
+    #   kind: "plugins.license_header_injector.license_header_injector.LicenseHeaderInjectorPlugin"
+    #   mode: "disabled"
+    #   priority: 185
+
+    # # Deny List — block specific words/phrases
+    # - name: "DenyListPlugin"
+    #   kind: "plugins.deny_filter.deny.DenyListPlugin"
+    #   mode: "disabled"
+    #   priority: 100
+
+    # # Search Replace — regex find/replace
+    # - name: "ReplaceBadWordsPlugin"
+    #   kind: "plugins.regex_filter.search_replace.SearchReplacePlugin"
+    #   mode: "disabled"
+    #   priority: 150

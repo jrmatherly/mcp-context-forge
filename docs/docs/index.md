@@ -107,7 +107,7 @@ ContextForge is published on [PyPI](https://pypi.org/project/mcp-contextforge-ga
 JWT_SECRET_KEY=my-test-key \
 MCPGATEWAY_UI_ENABLED=true \
 MCPGATEWAY_ADMIN_API_ENABLED=true \
-PLATFORM_ADMIN_EMAIL=admin@example.com \
+PLATFORM_ADMIN_EMAIL=admin@apollosai.dev \
 PLATFORM_ADMIN_PASSWORD=changeme \
 PLATFORM_ADMIN_FULL_NAME="Platform Administrator" \
 uvx --from mcp-contextforge-gateway mcpgateway --host 0.0.0.0 --port 4444
@@ -141,7 +141,7 @@ cp .env.example .env
 # Or set environment variables directly:
 export MCPGATEWAY_UI_ENABLED=true
 export MCPGATEWAY_ADMIN_API_ENABLED=true
-export PLATFORM_ADMIN_EMAIL=admin@example.com
+export PLATFORM_ADMIN_EMAIL=admin@apollosai.dev
 export PLATFORM_ADMIN_PASSWORD=changeme
 export PLATFORM_ADMIN_FULL_NAME="Platform Administrator"
 
@@ -150,7 +150,7 @@ JWT_SECRET_KEY=my-test-key \
 
 # 3️⃣  Generate a bearer token & smoke-test the API
 export MCPGATEWAY_BEARER_TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token \
-    --username admin@example.com --exp 10080 --secret my-test-key)
+    --username admin@apollosai.dev --exp 10080 --secret my-test-key)
 
 curl -s -H "Authorization: Bearer $MCPGATEWAY_BEARER_TOKEN" \
      http://127.0.0.1:4444/version | jq
@@ -174,7 +174,7 @@ curl -s -H "Authorization: Bearer $MCPGATEWAY_BEARER_TOKEN" \
     $Env:MCPGATEWAY_UI_ENABLED        = "true"
     $Env:MCPGATEWAY_ADMIN_API_ENABLED = "true"
     $Env:JWT_SECRET_KEY               = "my-test-key"
-    $Env:PLATFORM_ADMIN_EMAIL         = "admin@example.com"
+    $Env:PLATFORM_ADMIN_EMAIL         = "admin@apollosai.dev"
     $Env:PLATFORM_ADMIN_PASSWORD      = "changeme"
     $Env:PLATFORM_ADMIN_FULL_NAME     = "Platform Administrator"
 
@@ -183,7 +183,7 @@ curl -s -H "Authorization: Bearer $MCPGATEWAY_BEARER_TOKEN" \
 
     # 4️⃣  Bearer token and smoke-test
     $Env:MCPGATEWAY_BEARER_TOKEN = python3 -m mcpgateway.utils.create_jwt_token `
-        --username admin@example.com --exp 10080 --secret my-test-key
+        --username admin@apollosai.dev --exp 10080 --secret my-test-key
 
     curl -s -H "Authorization: Bearer $Env:MCPGATEWAY_BEARER_TOKEN" `
          http://127.0.0.1:4444/version | jq
@@ -289,16 +289,16 @@ docker compose logs -f gateway
 # Access Admin UI: http://localhost:4444/admin
 # Generate API token
 docker compose exec gateway python3 -m mcpgateway.utils.create_jwt_token \
-  --username admin@example.com --exp 10080 --secret my-test-key
+  --username admin@apollosai.dev --exp 10080 --secret my-test-key
 ```
 
 **What you get:**
 
-- **MariaDB 10.6** - Production-ready database with 36+ tables
-- **MCP Gateway** - Full-featured gateway with Admin UI
-- **Redis** - High-performance caching and session storage
-- **Admin Tools** - pgAdmin, Redis Insight for database management
-- **Nginx Proxy** - Caching reverse proxy (optional)
+* **MariaDB 10.6** - Production-ready database with 36+ tables
+* **MCP Gateway** - Full-featured gateway with Admin UI
+* **Redis** - High-performance caching and session storage
+* **Admin Tools** - pgAdmin, Redis Insight for database management
+* **Nginx Proxy** - Caching reverse proxy (optional)
 
 ### Helm (Kubernetes)
 
@@ -334,7 +334,7 @@ docker run -d --name mcpgateway \
   -e HOST=0.0.0.0 \
   -e JWT_SECRET_KEY=my-test-key \
   -e AUTH_REQUIRED=true \
-  -e PLATFORM_ADMIN_EMAIL=admin@example.com \
+  -e PLATFORM_ADMIN_EMAIL=admin@apollosai.dev \
   -e PLATFORM_ADMIN_PASSWORD=changeme \
   -e PLATFORM_ADMIN_FULL_NAME="Platform Administrator" \
   -e DATABASE_URL=sqlite:///./mcp.db \
@@ -344,7 +344,7 @@ docker run -d --name mcpgateway \
 # Tail logs and generate API key
 docker logs -f mcpgateway
 docker run --rm -it ghcr.io/ibm/mcp-context-forge:1.0.0-RC-1 \
-  python3 -m mcpgateway.utils.create_jwt_token --username admin@example.com --exp 10080 --secret my-test-key
+  python3 -m mcpgateway.utils.create_jwt_token --username admin@apollosai.dev --exp 10080 --secret my-test-key
 ```
 
 Browse to **[http://localhost:4444/admin](http://localhost:4444/admin)** and login with `PLATFORM_ADMIN_EMAIL` / `PLATFORM_ADMIN_PASSWORD`.
@@ -360,7 +360,7 @@ Browse to **[http://localhost:4444/admin](http://localhost:4444/admin)** and log
       -e DATABASE_URL=sqlite:////data/mcp.db \
       -e MCPGATEWAY_UI_ENABLED=true -e MCPGATEWAY_ADMIN_API_ENABLED=true \
       -e HOST=0.0.0.0 -e JWT_SECRET_KEY=my-test-key \
-      -e PLATFORM_ADMIN_EMAIL=admin@example.com -e PLATFORM_ADMIN_PASSWORD=changeme \
+      -e PLATFORM_ADMIN_EMAIL=admin@apollosai.dev -e PLATFORM_ADMIN_PASSWORD=changeme \
       ghcr.io/ibm/mcp-context-forge:1.0.0-RC-1
     ```
 
@@ -445,9 +445,9 @@ make serve                 # gunicorn on :4444
 
 For upgrade instructions, migration guides, and rollback procedures, see:
 
-- **[Upgrade Guide](manage/upgrade.md)** — General upgrade procedures
-- **[CHANGELOG.md](https://github.com/IBM/mcp-context-forge/blob/main/CHANGELOG.md)** — Version history and breaking changes
-- **[MIGRATION-0.7.0.md](https://github.com/IBM/mcp-context-forge/blob/main/MIGRATION-0.7.0.md)** — Multi-tenancy migration (v0.6.x → v0.7.x)
+* **[Upgrade Guide](manage/upgrade.md)** — General upgrade procedures
+* **[CHANGELOG.md](https://github.com/IBM/mcp-context-forge/blob/main/CHANGELOG.md)** — Version history and breaking changes
+* **[MIGRATION-0.7.0.md](https://github.com/IBM/mcp-context-forge/blob/main/MIGRATION-0.7.0.md)** — Multi-tenancy migration (v0.6.x → v0.7.x)
 
 ---
 
@@ -468,7 +468,7 @@ These variables have insecure defaults and **must be changed** before production
 | `AUTH_ENCRYPTION_SECRET` | Passphrase for encrypting stored credentials | `my-test-salt` | Generate with `openssl rand -hex 32` |
 | `BASIC_AUTH_USER` | Username for HTTP Basic auth | `admin` | Change for production |
 | `BASIC_AUTH_PASSWORD` | Password for HTTP Basic auth | `changeme` | Set a strong password |
-| `PLATFORM_ADMIN_EMAIL` | Email for bootstrap admin user | `admin@example.com` | Use real admin email |
+| `PLATFORM_ADMIN_EMAIL` | Email for bootstrap admin user | `admin@apollosai.dev` | Use real admin email |
 | `PLATFORM_ADMIN_PASSWORD` | Password for bootstrap admin user | `changeme` | Set a strong password |
 | `PLATFORM_ADMIN_FULL_NAME` | Display name for bootstrap admin | `Admin User` | Set admin name |
 
@@ -576,15 +576,15 @@ For comprehensive deployment guides, see **[Deployment Documentation](deployment
 
 Interactive API documentation is available when the server is running (adjust the base URL for Compose or dev):
 
-- **Swagger UI** (`http://localhost:4444/docs` or `http://localhost:8080/docs` with Compose) — JWT-protected by default; enable `DOCS_ALLOW_BASIC_AUTH=true` or log in to the Admin UI to get a session cookie.
-- **ReDoc** (`http://localhost:4444/redoc` or `http://localhost:8080/redoc` with Compose) — Same auth requirements as Swagger UI.
+* **Swagger UI** (`http://localhost:4444/docs` or `http://localhost:8080/docs` with Compose) — JWT-protected by default; enable `DOCS_ALLOW_BASIC_AUTH=true` or log in to the Admin UI to get a session cookie.
+* **ReDoc** (`http://localhost:4444/redoc` or `http://localhost:8080/redoc` with Compose) — Same auth requirements as Swagger UI.
 
 **Quick Authentication:**
 
 ```bash
 # Generate a JWT token
 export TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token \
-  --username admin@example.com --exp 10080 --secret my-test-key)
+  --username admin@apollosai.dev --exp 10080 --secret my-test-key)
 
 # Test API access
 curl -H "Authorization: Bearer $TOKEN" http://localhost:4444/health
@@ -643,8 +643,8 @@ Run `make` to see all 75+ available targets.
 
 For development workflows, see:
 
-- **[Developer Workstation Setup](development/developer-workstation.md)**
-- **[Building & Packaging](development/building.md)**
+* **[Developer Workstation Setup](development/developer-workstation.md)**
+* **[Building & Packaging](development/building.md)**
 
 ---
 

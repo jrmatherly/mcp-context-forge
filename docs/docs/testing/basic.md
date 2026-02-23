@@ -41,7 +41,7 @@ Gateway will listen on:
 #### Gateway JWT (for local API access)
 
 ```bash
-export MCPGATEWAY_BEARER_TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token -u admin@example.com)
+export MCPGATEWAY_BEARER_TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token -u admin@apollosai.dev)
 curl -s -k -H "Authorization: Bearer $MCPGATEWAY_BEARER_TOKEN" https://localhost:4444/health
 ```
 
@@ -278,7 +278,7 @@ Once launched at [http://localhost:5173](http://localhost:5173):
 http://localhost:4444/servers/UUID_OF_SERVER_1/sse
 ```
 
-3. Add this header:
+1. Add this header:
 
 ```json
 {
@@ -286,7 +286,7 @@ http://localhost:4444/servers/UUID_OF_SERVER_1/sse
 }
 ```
 
-4. Save and test tool invocations by selecting a tool and sending sample input:
+1. Save and test tool invocations by selecting a tool and sending sample input:
 
 ```json
 { "timezone": "Europe/Dublin" }

@@ -41,7 +41,7 @@ fly postgres create --name your-app-db --region yyz
 ```bash
 # Set authentication secrets
 fly secrets set JWT_SECRET_KEY=$(openssl rand -hex 32)
-fly secrets set PLATFORM_ADMIN_EMAIL=admin@example.com
+fly secrets set PLATFORM_ADMIN_EMAIL=admin@apollosai.dev
 fly secrets set PLATFORM_ADMIN_PASSWORD=your-secure-password
 fly secrets set PLATFORM_ADMIN_FULL_NAME="Platform Administrator"
 
@@ -123,7 +123,7 @@ curl https://your-app-name.fly.dev/health
 # Protected endpoints (require auth)
 export JWT_SECRET_KEY="same-value-you-set-in-fly-secrets"
 export TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token \
-  --username admin@example.com \
+  --username admin@apollosai.dev \
   --exp 10080 \
   --secret "$JWT_SECRET_KEY" 2>/dev/null | head -1)
 curl -H "Authorization: Bearer $TOKEN" https://your-app-name.fly.dev/docs

@@ -79,9 +79,9 @@ def generate_admin_token() -> str:
         from mcpgateway.utils.create_jwt_token import _create_jwt_token
 
         token = _create_jwt_token(
-            data={"sub": "admin@example.com", "username": "admin@example.com"},
+            data={"sub": "admin@apollosai.dev", "username": "admin@apollosai.dev"},
             expires_in_minutes=10080,  # 7 days
-            user_data={"email": "admin@example.com", "full_name": "Admin", "is_admin": True},
+            user_data={"email": "admin@apollosai.dev", "full_name": "Admin", "is_admin": True},
             teams=None,  # null teams + is_admin = admin bypass
         )
         return token

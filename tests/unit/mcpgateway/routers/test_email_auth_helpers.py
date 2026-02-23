@@ -62,7 +62,7 @@ async def test_create_access_token_admin(monkeypatch: pytest.MonkeyPatch):
 
     monkeypatch.setattr(email_auth, "create_jwt_token", fake_create_jwt_token)
 
-    user = DummyUser("admin@example.com", is_admin=True)
+    user = DummyUser("admin@apollosai.dev", is_admin=True)
     await email_auth.create_access_token(user)
 
     assert captured.get("token_use") == "session"

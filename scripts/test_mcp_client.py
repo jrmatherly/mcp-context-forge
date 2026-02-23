@@ -16,7 +16,7 @@ async def main():
     token_result = subprocess.run(
         [
             sys.executable, "-m", "mcpgateway.utils.create_jwt_token",
-            "--username", "admin@example.com",
+            "--username", "admin@apollosai.dev",
             "--exp", "0",
             "--secret", "my-test-key"
         ],

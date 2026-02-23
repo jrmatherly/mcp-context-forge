@@ -51,7 +51,7 @@ NC = "\033[0m"
 # ---------------------------------------------------------------------------
 DEFAULT_BASE_URL = "http://localhost:8080"
 DEFAULT_JWT_SECRET = "my-test-key"
-DEFAULT_ADMIN_EMAIL = "admin@example.com"
+DEFAULT_ADMIN_EMAIL = "admin@apollosai.dev"
 TEST_EMAIL_PREFIX = "itest-"  # prefix for test users to avoid collisions
 TIMEOUT_SECONDS = 15
 MAX_RETRIES = 2

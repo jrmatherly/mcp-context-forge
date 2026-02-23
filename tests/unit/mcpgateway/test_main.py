@@ -3046,7 +3046,7 @@ class TestGetTokenTeamsFromRequest:
         from mcpgateway.main import _get_token_teams_from_request
 
         mock_request = MagicMock()
-        mock_request.state._jwt_verified_payload = ("token", {"sub": "admin@example.com", "teams": None, "is_admin": True})
+        mock_request.state._jwt_verified_payload = ("token", {"sub": "admin@apollosai.dev", "teams": None, "is_admin": True})
 
         result = _get_token_teams_from_request(mock_request)
         assert result is None  # Admin with explicit null teams = admin bypass
@@ -3152,11 +3152,11 @@ class TestGetRpcFilterContext:
         mock_request = MagicMock()
         # Token has is_admin but empty teams - admin bypass should be disabled
         mock_request.state._jwt_verified_payload = ("token", {"teams": [], "is_admin": True})
-        user = {"email": "admin@example.com", "is_admin": True}
+        user = {"email": "admin@apollosai.dev", "is_admin": True}
 
         email, teams, is_admin = _get_rpc_filter_context(mock_request, user)
 
-        assert email == "admin@example.com"
+        assert email == "admin@apollosai.dev"
         assert teams == []
         assert is_admin is False  # Disabled for empty-team tokens (public-only access)
 

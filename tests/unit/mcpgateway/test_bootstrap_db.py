@@ -32,7 +32,7 @@ def mock_settings():
     """Create mock settings."""
     settings = Mock()
     settings.email_auth_enabled = True
-    settings.platform_admin_email = "admin@example.com"
+    settings.platform_admin_email = "admin@apollosai.dev"
     settings.platform_admin_password = SecretStr("secure_password")
     settings.platform_admin_full_name = "Platform Admin"
     settings.auto_create_personal_teams = True
@@ -86,7 +86,7 @@ def mock_role_service():
 def mock_admin_user():
     """Create mock admin user."""
     user = Mock()
-    user.email = "admin@example.com"
+    user.email = "admin@apollosai.dev"
     user.is_admin = True
     user.email_verified_at = None
     user.get_personal_team = Mock()

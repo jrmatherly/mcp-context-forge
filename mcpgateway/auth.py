@@ -1192,7 +1192,7 @@ async def get_current_user(
                         )
 
                     # Platform admin bootstrap (only when REQUIRE_USER_IN_DB=false)
-                    if email == getattr(settings, "platform_admin_email", "admin@example.com"):
+                    if email == getattr(settings, "platform_admin_email", "admin@apollosai.dev"):
                         logger.info(
                             f"Platform admin bootstrap authentication for {email}. " "User authenticated via platform admin configuration.",
                             extra={"security_event": "platform_admin_bootstrap", "user_id": email},
@@ -1351,7 +1351,7 @@ async def get_current_user(
         # Platform admin bootstrap (only when REQUIRE_USER_IN_DB=false)
         # If user doesn't exist but token is valid and email matches platform admin,
         # create a virtual admin user object
-        if email == getattr(settings, "platform_admin_email", "admin@example.com"):
+        if email == getattr(settings, "platform_admin_email", "admin@apollosai.dev"):
             logger.info(
                 f"Platform admin bootstrap authentication for {email}. " "User authenticated via platform admin configuration.",
                 extra={"security_event": "platform_admin_bootstrap", "user_id": email},

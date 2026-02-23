@@ -46,7 +46,7 @@ def sample_role():
     role.description = "Test role description"
     role.scope = "team"
     role.permissions = ["tools.read", "tools.execute"]
-    role.created_by = "admin@example.com"
+    role.created_by = "admin@apollosai.dev"
     role.inherits_from = None
     role.is_system_role = False
     role.is_active = True
@@ -64,7 +64,7 @@ def sample_user_role():
     user_role.role_id = "role-123"
     user_role.scope = "team"
     user_role.scope_id = "team-789"
-    user_role.granted_by = "admin@example.com"
+    user_role.granted_by = "admin@apollosai.dev"
     user_role.expires_at = None
     user_role.is_active = True
     user_role.created_at = utc_now()
@@ -99,7 +99,7 @@ class TestCreateRole:
                     MockRole.return_value = sample_role
 
                     result = await role_service.create_role(
-                        name="test-role", description="Test role description", scope="team", permissions=["tools.read", "tools.execute"], created_by="admin@example.com"
+                        name="test-role", description="Test role description", scope="team", permissions=["tools.read", "tools.execute"], created_by="admin@apollosai.dev"
                     )
 
                     assert result == sample_role
@@ -111,14 +111,14 @@ class TestCreateRole:
     async def test_create_role_invalid_scope(self, role_service):
         """Test role creation with invalid scope."""
         with pytest.raises(ValueError, match="Invalid scope: invalid"):
-            await role_service.create_role(name="test-role", description="Test role", scope="invalid", permissions=[], created_by="admin@example.com")
+            await role_service.create_role(name="test-role", description="Test role", scope="invalid", permissions=[], created_by="admin@apollosai.dev")
 
     @pytest.mark.asyncio
     async def test_create_role_duplicate_name(self, role_service, sample_role):
         """Test role creation with duplicate name."""
         with patch.object(role_service, "get_role_by_name", new=AsyncMock(return_value=sample_role)):
             with pytest.raises(ValueError, match="already exists"):
-                await role_service.create_role(name="test-role", description="Test role", scope="team", permissions=[], created_by="admin@example.com")
+                await role_service.create_role(name="test-role", description="Test role", scope="team", permissions=[], created_by="admin@apollosai.dev")
 
     @pytest.mark.asyncio
     async def test_create_role_invalid_permissions(self, role_service):
@@ -126,7 +126,7 @@ class TestCreateRole:
         with patch.object(role_service, "get_role_by_name", new=AsyncMock(return_value=None)):
             with patch("mcpgateway.services.role_service.Permissions.get_all_permissions", return_value=["valid.permission"]):
                 with pytest.raises(ValueError, match="Invalid permissions"):
-                    await role_service.create_role(name="test-role", description="Test role", scope="global", permissions=["invalid.permission"], created_by="admin@example.com")
+                    await role_service.create_role(name="test-role", description="Test role", scope="global", permissions=["invalid.permission"], created_by="admin@apollosai.dev")
 
     @pytest.mark.asyncio
     async def test_create_role_with_inheritance(self, role_service, mock_db, sample_role):
@@ -142,7 +142,7 @@ class TestCreateRole:
                             MockRole.return_value = sample_role
 
                             result = await role_service.create_role(
-                                name="child-role", description="Child role", scope="team", permissions=["tools.read"], created_by="admin@example.com", inherits_from="parent-role-id"
+                                name="child-role", description="Child role", scope="team", permissions=["tools.read"], created_by="admin@apollosai.dev", inherits_from="parent-role-id"
                             )
 
                             assert result == sample_role
@@ -151,7 +151,7 @@ class TestCreateRole:
                                 description="Child role",
                                 scope="team",
                                 permissions=["tools.read"],
-                                created_by="admin@example.com",
+                                created_by="admin@apollosai.dev",
                                 inherits_from="parent-role-id",
                                 is_system_role=False,
                             )
@@ -162,7 +162,7 @@ class TestCreateRole:
         with patch.object(role_service, "get_role_by_name", new=AsyncMock(return_value=None)):
             with patch.object(role_service, "get_role_by_id", new=AsyncMock(return_value=None)):
                 with pytest.raises(ValueError, match="Parent role not found"):
-                    await role_service.create_role(name="child-role", description="Child role", scope="team", permissions=[], created_by="admin@example.com", inherits_from="non-existent-parent")
+                    await role_service.create_role(name="child-role", description="Child role", scope="team", permissions=[], created_by="admin@apollosai.dev", inherits_from="non-existent-parent")
 
     @pytest.mark.asyncio
     async def test_create_role_would_create_cycle(self, role_service):
@@ -174,7 +174,7 @@ class TestCreateRole:
             with patch.object(role_service, "get_role_by_id", new=AsyncMock(return_value=parent_role)):
                 with patch.object(role_service, "_would_create_cycle", new=AsyncMock(return_value=True)):
                     with pytest.raises(ValueError, match="would create a cycle"):
-                        await role_service.create_role(name="child-role", description="Child role", scope="team", permissions=[], created_by="admin@example.com", inherits_from="parent-role-id")
+                        await role_service.create_role(name="child-role", description="Child role", scope="team", permissions=[], created_by="admin@apollosai.dev", inherits_from="parent-role-id")
 
     @pytest.mark.asyncio
     async def test_create_system_role(self, role_service, mock_db):
@@ -203,7 +203,7 @@ class TestCreateRole:
                         role = Mock(spec=Role)
                         MockRole.return_value = role
 
-                        result = await role_service.create_role(name="admin", description="Admin role", scope="global", permissions=["*"], created_by="admin@example.com")
+                        result = await role_service.create_role(name="admin", description="Admin role", scope="global", permissions=["*"], created_by="admin@apollosai.dev")
 
                         assert result == role
                         mock_db.add.assert_called_once()
@@ -504,7 +504,7 @@ class TestAssignRoleToUser:
                 with patch("mcpgateway.services.role_service.UserRole") as MockUserRole:
                     MockUserRole.return_value = sample_user_role
 
-                    result = await role_service.assign_role_to_user(user_email="user@example.com", role_id="role-123", scope="team", scope_id="team-789", granted_by="admin@example.com")
+                    result = await role_service.assign_role_to_user(user_email="user@example.com", role_id="role-123", scope="team", scope_id="team-789", granted_by="admin@apollosai.dev")
 
                     assert result == sample_user_role
                     mock_db.add.assert_called_once_with(sample_user_role)
@@ -515,7 +515,7 @@ class TestAssignRoleToUser:
         """Test assigning non-existent role."""
         with patch.object(role_service, "get_role_by_id", new=AsyncMock(return_value=None)):
             with pytest.raises(ValueError, match="Role not found or inactive"):
-                await role_service.assign_role_to_user(user_email="user@example.com", role_id="non-existent", scope="team", scope_id="team-789", granted_by="admin@example.com")
+                await role_service.assign_role_to_user(user_email="user@example.com", role_id="non-existent", scope="team", scope_id="team-789", granted_by="admin@apollosai.dev")
 
     @pytest.mark.asyncio
     async def test_assign_inactive_role(self, role_service, sample_role):
@@ -524,7 +524,7 @@ class TestAssignRoleToUser:
 
         with patch.object(role_service, "get_role_by_id", new=AsyncMock(return_value=sample_role)):
             with pytest.raises(ValueError, match="Role not found or inactive"):
-                await role_service.assign_role_to_user(user_email="user@example.com", role_id="role-123", scope="team", scope_id="team-789", granted_by="admin@example.com")
+                await role_service.assign_role_to_user(user_email="user@example.com", role_id="role-123", scope="team", scope_id="team-789", granted_by="admin@apollosai.dev")
 
     @pytest.mark.asyncio
     async def test_assign_role_scope_mismatch(self, role_service, sample_role):
@@ -533,7 +533,7 @@ class TestAssignRoleToUser:
 
         with patch.object(role_service, "get_role_by_id", new=AsyncMock(return_value=sample_role)):
             with pytest.raises(ValueError, match="doesn't match"):
-                await role_service.assign_role_to_user(user_email="user@example.com", role_id="role-123", scope="team", scope_id="team-789", granted_by="admin@example.com")
+                await role_service.assign_role_to_user(user_email="user@example.com", role_id="role-123", scope="team", scope_id="team-789", granted_by="admin@apollosai.dev")
 
     @pytest.mark.asyncio
     async def test_assign_team_role_without_scope_id(self, role_service, sample_role):
@@ -543,7 +543,7 @@ class TestAssignRoleToUser:
         mock_get_role = AsyncMock(return_value=sample_role)
         with patch.object(role_service, "get_role_by_id", new=mock_get_role):
             with pytest.raises(ValueError, match="scope_id required"):
-                await role_service.assign_role_to_user(user_email="user@example.com", role_id="role-123", scope="team", scope_id=None, granted_by="admin@example.com")
+                await role_service.assign_role_to_user(user_email="user@example.com", role_id="role-123", scope="team", scope_id=None, granted_by="admin@apollosai.dev")
 
     @pytest.mark.asyncio
     async def test_assign_global_role_with_scope_id(self, role_service, sample_role):
@@ -552,7 +552,7 @@ class TestAssignRoleToUser:
 
         with patch.object(role_service, "get_role_by_id", new=AsyncMock(return_value=sample_role)):
             with pytest.raises(ValueError, match="scope_id not allowed"):
-                await role_service.assign_role_to_user(user_email="user@example.com", role_id="role-123", scope="global", scope_id="should-not-have", granted_by="admin@example.com")
+                await role_service.assign_role_to_user(user_email="user@example.com", role_id="role-123", scope="global", scope_id="should-not-have", granted_by="admin@apollosai.dev")
 
     @pytest.mark.asyncio
     async def test_assign_duplicate_active_role(self, role_service, sample_role, sample_user_role):
@@ -563,7 +563,7 @@ class TestAssignRoleToUser:
         with patch.object(role_service, "get_role_by_id", new=AsyncMock(return_value=sample_role)):
             with patch.object(role_service, "get_user_role_assignment", new=AsyncMock(return_value=sample_user_role)):
                 with pytest.raises(ValueError, match="already has this role"):
-                    await role_service.assign_role_to_user(user_email="user@example.com", role_id="role-123", scope="team", scope_id="team-789", granted_by="admin@example.com")
+                    await role_service.assign_role_to_user(user_email="user@example.com", role_id="role-123", scope="team", scope_id="team-789", granted_by="admin@apollosai.dev")
 
     @pytest.mark.asyncio
     async def test_assign_role_with_expiration(self, role_service, mock_db, sample_role):
@@ -577,10 +577,10 @@ class TestAssignRoleToUser:
                     MockUserRole.return_value = user_role
 
                     result = await role_service.assign_role_to_user(
-                        user_email="user@example.com", role_id="role-123", scope="team", scope_id="team-789", granted_by="admin@example.com", expires_at=expires_at
+                        user_email="user@example.com", role_id="role-123", scope="team", scope_id="team-789", granted_by="admin@apollosai.dev", expires_at=expires_at
                     )
 
-                    MockUserRole.assert_called_once_with(user_email="user@example.com", role_id="role-123", scope="team", scope_id="team-789", granted_by="admin@example.com", expires_at=expires_at)
+                    MockUserRole.assert_called_once_with(user_email="user@example.com", role_id="role-123", scope="team", scope_id="team-789", granted_by="admin@apollosai.dev", expires_at=expires_at)
 
     @pytest.mark.asyncio
     async def test_assign_personal_role_with_scope_id(self, role_service, sample_role):
@@ -589,7 +589,7 @@ class TestAssignRoleToUser:
 
         with patch.object(role_service, "get_role_by_id", new=AsyncMock(return_value=sample_role)):
             with pytest.raises(ValueError, match="scope_id not allowed"):
-                await role_service.assign_role_to_user(user_email="user@example.com", role_id="role-123", scope="personal", scope_id="should-not-have", granted_by="admin@example.com")
+                await role_service.assign_role_to_user(user_email="user@example.com", role_id="role-123", scope="personal", scope_id="should-not-have", granted_by="admin@apollosai.dev")
 
 
 class TestRevokeRoleFromUser:
@@ -851,7 +851,7 @@ class TestEdgeCasesAndErrorHandling:
                     role = Mock(spec=Role)
                     MockRole.return_value = role
 
-                    result = await role_service.create_role(name="empty-perms", description="Role with no permissions", scope="team", permissions=[], created_by="admin@example.com")
+                    result = await role_service.create_role(name="empty-perms", description="Role with no permissions", scope="team", permissions=[], created_by="admin@apollosai.dev")
 
                     assert result == role
                     MockRole.assert_called_once()
@@ -882,7 +882,7 @@ class TestEdgeCasesAndErrorHandling:
                     MockRole.return_value = Mock(spec=Role)
 
                     with pytest.raises(Exception, match="Database error"):
-                        await role_service.create_role(name="test", description="test", scope="global", permissions=[], created_by="admin@example.com")
+                        await role_service.create_role(name="test", description="test", scope="global", permissions=[], created_by="admin@apollosai.dev")
 
     @pytest.mark.asyncio
     async def test_concurrent_role_assignment(self, role_service, mock_db, sample_role):
@@ -895,7 +895,7 @@ class TestEdgeCasesAndErrorHandling:
             with patch.object(role_service, "get_user_role_assignment", new=AsyncMock(return_value=None)):
                 with patch("mcpgateway.services.role_service.UserRole"):
                     with pytest.raises(Exception, match="Unique constraint violation"):
-                        await role_service.assign_role_to_user(user_email="user@example.com", role_id="role-123", scope="team", scope_id="team-789", granted_by="admin@example.com")
+                        await role_service.assign_role_to_user(user_email="user@example.com", role_id="role-123", scope="team", scope_id="team-789", granted_by="admin@apollosai.dev")
 
 
 class TestComplexScenarios:
@@ -922,7 +922,7 @@ class TestComplexScenarios:
                             MockRole.return_value = child
 
                             result = await role_service.create_role(
-                                name="child-role", description="Child role", scope="team", permissions=[], created_by="admin@example.com", inherits_from="parent-id"
+                                name="child-role", description="Child role", scope="team", permissions=[], created_by="admin@apollosai.dev", inherits_from="parent-id"
                             )
 
                             assert result == child
@@ -944,7 +944,7 @@ class TestComplexScenarios:
         with patch.object(role_service, "get_role_by_name", new=AsyncMock(return_value=None)):
             with patch("mcpgateway.services.role_service.Permissions.get_all_permissions", return_value=["perm1"]):
                 with patch("mcpgateway.services.role_service.Role", return_value=role1):
-                    r1 = await role_service.create_role(name="role1", description="First role", scope="global", permissions=["perm1"], created_by="admin@example.com")
+                    r1 = await role_service.create_role(name="role1", description="First role", scope="global", permissions=["perm1"], created_by="admin@apollosai.dev")
 
         # Update first role
         with patch.object(role_service, "get_role_by_id", new=AsyncMock(return_value=role1)):
@@ -958,7 +958,7 @@ class TestComplexScenarios:
                     with patch("mcpgateway.services.role_service.Permissions.get_all_permissions", return_value=["perm1", "perm2"]):
                         with patch("mcpgateway.services.role_service.Role", return_value=role2):
                             r2 = await role_service.create_role(
-                                name="role2", description="Second role", scope="global", permissions=["perm2"], created_by="admin@example.com", inherits_from="role1-id"
+                                name="role2", description="Second role", scope="global", permissions=["perm2"], created_by="admin@apollosai.dev", inherits_from="role1-id"
                             )
 
         assert r1 == role1
@@ -985,7 +985,7 @@ class TestComplexScenarios:
                     new_assignment = Mock()
                     MockUserRole.return_value = new_assignment
 
-                    result = await role_service.assign_role_to_user(user_email="user@example.com", role_id="role-123", scope="team", scope_id="team-789", granted_by="admin@example.com")
+                    result = await role_service.assign_role_to_user(user_email="user@example.com", role_id="role-123", scope="team", scope_id="team-789", granted_by="admin@apollosai.dev")
 
                     assert result == new_assignment
                     mock_db.add.assert_called_once()

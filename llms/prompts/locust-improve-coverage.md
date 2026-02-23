@@ -80,7 +80,7 @@ For every uncovered endpoint, manually test with curl first to understand the ex
 # Generate admin JWT
 export JWT=$(python3 -c "
 import jwt, datetime, uuid
-payload = {'sub':'admin@example.com',
+payload = {'sub':'admin@apollosai.dev',
   'exp':datetime.datetime.now(datetime.timezone.utc)+datetime.timedelta(hours=1),
   'iat':datetime.datetime.now(datetime.timezone.utc),
   'aud':'mcpgateway-api','iss':'mcpgateway',
@@ -112,7 +112,7 @@ Follow the existing patterns in `locustfile.py`:
 - **Weight classes appropriately** — read-heavy users get higher weight, write/admin users get weight=1
 - **Clean up test data** in `on_stop()` method
 
-### Endpoint categories to handle differently:
+### Endpoint categories to handle differently
 
 | Type | Pattern | Approach |
 |---|---|---|

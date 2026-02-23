@@ -46,8 +46,8 @@ class TestTokenLifecycleEnforcement:
     def test_expired_jwt_token_is_rejected(self, playwright: Playwright):
         expired_at = int((datetime.now(timezone.utc) - timedelta(minutes=5)).timestamp())
         expired_token = _create_jwt_token(
-            {"sub": "admin@example.com", "exp": expired_at},
-            user_data={"email": "admin@example.com", "is_admin": True, "auth_provider": "local"},
+            {"sub": "admin@apollosai.dev", "exp": expired_at},
+            user_data={"email": "admin@apollosai.dev", "is_admin": True, "auth_provider": "local"},
         )
 
         ctx = _api_context(playwright, expired_token)
@@ -106,12 +106,12 @@ class TestTokenLifecycleEnforcement:
     def test_missing_jti_claim_enforcement_matches_runtime_setting(self, playwright: Playwright):
         now = datetime.now(timezone.utc)
         payload: dict[str, Any] = {
-            "sub": "admin@example.com",
+            "sub": "admin@apollosai.dev",
             "iss": settings.jwt_issuer,
             "aud": settings.jwt_audience,
             "iat": int(now.timestamp()),
             "exp": int((now + timedelta(minutes=5)).timestamp()),
-            "user": {"email": "admin@example.com", "is_admin": True, "auth_provider": "local"},
+            "user": {"email": "admin@apollosai.dev", "is_admin": True, "auth_provider": "local"},
             "token_use": "api",
             "teams": [],
             "scopes": {"server_id": None, "permissions": [], "ip_restrictions": [], "time_restrictions": {}},

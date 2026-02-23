@@ -361,7 +361,7 @@ class TestIssue840A2AToolsNotListedInGlobalTools:
         agent.reachable = True
         agent.tags = [{"id": "test", "label": "test"}]
         agent.team_id = None
-        agent.owner_email = "admin@example.com"
+        agent.owner_email = "admin@apollosai.dev"
         agent.visibility = "public"
         return agent
 
@@ -404,7 +404,7 @@ class TestIssue840A2AToolsNotListedInGlobalTools:
             _ = await tool_service.create_tool_from_a2a_agent(
                 db=mock_db,
                 agent=sample_a2a_agent_db,
-                created_by="admin@example.com",
+                created_by="admin@apollosai.dev",
             )
 
         # Verify tool was created
@@ -457,7 +457,7 @@ class TestIssue840A2AToolsNotListedInGlobalTools:
         a2a_tool.gateway_id = None
         a2a_tool.gateway = None
         a2a_tool.team_id = None
-        a2a_tool.owner_email = "admin@example.com"
+        a2a_tool.owner_email = "admin@apollosai.dev"
         a2a_tool.visibility = "public"
         a2a_tool.created_at = datetime.now(timezone.utc)
         a2a_tool.updated_at = datetime.now(timezone.utc)
@@ -518,7 +518,7 @@ class TestIssue840A2AToolsNotListedInGlobalTools:
         a2a_tool.gateway_id = None
         a2a_tool.gateway = None
         a2a_tool.team_id = None
-        a2a_tool.owner_email = "admin@example.com"
+        a2a_tool.owner_email = "admin@apollosai.dev"
         a2a_tool.visibility = "public"
         a2a_tool.created_at = datetime.now(timezone.utc)
         a2a_tool.updated_at = datetime.now(timezone.utc)

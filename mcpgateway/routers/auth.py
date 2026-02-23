@@ -139,13 +139,13 @@ async def login(login_request: LoginRequest, request: Request, db: Session = Dep
     Examples:
         Email format (recommended):
             {
-              "email": "admin@example.com",
+              "email": "admin@apollosai.dev",
               "password": "ChangeMe_12345678$"
             }
 
         Username format (compatibility):
             {
-              "username": "admin@example.com",
+              "username": "admin@apollosai.dev",
               "password": "ChangeMe_12345678$"
             }
     """

@@ -173,7 +173,7 @@ def email_logged_in_page(context: BrowserContext) -> Page:
     if not login_page.is_login_form_available(timeout=3000):
         pytest.skip("Email login form is unavailable in this environment.")
 
-    admin_email = os.getenv("PLATFORM_ADMIN_EMAIL", "admin@example.com")
+    admin_email = os.getenv("PLATFORM_ADMIN_EMAIL", "admin@apollosai.dev")
     candidate_passwords = [os.getenv("PLATFORM_ADMIN_NEW_PASSWORD", "Changeme123!"), os.getenv("PLATFORM_ADMIN_PASSWORD", "changeme")]
 
     login_succeeded = False
@@ -201,7 +201,7 @@ def scoped_server_matrix(playwright):
     public_server_id: str | None = None
     team_server_id: str | None = None
     member_email: str | None = None
-    admin_ctx = _api_context(playwright, _make_jwt("admin@example.com", is_admin=True, teams=None))
+    admin_ctx = _api_context(playwright, _make_jwt("admin@apollosai.dev", is_admin=True, teams=None))
 
     team_name = f"pw-sec-team-{uuid.uuid4().hex[:8]}"
     public_name = f"pw-sec-public-{uuid.uuid4().hex[:8]}"
@@ -483,7 +483,7 @@ class TestPlaywrightSecurityE2EAuthAndSession:
             pytest.skip("Auth is disabled, expiration handling is not applicable.")
 
         expired_at = int((datetime.now(timezone.utc) - timedelta(minutes=10)).timestamp())
-        expired_token = _make_jwt("admin@example.com", is_admin=True, teams=None, exp=expired_at)
+        expired_token = _make_jwt("admin@apollosai.dev", is_admin=True, teams=None, exp=expired_at)
         _set_jwt_cookie(context, expired_token)
 
         page = context.new_page()
@@ -521,7 +521,7 @@ class TestPlaywrightSecurityE2EAuthAndSession:
         if not settings.auth_required:
             pytest.skip("Auth is disabled, cookie-only API auth rejection is not applicable.")
 
-        admin_token = _make_jwt("admin@example.com", is_admin=True, teams=None)
+        admin_token = _make_jwt("admin@apollosai.dev", is_admin=True, teams=None)
         ctx = playwright.request.new_context(
             base_url=BASE_URL,
             extra_http_headers={
@@ -540,19 +540,19 @@ class TestPlaywrightSecurityE2EScopeAndRBAC:
     """Token scope and role enforcement in browser-driven flows."""
 
     def test_15_teams_missing_claim_is_public_only(self, playwright, scoped_server_matrix: dict[str, str]):
-        token = _make_jwt("admin@example.com", is_admin=True)
+        token = _make_jwt("admin@apollosai.dev", is_admin=True)
         ids = _server_ids_for_token(playwright, token)
         assert scoped_server_matrix["public_server_id"] in ids
         assert scoped_server_matrix["team_server_id"] not in ids
 
     def test_16_teams_empty_claim_is_public_only(self, playwright, scoped_server_matrix: dict[str, str]):
-        token = _make_jwt("admin@example.com", is_admin=True, teams=[])
+        token = _make_jwt("admin@apollosai.dev", is_admin=True, teams=[])
         ids = _server_ids_for_token(playwright, token)
         assert scoped_server_matrix["public_server_id"] in ids
         assert scoped_server_matrix["team_server_id"] not in ids
 
     def test_17_teams_null_with_admin_true_is_unrestricted(self, playwright, scoped_server_matrix: dict[str, str]):
-        token = _make_jwt("admin@example.com", is_admin=True, teams=None)
+        token = _make_jwt("admin@apollosai.dev", is_admin=True, teams=None)
         ids = _server_ids_for_token(playwright, token)
         assert scoped_server_matrix["public_server_id"] in ids
         assert scoped_server_matrix["team_server_id"] in ids
@@ -570,7 +570,7 @@ class TestPlaywrightSecurityE2EScopeAndRBAC:
         assert scoped_server_matrix["team_server_id"] in ids
 
     def test_20_duplicate_visibility_query_params_do_not_expand_scope(self, playwright, scoped_server_matrix: dict[str, str]):
-        token = _make_jwt("admin@example.com", is_admin=True)
+        token = _make_jwt("admin@apollosai.dev", is_admin=True)
         ids = _server_ids_for_token(playwright, token, "/servers?visibility=public&visibility=team")
         assert scoped_server_matrix["team_server_id"] not in ids
 
@@ -657,7 +657,7 @@ class TestPlaywrightSecurityE2ETransportAndSanitization:
         assert response.status in (401, 403), f"Unauthenticated message endpoint should be denied, got {response.status}: {response.text()}"
 
     def test_27_sse_message_endpoint_allows_authenticated_requests(self, playwright, public_server_id: str):
-        ctx = _api_context(playwright, _make_jwt("admin@example.com", is_admin=True, teams=None))
+        ctx = _api_context(playwright, _make_jwt("admin@apollosai.dev", is_admin=True, teams=None))
         try:
             response = ctx.post(
                 f"/servers/{public_server_id}/message?session_id=security-e2e-{uuid.uuid4().hex[:8]}",
@@ -682,7 +682,7 @@ class TestPlaywrightSecurityE2ETransportAndSanitization:
 
     def test_29_websocket_authenticated_handles_invalid_jsonrpc_payload(self, context: BrowserContext):
         page = context.new_page()
-        token = _make_jwt("admin@example.com", is_admin=True, teams=None)
+        token = _make_jwt("admin@apollosai.dev", is_admin=True, teams=None)
         result = _probe_websocket(page, _ws_url(token))
 
         if result.get("event") in ("timeout", "error", "exception"):

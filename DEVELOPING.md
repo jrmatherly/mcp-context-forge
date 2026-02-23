@@ -226,9 +226,9 @@ make flake8 bandit interrogate pylint verify
 - **Docstrings**: Google style, required for all public functions
 - **Imports**: Organized with isort (black profile)
 - **Naming**:
-  - Functions/variables: `snake_case`
-  - Classes: `PascalCase`
-  - Constants: `UPPER_SNAKE_CASE`
+    - Functions/variables: `snake_case`
+    - Classes: `PascalCase`
+    - Constants: `UPPER_SNAKE_CASE`
 
 ### Quality Tools
 

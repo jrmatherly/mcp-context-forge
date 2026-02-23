@@ -311,7 +311,7 @@ class TestCustomAuthExamplePlugin:
                         "is_admin": "false",
                     },
                     "admin-key-67890": {
-                        "email": "admin@example.com",
+                        "email": "admin@apollosai.dev",
                         "full_name": "Admin User",
                         "is_admin": "true",
                     },
@@ -457,7 +457,7 @@ class TestCustomAuthExamplePlugin:
         result = await plugin.http_auth_resolve_user(payload, context)
 
         assert result.modified_payload is not None
-        assert result.modified_payload["email"] == "admin@example.com"
+        assert result.modified_payload["email"] == "admin@apollosai.dev"
         assert result.modified_payload["full_name"] == "Admin User"
         assert result.modified_payload["is_admin"] is True
         assert result.continue_processing is False

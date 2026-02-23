@@ -426,7 +426,7 @@ def main() -> None:  # pragma: no cover
             eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...
 
             # Create admin token (DEV/TEST ONLY)
-            $ python jwt_cli.py -u admin@example.com --admin --full-name "Admin User"
+            $ python jwt_cli.py -u admin@apollosai.dev --admin --full-name "Admin User"
             ⚠️  WARNING: Creating token with elevated claims...
             eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...
 
@@ -480,7 +480,7 @@ def main() -> None:  # pragma: no cover
     scopes_dict = None
 
     if args.admin or args.teams or args.scopes or args.full_name:
-        user_email = payload.get("sub") or payload.get("username", "admin@example.com")
+        user_email = payload.get("sub") or payload.get("username", "admin@apollosai.dev")
 
         # Build user data
         user_data = {

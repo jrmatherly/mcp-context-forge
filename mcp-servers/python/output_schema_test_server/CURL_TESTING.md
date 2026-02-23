@@ -7,7 +7,7 @@ Quick reference for testing the output_schema implementation using curl.
 First, generate a JWT token and export it:
 
 ```bash
-export TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token --username admin@example.com --exp 0 --secret changeme123)
+export TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token --username admin@apollosai.dev --exp 0 --secret changeme123)
 ```
 
 Or use an existing token:
@@ -242,7 +242,7 @@ Save this as `test-output-schema.sh`:
 #!/bin/bash
 
 # Generate token
-export TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token --username admin@example.com --exp 0 --secret changeme123 2>/dev/null | head -1)
+export TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token --username admin@apollosai.dev --exp 0 --secret changeme123 2>/dev/null | head -1)
 
 echo "=== Testing outputSchema Implementation ==="
 echo ""
@@ -293,7 +293,7 @@ chmod +x test-output-schema.sh
 ### Token expired or invalid
 ```bash
 # Generate new token
-export TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token --username admin@example.com --exp 0 --secret changeme123 2>/dev/null | head -1)
+export TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token --username admin@apollosai.dev --exp 0 --secret changeme123 2>/dev/null | head -1)
 ```
 
 ### Gateway not running

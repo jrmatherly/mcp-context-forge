@@ -215,7 +215,7 @@ make compose-up       # start the Docker Compose stack (PostgreSQL + Redis)
 Quickly confirm that authentication works and the gateway is healthy:
 
 ```bash
-export MCPGATEWAY_BEARER_TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token -u admin@example.com --secret my-test-key)
+export MCPGATEWAY_BEARER_TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token -u admin@apollosai.dev --secret my-test-key)
 curl -s -H "Authorization: Bearer $MCPGATEWAY_BEARER_TOKEN" http://localhost:4444/health
 ```
 
@@ -342,7 +342,7 @@ git branch -D pr-29                # or the feature branch name (replace pr-29 w
 git fetch -p                       # prune remotes that GitHub deleted
 ```
 This removes references to remote branches that GitHub deleted after the merge.
-This keeps your local environment clean and up to date.
+This keeps your local environment clean and up to date
 ---
 
 ## 10. Handy Git Aliases (Optional)

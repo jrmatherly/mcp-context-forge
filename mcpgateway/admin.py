@@ -3505,7 +3505,7 @@ async def admin_login_handler(request: Request, db: Session = Depends(get_db)) -
         >>> # Mock request with form data
         >>> mock_request = MagicMock(spec=Request)
         >>> mock_request.scope = {"root_path": "/test"}
-        >>> mock_form = {"email": "admin@example.com", "password": "changeme"}
+        >>> mock_form = {"email": "admin@apollosai.dev", "password": "changeme"}
         >>> mock_request.form = AsyncMock(return_value=mock_form)
         >>>
         >>> mock_db = MagicMock()
@@ -7355,7 +7355,7 @@ async def admin_force_password_change(
         >>>
         >>> # Mock user context
         >>> mock_user = MagicMock()
-        >>> mock_user.email = "admin@example.com"
+        >>> mock_user.email = "admin@apollosai.dev"
         >>>
         >>> import asyncio
         >>> async def test_force_password_change():

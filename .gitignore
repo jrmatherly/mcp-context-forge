@@ -355,3 +355,6 @@ docker-compose.perf.yml
 tests/jmeter/results/*.jtl
 tests/jmeter/results/*/
 .jmeter/
+
+# Scratchpad (local notes, reviews, plans)
+.scratchpad/

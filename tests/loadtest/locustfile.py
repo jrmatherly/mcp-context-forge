@@ -141,7 +141,7 @@ JWT_AUDIENCE = _get_config("JWT_AUDIENCE", "mcpgateway-api")
 JWT_ISSUER = _get_config("JWT_ISSUER", "mcpgateway")
 # Default to platform admin email for guaranteed authentication
 # This matches the PLATFORM_ADMIN_EMAIL default in .env.example
-JWT_USERNAME = _get_config("JWT_USERNAME", _get_config("PLATFORM_ADMIN_EMAIL", "admin@example.com"))
+JWT_USERNAME = _get_config("JWT_USERNAME", _get_config("PLATFORM_ADMIN_EMAIL", "admin@apollosai.dev"))
 # Token expiry in hours - default 8760 (1 year) to avoid expiration during long load tests
 # JTI (JWT ID) is automatically generated for each token for proper cache keying
 JWT_TOKEN_EXPIRY_HOURS = int(_get_config("LOADTEST_JWT_EXPIRY_HOURS", "8760"))
@@ -3182,7 +3182,7 @@ class RBACCRUDUser(BaseUser):
     def check_permission(self):
         """POST /rbac/permissions/check - Check if user has permission."""
         check_data = {
-            "user_email": "admin@example.com",
+            "user_email": "admin@apollosai.dev",
             "permission": "tools:read",
         }
         with self.client.post(
@@ -3199,7 +3199,7 @@ class RBACCRUDUser(BaseUser):
     def get_user_permissions(self):
         """GET /rbac/permissions/user/{user_email} - Get user's permissions."""
         with self.client.get(
-            "/rbac/permissions/user/admin@example.com",
+            "/rbac/permissions/user/admin@apollosai.dev",
             headers=self.auth_headers,
             name="/rbac/permissions/user/[email]",
             catch_response=True,
@@ -3211,7 +3211,7 @@ class RBACCRUDUser(BaseUser):
     def get_user_roles(self):
         """GET /rbac/users/{user_email}/roles - Get user's assigned roles."""
         with self.client.get(
-            "/rbac/users/admin@example.com/roles",
+            "/rbac/users/admin@apollosai.dev/roles",
             headers=self.auth_headers,
             name="/rbac/users/[email]/roles",
             catch_response=True,
@@ -3590,7 +3590,7 @@ class AuthExtendedUser(BaseUser):
     def test_login(self):
         """POST /auth/login - Test main login endpoint."""
         login_data = {
-            "username": "admin@example.com",
+            "username": "admin@apollosai.dev",
             "password": "admin",  # Default test password
         }
         with self.client.post(
@@ -6056,7 +6056,7 @@ class LLMChatUser(BaseUser):
     def chat_config(self):
         """GET /llmchat/config/{user_id} - Chat config for user."""
         with self.client.get(
-            "/llmchat/config/admin@example.com",
+            "/llmchat/config/admin@apollosai.dev",
             headers=self.auth_headers,
             name="/llmchat/config/[id]",
             catch_response=True,
@@ -6069,7 +6069,7 @@ class LLMChatUser(BaseUser):
     def chat_status(self):
         """GET /llmchat/status/{user_id} - Chat status for user."""
         with self.client.get(
-            "/llmchat/status/admin@example.com",
+            "/llmchat/status/admin@apollosai.dev",
             headers=self.auth_headers,
             name="/llmchat/status/[id]",
             catch_response=True,
@@ -6083,7 +6083,7 @@ class LLMChatUser(BaseUser):
         """POST /llmchat/disconnect - Disconnect chat session."""
         with self.client.post(
             "/llmchat/disconnect",
-            json={"user_id": "admin@example.com"},
+            json={"user_id": "admin@apollosai.dev"},
             headers=self.auth_headers,
             name="/llmchat/disconnect",
             catch_response=True,
@@ -6698,7 +6698,7 @@ class AuthEmailCRUDUser(BaseUser):
         """POST /auth/email/login - Email login."""
         with self.client.post(
             "/auth/email/login",
-            json={"email": "admin@example.com", "password": "changeme"},
+            json={"email": "admin@apollosai.dev", "password": "changeme"},
             headers={**self.auth_headers, "Content-Type": "application/json"},
             name="/auth/email/login",
             catch_response=True,
@@ -6899,7 +6899,7 @@ class TeamsExtendedWriteUser(BaseUser):
                         if members:
                             member = random.choice(members)
                             email = member.get("email") or member.get("user_email")
-                            if email and email != "admin@example.com":
+                            if email and email != "admin@apollosai.dev":
                                 with self.client.put(
                                     f"/teams/{team_id}/members/{email}",
                                     json={"role": "viewer"},
@@ -6949,7 +6949,7 @@ class RBACExtendedWriteUser(BaseUser):
         if ROLE_IDS:
             role_id = random.choice(ROLE_IDS)
             with self.client.post(
-                "/rbac/users/admin@example.com/roles",
+                "/rbac/users/admin@apollosai.dev/roles",
                 json={"role_id": role_id},
                 headers={**self.auth_headers, "Content-Type": "application/json"},
                 name="/rbac/users/[email]/roles [assign]",
@@ -6964,7 +6964,7 @@ class RBACExtendedWriteUser(BaseUser):
         if ROLE_IDS:
             role_id = random.choice(ROLE_IDS)
             with self.client.delete(
-                f"/rbac/users/admin@example.com/roles/{role_id}",
+                f"/rbac/users/admin@apollosai.dev/roles/{role_id}",
                 headers=self.auth_headers,
                 name="/rbac/users/[email]/roles/[id] [delete]",
                 catch_response=True,
@@ -7210,7 +7210,7 @@ class AdminDetailReadExtendedUser(BaseUser):
     def admin_user_edit(self):
         """GET /admin/users/{user_email}/edit - User edit form."""
         with self.client.get(
-            "/admin/users/admin@example.com/edit",
+            "/admin/users/admin@apollosai.dev/edit",
             headers=self.admin_headers,
             name="/admin/users/[email]/edit",
             catch_response=True,
@@ -8358,15 +8358,15 @@ class AdminTeamsHTMXOpsUser(BaseUser):
                     self._validate_status(r, allowed_codes=[200, 302, 404, 422, 500, *INFRASTRUCTURE_ERROR_CODES])
                 # Add member
                 time.sleep(0.1)
-                with self.client.post(f"/admin/teams/{tid}/add-member", data="email=admin@example.com&role=viewer", headers={**self.admin_headers, "Content-Type": "application/x-www-form-urlencoded", "HX-Request": "true"}, name="/admin/teams/[id]/add-member", catch_response=True) as r:
+                with self.client.post(f"/admin/teams/{tid}/add-member", data="email=admin@apollosai.dev&role=viewer", headers={**self.admin_headers, "Content-Type": "application/x-www-form-urlencoded", "HX-Request": "true"}, name="/admin/teams/[id]/add-member", catch_response=True) as r:
                     self._validate_status(r, allowed_codes=[200, 302, 400, 404, 409, 422, 500, *INFRASTRUCTURE_ERROR_CODES])
                 # Update member role
                 time.sleep(0.1)
-                with self.client.post(f"/admin/teams/{tid}/update-member-role", data="email=admin@example.com&role=admin", headers={**self.admin_headers, "Content-Type": "application/x-www-form-urlencoded", "HX-Request": "true"}, name="/admin/teams/[id]/update-member-role", catch_response=True) as r:
+                with self.client.post(f"/admin/teams/{tid}/update-member-role", data="email=admin@apollosai.dev&role=admin", headers={**self.admin_headers, "Content-Type": "application/x-www-form-urlencoded", "HX-Request": "true"}, name="/admin/teams/[id]/update-member-role", catch_response=True) as r:
                     self._validate_status(r, allowed_codes=[200, 302, 400, 404, 422, 500, *INFRASTRUCTURE_ERROR_CODES])
                 # Remove member
                 time.sleep(0.1)
-                with self.client.post(f"/admin/teams/{tid}/remove-member", data="email=admin@example.com", headers={**self.admin_headers, "Content-Type": "application/x-www-form-urlencoded", "HX-Request": "true"}, name="/admin/teams/[id]/remove-member", catch_response=True) as r:
+                with self.client.post(f"/admin/teams/{tid}/remove-member", data="email=admin@apollosai.dev", headers={**self.admin_headers, "Content-Type": "application/x-www-form-urlencoded", "HX-Request": "true"}, name="/admin/teams/[id]/remove-member", catch_response=True) as r:
                     self._validate_status(r, allowed_codes=[200, 302, 400, 404, 500, *INFRASTRUCTURE_ERROR_CODES])
                 # Join request
                 time.sleep(0.1)

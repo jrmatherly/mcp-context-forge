@@ -48,7 +48,6 @@ AUTH_REQUIRED=true
 Find the completed guide on how to use the [HyprMCP Gateway](https://github.com/hyprmcp/mcp-gateway) to support DCR and OAuth2 here:
 [Tutorial: Dynamic Client Registration with HyprMCP](../tutorials/dcr-hyprmcp.md)
 
-
 ```yaml
 # docker-compose.yaml
 services:
@@ -271,14 +270,14 @@ curl http://localhost:4444/tools
 # Returns 401 or anonymous access depending on AUTH_REQUIRED
 ```
 
-2. **With proxy headers:**
+1. **With proxy headers:**
 ```bash
 curl -H "X-Authenticated-User: john.doe@example.com" \
      http://localhost:4444/tools
 # Should return tools list for authenticated user
 ```
 
-3. **WebSocket with proxy auth:**
+1. **WebSocket with proxy auth:**
 ```javascript
 const ws = new WebSocket('ws://localhost:4444/ws', {
   headers: {

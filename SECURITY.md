@@ -22,41 +22,39 @@ For production deployments:
 
 ### 🚀 Deployment Recommendations
 
-
-* **Disable unused features** using environment variables and feature flags (`MCPGATEWAY_ENABLE_PROMPTS=false`, etc.) as per [537](https://github.com/IBM/mcp-context-forge/issues/537)
-* **Use the REST API only**, with strict input validation and authentication
-* **Disable Admin UI and Admin API** in production (`MCPGATEWAY_UI_ENABLED=false`, `MCPGATEWAY_ADMIN_API_ENABLED=false`)
-* **Run containers as non-root users**, with read-only filesystems and minimal base images
-* **Harden network access** with firewalls, ingress policies, and internal-only endpoints
-* **Set resource limits** (CPU, memory) to protect against denial-of-service risks
-* **Always deploy the latest version** – there are **no backported security patches or long-term support branches**
-* **Perform a security audit of the codebase yourself**, especially if deploying in regulated, multi-tenant, or production environments
-* **Integrate as part of a comprehensive solution**:
+- **Disable unused features** using environment variables and feature flags (`MCPGATEWAY_ENABLE_PROMPTS=false`, etc.) as per [537](https://github.com/IBM/mcp-context-forge/issues/537)
+- **Use the REST API only**, with strict input validation and authentication
+- **Disable Admin UI and Admin API** in production (`MCPGATEWAY_UI_ENABLED=false`, `MCPGATEWAY_ADMIN_API_ENABLED=false`)
+- **Run containers as non-root users**, with read-only filesystems and minimal base images
+- **Harden network access** with firewalls, ingress policies, and internal-only endpoints
+- **Set resource limits** (CPU, memory) to protect against denial-of-service risks
+- **Always deploy the latest version** – there are **no backported security patches or long-term support branches**
+- **Perform a security audit of the codebase yourself**, especially if deploying in regulated, multi-tenant, or production environments
+- **Integrate as part of a comprehensive solution**:
   MCP Gateway is **not a standalone product**. It is designed to be one layer in a larger, secure system architecture. You should integrate it with complementary components such as:
 
-  * API gateways or reverse proxies (for auth, rate-limiting, and routing)
-  * Secrets and configuration management systems (e.g., Vault, SOPS)
-  * Identity and access management (IAM) platforms
-  * Logging, monitoring, and alerting tools
-  * Runtime security, anomaly detection, and SIEM platforms
-  * Additional UI or orchestration layers that provide tenant or team-level access controls
+    - API gateways or reverse proxies (for auth, rate-limiting, and routing)
+    - Secrets and configuration management systems (e.g., Vault, SOPS)
+    - Identity and access management (IAM) platforms
+    - Logging, monitoring, and alerting tools
+    - Runtime security, anomaly detection, and SIEM platforms
+    - Additional UI or orchestration layers that provide tenant or team-level access controls
 
   Always consider your full deployment context and threat model when using MCP Gateway as part of a broader system.
 
 #### 🔐 Environment Variable Security
 
-* **Avoid storing secrets in environment variables** unless managed via a secure secrets manager
-* **Never log environment variables or sensitive configs**
-* **Restrict container permissions** so only the application process can read environment variables
-* **Use `.env` files cautiously**, and avoid committing them to version control
-* **Limit runtime shell access** to containers to prevent environment leaks
+- **Avoid storing secrets in environment variables** unless managed via a secure secrets manager
+- **Never log environment variables or sensitive configs**
+- **Restrict container permissions** so only the application process can read environment variables
+- **Use `.env` files cautiously**, and avoid committing them to version control
+- **Limit runtime shell access** to containers to prevent environment leaks
 
 ---
 
 ### Multi-Tenancy Considerations
 
 Please review https://ibm.github.io/mcp-context-forge/architecture/multitenancy/
-
 
 ### General Beta Limitations
 
@@ -198,7 +196,6 @@ Starting with v0.3.1, MCP Gateway follows the principle of "secure by default":
 
 - **Admin UI and API are disabled by default** - must be explicitly enabled via environment variables
 
-
 To enable admin features for development:
 ```bash
 MCPGATEWAY_UI_ENABLED=true        # Default: false
@@ -285,7 +282,7 @@ When deploying MCP Gateway in production:
 - [ ] Set up security scanning in your CI/CD pipeline
 - [ ] Review and restrict environment variable access and use Secrets Management
 
-Remember: Security is a shared responsibility across all components of your system. This checklist should be adapted based on your specific deployment environment and security requirements.
+Remember: Security is a shared responsibility across all components of your system. This checklist should be adapted based on your specific deployment environment and security requirements
 ---
 
 ## 🔍 Security Scanning Process
@@ -516,14 +513,14 @@ flowchart TD
 
 ### Version Support Policy
 
-* The **Admin UI** is intended for **localhost-only use** with trusted upstream MCP servers and is **disabled by default** (`MCPGATEWAY_UI_ENABLED=false`)
-* Deployments should use **only the REST APIs**, with proper authentication, **strict input validation and sanitization**, and **downstream output sanitization** as appropriate
-* The REST API is designed to be **accessed by internal services in a trusted environment**, not directly exposed to untrusted end-users
-* Fixes and security improvements are applied **only to the latest `main` branch** - **no backports** are provided
-* The Admin UI and Admin API are intended solely as development conveniences and **must be disabled in production**
-* Bug fixes and security patches are provided on a **best-effort basis**, without SLAs
-* Security hardening efforts prioritize the **REST API**; the Admin UI remains **unsupported**
-* Currently, roots, resources and prompts are considered alpha, and require additional security hardening and resource limits. They should be disabled through feature flags as per [537](https://github.com/IBM/mcp-context-forge/issues/537)
+- The **Admin UI** is intended for **localhost-only use** with trusted upstream MCP servers and is **disabled by default** (`MCPGATEWAY_UI_ENABLED=false`)
+- Deployments should use **only the REST APIs**, with proper authentication, **strict input validation and sanitization**, and **downstream output sanitization** as appropriate
+- The REST API is designed to be **accessed by internal services in a trusted environment**, not directly exposed to untrusted end-users
+- Fixes and security improvements are applied **only to the latest `main` branch** - **no backports** are provided
+- The Admin UI and Admin API are intended solely as development conveniences and **must be disabled in production**
+- Bug fixes and security patches are provided on a **best-effort basis**, without SLAs
+- Security hardening efforts prioritize the **REST API**; the Admin UI remains **unsupported**
+- Currently, roots, resources and prompts are considered alpha, and require additional security hardening and resource limits. They should be disabled through feature flags as per [537](https://github.com/IBM/mcp-context-forge/issues/537)
 
 ### Security Update Process
 
@@ -542,11 +539,11 @@ All Container Images and Python dependencies are updated with every release (maj
 
 Our security patching strategy prioritizes meaningful updates while maintaining overall system stability:
 
-* **Critical and High-Severity Vulnerabilities**: Best-effort patches are typically released within **1 week** of discovery or disclosure. These updates usually result in a **minor version bump** (e.g., `0.3.1`).
+- **Critical and High-Severity Vulnerabilities**: Best-effort patches are typically released within **1 week** of discovery or disclosure. These updates usually result in a **minor version bump** (e.g., `0.3.1`).
 
-* **Medium-Severity Vulnerabilities**: Addressed in the **next scheduled release**, usually within **2 weeks** of identification.
+- **Medium-Severity Vulnerabilities**: Addressed in the **next scheduled release**, usually within **2 weeks** of identification.
 
-* **Low-Severity Vulnerabilities**: Included in **regular maintenance updates**, typically resolved across **1–2 upcoming releases** (~**2–4 weeks**), depending on impact and availability.
+- **Low-Severity Vulnerabilities**: Included in **regular maintenance updates**, typically resolved across **1–2 upcoming releases** (~**2–4 weeks**), depending on impact and availability.
 
 There are **no formal zero-day patch guarantees**; users are expected to evaluate risks and apply any necessary mitigations on their own infrastructure.
 

@@ -27,7 +27,7 @@ warn() {
 # Configuration
 JWT_SECRET="${JWT_SECRET:-my-test-key}"
 JWT_ALGO="${JWT_ALGO:-HS256}"
-USERNAME="${USERNAME:-admin@example.com}"
+USERNAME="${USERNAME:-admin@apollosai.dev}"
 EXPIRATION="${EXPIRATION:-10080}" # 7 days in minutes
 
 log "Generating JWT token for performance tests..."

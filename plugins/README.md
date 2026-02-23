@@ -14,9 +14,9 @@ PLUGINS_CLI_COMPLETION=false
 PLUGINS_CLI_MARKUP_MODE=rich
 ```
 
-2. Configure plugins in `plugins/config.yaml` (see [Configuration](#configuration) section)
+1. Configure plugins in `plugins/config.yaml` (see [Configuration](#configuration) section)
 
-3. Restart the gateway: `make dev`
+2. Restart the gateway: `make dev`
 
 ## Plugin Architecture
 
@@ -500,9 +500,9 @@ Errors inside a plugin should be raised as exceptions. The plugin manager will c
 
 1. If `plugin_settings.fail_on_plugin_error` in the plugin `config.yaml` is set to `true`, the exception is bubbled up as a PluginError and the error is passed to the client of ContextForge regardless of the plugin mode.
 2. If `plugin_settings.fail_on_plugin_error` is set to false, the error is handled based off of the plugin mode in the plugin's config as follows:
-   * If `mode` is `enforce`, both violations and errors are bubbled up as exceptions and the execution is blocked.
-   * If `mode` is `enforce_ignore_error`, violations are bubbled up as exceptions and execution is blocked, but errors are logged and execution continues.
-   * If `mode` is `permissive`, execution is allowed to proceed whether there are errors or violations. Both are logged.
+   - If `mode` is `enforce`, both violations and errors are bubbled up as exceptions and the execution is blocked.
+   - If `mode` is `enforce_ignore_error`, violations are bubbled up as exceptions and execution is blocked, but errors are logged and execution continues.
+   - If `mode` is `permissive`, execution is allowed to proceed whether there are errors or violations. Both are logged.
 
 ### Accessing Plugin Context
 

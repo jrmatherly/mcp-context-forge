@@ -2239,8 +2239,8 @@ class TestMakePoolKey:
         pool = MCPSessionPool()
         with patch("mcpgateway.services.mcp_session_pool.settings") as mock_settings:
             mock_settings.mcpgateway_session_affinity_enabled = False
-            key = pool._make_pool_key("http://test:8080", None, TransportType.SSE, "admin@example.com")
-        expected_hash = hashlib.sha256(b"admin@example.com").hexdigest()
+            key = pool._make_pool_key("http://test:8080", None, TransportType.SSE, "admin@apollosai.dev")
+        expected_hash = hashlib.sha256(b"admin@apollosai.dev").hexdigest()
         assert key[0] == expected_hash
 
     def test_gateway_id_in_key(self):

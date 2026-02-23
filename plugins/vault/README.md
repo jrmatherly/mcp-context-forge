@@ -6,7 +6,7 @@ It receives a dictionary of secrets and use them to dispatch the authorization t
 ## Features
 
 - **Tag-based metadata handling**: Supports dict format `{"id": "...", "label": "..."}`
-   - Supported tags must be created on an MCP server to drive the secret handling:
+    - Supported tags must be created on an MCP server to drive the secret handling:
         - system:<system host> where system host is the IDP provider for that MCP Server. For example system:github.com or system:mural.com
         - AUTH_HEADER:<header name> where header name is the authorization header to be used for this MCP header if a PAT token is send
 
@@ -171,15 +171,13 @@ Extracts system from the OAuth2 configuration's `token_url`:
 
 - **tool_pre_invoke**: Processes vault tokens before tool invocation
 
-
 ## Testing
 
 ## Create a token
-export MCPGATEWAY_BEARER_TOKEN = python3 -m mcpgateway.utils.create_jwt_token --username admin@example.com --exp 10080 --secret my-test-key
+export MCPGATEWAY_BEARER_TOKEN = python3 -m mcpgateway.utils.create_jwt_token --username admin@apollosai.dev --exp 10080 --secret my-test-key
 
 export CLIENT_ID=xxx
 export CLIENT_SECRET=xxx
-
 
 ## Register MCP server with the gateway and add OAuth2 configuration Using UI
 curl -s -X POST -H "Authorization: Bearer $MCPGATEWAY_BEARER_TOKEN" \

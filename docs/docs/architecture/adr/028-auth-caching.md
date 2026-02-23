@@ -72,7 +72,7 @@ Implement a two-tier authentication caching system with Redis as the primary sto
 {cache_prefix}auth:ctx:{email}:{jti} → Batched context JSON
 ```
 
-Default prefix: `mcpgw:` → `mcpgw:auth:ctx:admin@example.com:jti-123`
+Default prefix: `mcpgw:` → `mcpgw:auth:ctx:admin@apollosai.dev:jti-123`
 
 ### Security Considerations
 
@@ -85,6 +85,7 @@ Default prefix: `mcpgw:` → `mcpgw:auth:ctx:admin@example.com:jti-123`
 ## Performance Optimizations
 
 ### Before (Baseline)
+
 | Metric | Value |
 |--------|-------|
 | DB queries per auth | 3-4 |
@@ -93,6 +94,7 @@ Default prefix: `mcpgw:` → `mcpgw:auth:ctx:admin@example.com:jti-123`
 | Auth latency P99 | ~25ms |
 
 ### After (With Caching + Batching)
+
 | Metric | Cache Hit | Cache Miss |
 |--------|-----------|------------|
 | DB queries per auth | 0 | 1 |
@@ -117,9 +119,9 @@ Default prefix: `mcpgw:` → `mcpgw:auth:ctx:admin@example.com:jti-123`
 - Added complexity in cache invalidation
 - Slight delay (up to TTL) for changes to propagate:
 
-  - User profile changes: up to 60s
-  - Team membership changes: up to 60s
-  - Token revocations: up to 30s (security-critical, kept short)
+    - User profile changes: up to 60s
+    - Team membership changes: up to 60s
+    - Token revocations: up to 30s (security-critical, kept short)
 
 - Additional Redis dependency for distributed caching (fallback to in-memory available)
 

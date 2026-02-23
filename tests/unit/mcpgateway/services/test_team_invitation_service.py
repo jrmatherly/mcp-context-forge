@@ -55,7 +55,7 @@ class TestTeamInvitationService:
     def mock_inviter(self):
         """Create mock inviter user."""
         user = MagicMock(spec=EmailUser)
-        user.email = "admin@example.com"
+        user.email = "admin@apollosai.dev"
         user.is_active = True
         return user
 
@@ -64,7 +64,7 @@ class TestTeamInvitationService:
         """Create mock team membership for inviter."""
         membership = MagicMock(spec=EmailTeamMember)
         membership.team_id = "team123"
-        membership.user_email = "admin@example.com"
+        membership.user_email = "admin@apollosai.dev"
         membership.role = "owner"
         membership.is_active = True
         return membership
@@ -77,7 +77,7 @@ class TestTeamInvitationService:
         invitation.team_id = "team123"
         invitation.email = "user@example.com"
         invitation.role = "member"
-        invitation.invited_by = "admin@example.com"
+        invitation.invited_by = "admin@apollosai.dev"
         invitation.token = "secure_token_123"
         invitation.is_active = True
         invitation.is_valid.return_value = True
@@ -142,7 +142,7 @@ class TestTeamInvitationService:
         mock_team.max_members = 100
 
         mock_inviter = MagicMock(spec=EmailUser)
-        mock_inviter.email = "admin@example.com"
+        mock_inviter.email = "admin@apollosai.dev"
 
         mock_membership = MagicMock(spec=EmailTeamMember)
         mock_membership.role = "owner"
@@ -190,7 +190,7 @@ class TestTeamInvitationService:
             mock_invitation_instance = MagicMock()
             MockInvitation.return_value = mock_invitation_instance
 
-            result = await service.create_invitation(team_id="team123", email="user@example.com", role="member", invited_by="admin@example.com")
+            result = await service.create_invitation(team_id="team123", email="user@example.com", role="member", invited_by="admin@apollosai.dev")
 
             assert result == mock_invitation_instance
             mock_db.add.assert_called_once_with(mock_invitation_instance)
@@ -200,7 +200,7 @@ class TestTeamInvitationService:
     async def test_create_invitation_invalid_role(self, service):
         """Test creating invitation with invalid role."""
         with pytest.raises(ValueError, match="Invalid role"):
-            await service.create_invitation(team_id="team123", email="user@example.com", role="invalid", invited_by="admin@example.com")
+            await service.create_invitation(team_id="team123", email="user@example.com", role="invalid", invited_by="admin@apollosai.dev")
 
     @pytest.mark.asyncio
     async def test_create_invitation_team_not_found(self, service, mock_db):
@@ -209,7 +209,7 @@ class TestTeamInvitationService:
         mock_query.filter.return_value.first.return_value = None
         mock_db.query.return_value = mock_query
 
-        result = await service.create_invitation(team_id="nonexistent", email="user@example.com", role="member", invited_by="admin@example.com")
+        result = await service.create_invitation(team_id="nonexistent", email="user@example.com", role="member", invited_by="admin@apollosai.dev")
 
         assert result is None
 
@@ -223,7 +223,7 @@ class TestTeamInvitationService:
         mock_db.query.return_value = mock_query
 
         with pytest.raises(ValueError, match="Cannot send invitations to personal teams"):
-            await service.create_invitation(team_id="team123", email="user@example.com", role="member", invited_by="admin@example.com")
+            await service.create_invitation(team_id="team123", email="user@example.com", role="member", invited_by="admin@apollosai.dev")
 
     @pytest.mark.asyncio
     async def test_create_invitation_inviter_not_found(self, service, mock_team, mock_db):
@@ -260,7 +260,7 @@ class TestTeamInvitationService:
         mock_db.query.side_effect = query_side_effect
 
         with pytest.raises(ValueError, match="Only team members can send invitations"):
-            await service.create_invitation(team_id="team123", email="user@example.com", role="member", invited_by="admin@example.com")
+            await service.create_invitation(team_id="team123", email="user@example.com", role="member", invited_by="admin@apollosai.dev")
 
     @pytest.mark.asyncio
     async def test_create_invitation_inviter_insufficient_permissions(self, service, mock_team, mock_inviter, mock_membership, mock_db):
@@ -280,7 +280,7 @@ class TestTeamInvitationService:
         mock_db.query.side_effect = query_side_effect
 
         with pytest.raises(ValueError, match="Only team owners can send invitations"):
-            await service.create_invitation(team_id="team123", email="user@example.com", role="member", invited_by="admin@example.com")
+            await service.create_invitation(team_id="team123", email="user@example.com", role="member", invited_by="admin@apollosai.dev")
 
     @pytest.mark.asyncio
     async def test_create_invitation_user_already_member(self, service, mock_team, mock_inviter, mock_membership, mock_db):
@@ -308,7 +308,7 @@ class TestTeamInvitationService:
         mock_db.query.side_effect = query_side_effect
 
         with pytest.raises(ValueError, match="already a member of this team"):
-            await service.create_invitation(team_id="team123", email="user@example.com", role="member", invited_by="admin@example.com")
+            await service.create_invitation(team_id="team123", email="user@example.com", role="member", invited_by="admin@apollosai.dev")
 
     @pytest.mark.asyncio
     async def test_create_invitation_active_invitation_exists(self, service, mock_team, mock_inviter, mock_membership, mock_invitation, mock_db):
@@ -336,7 +336,7 @@ class TestTeamInvitationService:
         mock_db.query.side_effect = query_side_effect
 
         with pytest.raises(ValueError, match="An active invitation already exists"):
-            await service.create_invitation(team_id="team123", email="user@example.com", role="member", invited_by="admin@example.com")
+            await service.create_invitation(team_id="team123", email="user@example.com", role="member", invited_by="admin@apollosai.dev")
 
     @pytest.mark.asyncio
     async def test_create_invitation_max_members_exceeded(self, service, mock_team, mock_inviter, mock_membership, mock_db):
@@ -374,7 +374,7 @@ class TestTeamInvitationService:
         mock_db.query.side_effect = query_side_effect
 
         with pytest.raises(ValueError, match="maximum member limit"):
-            await service.create_invitation(team_id="team123", email="user@example.com", role="member", invited_by="admin@example.com")
+            await service.create_invitation(team_id="team123", email="user@example.com", role="member", invited_by="admin@apollosai.dev")
 
     # =========================================================================
     # Invitation Retrieval Tests
@@ -616,7 +616,7 @@ class TestTeamInvitationService:
 
         mock_db.query.side_effect = query_side_effect
 
-        result = await service.revoke_invitation("invite123", "admin@example.com")
+        result = await service.revoke_invitation("invite123", "admin@apollosai.dev")
 
         assert result is True
         assert mock_invitation.is_active is False
@@ -629,7 +629,7 @@ class TestTeamInvitationService:
         mock_query.filter.return_value.first.return_value = None
         mock_db.query.return_value = mock_query
 
-        result = await service.revoke_invitation("nonexistent", "admin@example.com")
+        result = await service.revoke_invitation("nonexistent", "admin@apollosai.dev")
 
         assert result is False
 
@@ -826,7 +826,7 @@ class TestTeamInvitationService:
             mock_new_invitation = MagicMock()
             MockInvitation.return_value = mock_new_invitation
 
-            result = await service.create_invitation(team_id="team123", email="user@example.com", role="member", invited_by="admin@example.com")
+            result = await service.create_invitation(team_id="team123", email="user@example.com", role="member", invited_by="admin@apollosai.dev")
 
             # Should deactivate existing invitation and create new one
             assert mock_invitation.is_active is False
@@ -892,7 +892,7 @@ class TestTeamInvitationService:
             mock_invitation_instance = MagicMock()
             MockInvitation.return_value = mock_invitation_instance
 
-            await service.create_invitation(team_id="team123", email="user@example.com", role="member", invited_by="admin@example.com")
+            await service.create_invitation(team_id="team123", email="user@example.com", role="member", invited_by="admin@apollosai.dev")
 
             # Should use settings default for expiry
             MockInvitation.assert_called_once()

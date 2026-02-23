@@ -85,7 +85,7 @@ preload_app = True            # Load app once, then fork (memory efficient)
 
 The trade-off is that you are running multiple Python interpreter instances, and each consumes additional memory.
 
-This also requires having shared state (e.g. Redis or a Database).
+This also requires having shared state (e.g. Redis or a Database)
 ---
 
 ## 2. Vertical Scaling with Gunicorn
@@ -1743,7 +1743,7 @@ brew install k6            # macOS
 ```bash
 # Get JWT token
 export MCPGATEWAY_BEARER_TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token \
-  --username admin@example.com --exp 10080 --secret my-test-key)
+  --username admin@apollosai.dev --exp 10080 --secret my-test-key)
 
 # Create test payload
 cat > payload.json <<EOF
@@ -2470,73 +2470,73 @@ MCP Gateway is built on a high-performance foundation:
 
 - [ ] **Vertical Scaling**
 
-  - [ ] Configure Gunicorn workers: `(2 × CPU) + 1`
-  - [ ] Allocate CPU: 1 core per 2 workers
-  - [ ] Allocate memory: 256MB + (workers × 200MB)
+    - [ ] Configure Gunicorn workers: `(2 × CPU) + 1`
+    - [ ] Allocate CPU: 1 core per 2 workers
+    - [ ] Allocate memory: 256MB + (workers × 200MB)
 
 - [ ] **Horizontal Scaling**
 
-  - [ ] Deploy to Kubernetes with HPA enabled
-  - [ ] Set `minReplicas` ≥ 3 for high availability
-  - [ ] Configure shared PostgreSQL and Redis
+    - [ ] Deploy to Kubernetes with HPA enabled
+    - [ ] Set `minReplicas` ≥ 3 for high availability
+    - [ ] Configure shared PostgreSQL and Redis
 
 - [ ] **Database Optimization**
 
-  - [ ] Calculate `max_connections`: `(pods × workers × pool) × 1.2`
-  - [ ] Set `DB_POOL_SIZE` per worker (recommended: 50)
-  - [ ] Configure `DB_POOL_RECYCLE=3600` to prevent stale connections
-  - [ ] Use psycopg3 URL format: `postgresql+psycopg://`
-  - [ ] Tune `DB_PREPARE_THRESHOLD` for auto-prepared statements
-  - [ ] Consider PgBouncer for connection multiplexing (high concurrency)
-  - [ ] Verify database indexes are applied (10-100x query improvement)
+    - [ ] Calculate `max_connections`: `(pods × workers × pool) × 1.2`
+    - [ ] Set `DB_POOL_SIZE` per worker (recommended: 50)
+    - [ ] Configure `DB_POOL_RECYCLE=3600` to prevent stale connections
+    - [ ] Use psycopg3 URL format: `postgresql+psycopg://`
+    - [ ] Tune `DB_PREPARE_THRESHOLD` for auto-prepared statements
+    - [ ] Consider PgBouncer for connection multiplexing (high concurrency)
+    - [ ] Verify database indexes are applied (10-100x query improvement)
 
 - [ ] **Caching**
 
-  - [ ] Enable Redis: `CACHE_TYPE=redis`
-  - [ ] Set `REDIS_URL` to shared Redis instance
-  - [ ] Configure TTLs: `SESSION_TTL=3600`, `MESSAGE_TTL=600`
-  - [ ] Tune Redis pool: `REDIS_MAX_CONNECTIONS=150` (high concurrency)
-  - [ ] Use hiredis parser: `REDIS_PARSER=hiredis` (up to 83x faster)
-  - [ ] Enable JWT caching: `JWT_CACHE_ENABLED=true`
-  - [ ] Enable auth caching: `AUTH_CACHE_ENABLED=true`
-  - [ ] Enable registry caching: `REGISTRY_CACHE_ENABLED=true`
-  - [ ] Enable admin stats caching: `ADMIN_STATS_CACHE_ENABLED=true`
+    - [ ] Enable Redis: `CACHE_TYPE=redis`
+    - [ ] Set `REDIS_URL` to shared Redis instance
+    - [ ] Configure TTLs: `SESSION_TTL=3600`, `MESSAGE_TTL=600`
+    - [ ] Tune Redis pool: `REDIS_MAX_CONNECTIONS=150` (high concurrency)
+    - [ ] Use hiredis parser: `REDIS_PARSER=hiredis` (up to 83x faster)
+    - [ ] Enable JWT caching: `JWT_CACHE_ENABLED=true`
+    - [ ] Enable auth caching: `AUTH_CACHE_ENABLED=true`
+    - [ ] Enable registry caching: `REGISTRY_CACHE_ENABLED=true`
+    - [ ] Enable admin stats caching: `ADMIN_STATS_CACHE_ENABLED=true`
 
 - [ ] **Performance**
 
-  - [ ] Select HTTP server: `HTTP_SERVER=gunicorn` (stable) or `granian` (faster)
-  - [ ] Tune Gunicorn: `GUNICORN_PRELOAD_APP=true`, `GUNICORN_WORKERS=auto`
-  - [ ] Or tune Granian: `GRANIAN_BACKLOG=4096`, `GRANIAN_BACKPRESSURE=64`
-  - [ ] Set timeouts: `GUNICORN_TIMEOUT=600`
-  - [ ] Configure retries: `RETRY_MAX_ATTEMPTS=3`
-  - [ ] Enable compression: `COMPRESSION_ENABLED=true`
-  - [ ] Disable audit trail for load testing: `AUDIT_TRAIL_ENABLED=false`
+    - [ ] Select HTTP server: `HTTP_SERVER=gunicorn` (stable) or `granian` (faster)
+    - [ ] Tune Gunicorn: `GUNICORN_PRELOAD_APP=true`, `GUNICORN_WORKERS=auto`
+    - [ ] Or tune Granian: `GRANIAN_BACKLOG=4096`, `GRANIAN_BACKPRESSURE=64`
+    - [ ] Set timeouts: `GUNICORN_TIMEOUT=600`
+    - [ ] Configure retries: `RETRY_MAX_ATTEMPTS=3`
+    - [ ] Enable compression: `COMPRESSION_ENABLED=true`
+    - [ ] Disable audit trail for load testing: `AUDIT_TRAIL_ENABLED=false`
 
 - [ ] **Logging & Metrics**
 
-  - [ ] Set log level: `LOG_LEVEL=ERROR` (production)
-  - [ ] Disable access logs: `DISABLE_ACCESS_LOG=true`
-  - [ ] Disable DB logging: `STRUCTURED_LOGGING_DATABASE_ENABLED=false`
-  - [ ] Enable metrics buffer: `METRICS_BUFFER_ENABLED=true`
-  - [ ] Enable metrics cache: `METRICS_CACHE_ENABLED=true`
+    - [ ] Set log level: `LOG_LEVEL=ERROR` (production)
+    - [ ] Disable access logs: `DISABLE_ACCESS_LOG=true`
+    - [ ] Disable DB logging: `STRUCTURED_LOGGING_DATABASE_ENABLED=false`
+    - [ ] Enable metrics buffer: `METRICS_BUFFER_ENABLED=true`
+    - [ ] Enable metrics cache: `METRICS_CACHE_ENABLED=true`
 
 - [ ] **Health Checks**
 
-  - [ ] Configure `/health` liveness probe
-  - [ ] Configure `/ready` readiness probe
-  - [ ] Set appropriate thresholds and timeouts
+    - [ ] Configure `/health` liveness probe
+    - [ ] Configure `/ready` readiness probe
+    - [ ] Set appropriate thresholds and timeouts
 
 - [ ] **Monitoring**
 
-  - [ ] Enable OpenTelemetry: `OTEL_ENABLE_OBSERVABILITY=true`
-  - [ ] Deploy Prometheus and Grafana
-  - [ ] Configure alerts for errors, latency, and resources
+    - [ ] Enable OpenTelemetry: `OTEL_ENABLE_OBSERVABILITY=true`
+    - [ ] Deploy Prometheus and Grafana
+    - [ ] Configure alerts for errors, latency, and resources
 
 - [ ] **Load Testing**
 
-  - [ ] Benchmark with `hey` or `k6`
-  - [ ] Target: >1000 RPS per pod, P99 <500ms
-  - [ ] Test failover scenarios
+    - [ ] Benchmark with `hey` or `k6`
+    - [ ] Target: >1000 RPS per pod, P99 <500ms
+    - [ ] Test failover scenarios
 
 ### Reference Documentation
 

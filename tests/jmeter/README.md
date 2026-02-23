@@ -41,7 +41,7 @@ Note: The Makefile targets render shared REST/MCP fragments into `.jmeter/render
 ```bash
 # Set up environment
 export MCPGATEWAY_BEARER_TOKEN=$(python -m mcpgateway.utils.create_jwt_token \
-  --username admin@example.com --exp 10080 --secret $JWT_SECRET_KEY)
+  --username admin@apollosai.dev --exp 10080 --secret $JWT_SECRET_KEY)
 
 # Run REST API baseline
 make jmeter-rest-baseline

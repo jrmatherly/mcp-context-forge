@@ -103,7 +103,7 @@ podman build -t mcp-context-forge:dev -f Containerfile .
 !!! note "Production deployments"
     Production deployments can pull the signed image directly:
     ```
-    ghcr.io/ibm/mcp-context-forge:1.0.0-RC-1
+ghcr.io/ibm/mcp-context-forge:1.0.0-RC-1
     ```
 
 ---
@@ -570,7 +570,7 @@ kubectl create secret generic redis-secret -n mcp \
 # Create MCP Gateway config
 kubectl create secret generic mcp-gateway-secret -n mcp \
   --from-literal=JWT_SECRET_KEY="$JWT_SECRET" \
-  --from-literal=PLATFORM_ADMIN_EMAIL="admin@example.com" \
+  --from-literal=PLATFORM_ADMIN_EMAIL="admin@apollosai.dev" \
   --from-literal=PLATFORM_ADMIN_PASSWORD="$PLATFORM_ADMIN_PASSWORD" \
   --from-literal=DATABASE_URL="postgresql+psycopg://mcpgateway:$POSTGRES_PASSWORD@mcp-stack-postgres:5432/mcpgateway" \
   --from-literal=REDIS_URL="redis://:$REDIS_PASSWORD@mcp-stack-redis:6379/0"
@@ -630,7 +630,7 @@ kubectl get pv,pvc -n mcp
 source ~/mcp-credentials.env
 export MCPGATEWAY_BEARER_TOKEN=$(kubectl exec -n mcp deployment/mcp-stack-mcpcontextforge -- \
   python3 -m mcpgateway.utils.create_jwt_token \
-  --username admin@example.com --exp 10080 --secret "$JWT_SECRET")
+  --username admin@apollosai.dev --exp 10080 --secret "$JWT_SECRET")
 
 echo "Bearer token: $MCPGATEWAY_BEARER_TOKEN"
 ```
@@ -654,7 +654,7 @@ curl -s -H "Authorization: Bearer $MCPGATEWAY_BEARER_TOKEN" \
 
 # Open admin UI
 echo "Admin UI: $GATEWAY_URL/admin"
-echo "Email: admin@example.com"
+echo "Email: admin@apollosai.dev"
 echo "Password: $PLATFORM_ADMIN_PASSWORD"
 ```
 
@@ -1033,8 +1033,8 @@ hey -z 30s -c 10 https://mcp-gateway.<CLUSTER_INGRESS_SUBDOMAIN>/health
 
 Options explained:
 
-* `-z 30s`: Duration of test
-* `-c 10`: Number of concurrent connections
+- `-z 30s`: Duration of test
+- `-c 10`: Number of concurrent connections
 
 For authenticated endpoints:
 
@@ -1070,9 +1070,9 @@ kubectl describe hpa mcp-stack-mcpcontextforge -n mcp
 
 Each tool invocation is tracked with:
 
-* Response time (min/max/avg)
-* Success/failure rate
-* Total executions
+- Response time (min/max/avg)
+- Success/failure rate
+- Total executions
 
 Fetch aggregated metrics from the API:
 
@@ -1107,13 +1107,11 @@ wait
 
 ## 15. Configuring the Kubernetes MCP Server
 
-
 Run the Kubernetes MCP Server and add it to the gateway:
 
 ```
 python3 -m mcpgateway.translate --stdio "npx -y kubernetes-mcp-server@latest" --expose-sse --port 8103
 ```
-
 
 ## 16. FAQ
 

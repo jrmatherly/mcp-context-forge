@@ -4,10 +4,10 @@
 
 A full-stack Helm chart for IBM's **Model Context Protocol (MCP) Gateway
 & Registry - Context-Forge**.  It bundles:
-  - MCP Gateway application (HTTP / WebSocket server)
-  - PostgreSQL database with persistent storage
-  - Redis cache for sessions & completions
-  - Optional PgAdmin and Redis-Commander web UIs
+- MCP Gateway application (HTTP / WebSocket server)
+- PostgreSQL database with persistent storage
+- Redis cache for sessions & completions
+- Optional PgAdmin and Redis-Commander web UIs
 
 **Homepage:** <https://github.com/IBM/mcp-context-forge>
 
@@ -19,7 +19,7 @@ A full-stack Helm chart for IBM's **Model Context Protocol (MCP) Gateway
 
 ## Source Code
 
-* <https://github.com/IBM/mcp-context-forge>
+- <https://github.com/IBM/mcp-context-forge>
 
 ## Requirements
 
@@ -561,7 +561,7 @@ Kubernetes: `>=1.21.0-0`
 | mcpContextForge.secret.PASSWORD_REQUIRE_SPECIAL | string | `"false"` |  |
 | mcpContextForge.secret.PASSWORD_REQUIRE_UPPERCASE | string | `"false"` |  |
 | mcpContextForge.secret.PERSONAL_TEAM_PREFIX | string | `"personal"` |  |
-| mcpContextForge.secret.PLATFORM_ADMIN_EMAIL | string | `"admin@example.com"` |  |
+| mcpContextForge.secret.PLATFORM_ADMIN_EMAIL | string | `"admin@apollosai.dev"` |  |
 | mcpContextForge.secret.PLATFORM_ADMIN_FULL_NAME | string | `"Platform Administrator"` |  |
 | mcpContextForge.secret.PLATFORM_ADMIN_PASSWORD | string | `"changeme"` |  |
 | mcpContextForge.secret.PREV_ED25519_PRIVATE_KEY | string | `""` |  |
@@ -710,7 +710,7 @@ Kubernetes: `>=1.21.0-0`
 | minio.service.consolePort | int | `9001` |  |
 | minio.service.type | string | `"ClusterIP"` |  |
 | pgadmin.enabled | bool | `true` |  |
-| pgadmin.env.email | string | `"admin@example.com"` |  |
+| pgadmin.env.email | string | `"admin@apollosai.dev"` |  |
 | pgadmin.env.password | string | `"admin123"` |  |
 | pgadmin.existingSecret | string | `""` |  |
 | pgadmin.image.pullPolicy | string | `"IfNotPresent"` |  |

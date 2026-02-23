@@ -63,7 +63,7 @@ And is readily available as open source, published a container image and as a Py
     docker run -d --name mcpgateway \
       -p 4444:4444 \
       -e JWT_SECRET_KEY=YOUR_KEY \
-      -e PLATFORM_ADMIN_EMAIL=admin@example.com \
+      -e PLATFORM_ADMIN_EMAIL=admin@apollosai.dev \
       -e PLATFORM_ADMIN_PASSWORD=changeme \
       -e PLATFORM_ADMIN_FULL_NAME="Platform Administrator" \
       ghcr.io/ibm/mcp-context-forge:1.0.0-RC-1
@@ -83,7 +83,7 @@ And is readily available as open source, published a container image and as a Py
     docker run -d --name mcpgateway \
       -p 4444:4444 \
       -e JWT_SECRET_KEY=YOUR_KEY \
-      -e PLATFORM_ADMIN_EMAIL=admin@example.com \
+      -e PLATFORM_ADMIN_EMAIL=admin@apollosai.dev \
       -e PLATFORM_ADMIN_PASSWORD=changeme \
       -e PLATFORM_ADMIN_FULL_NAME="Platform Administrator" \
       ghcr.io/ibm/mcp-context-forge:1.0.0-RC-1
@@ -100,7 +100,7 @@ And is readily available as open source, published a container image and as a Py
     mcpgateway --host 0.0.0.0 --port 4444
 
     # Option 2: Set environment variables directly
-    PLATFORM_ADMIN_EMAIL=admin@example.com \
+    PLATFORM_ADMIN_EMAIL=admin@apollosai.dev \
     PLATFORM_ADMIN_PASSWORD=changeme \
     PLATFORM_ADMIN_FULL_NAME="Platform Administrator" \
     mcpgateway --host 0.0.0.0 --port 4444
@@ -124,7 +124,7 @@ And is readily available as open source, published a container image and as a Py
     docker run -d --name mcpgateway \
       -p 4444:4444 \
       -e JWT_SECRET_KEY=YOUR_KEY \
-      -e PLATFORM_ADMIN_EMAIL=admin@example.com \
+      -e PLATFORM_ADMIN_EMAIL=admin@apollosai.dev \
       -e PLATFORM_ADMIN_PASSWORD=changeme \
       -e PLATFORM_ADMIN_FULL_NAME="Platform Administrator" \
       ghcr.io/ibm/mcp-context-forge:1.0.0-RC-1
@@ -142,7 +142,7 @@ And is readily available as open source, published a container image and as a Py
     mcpgateway --host 0.0.0.0 --port 4444
 
     # Option 2: Set environment variables directly
-    PLATFORM_ADMIN_EMAIL=admin@example.com \
+    PLATFORM_ADMIN_EMAIL=admin@apollosai.dev \
     PLATFORM_ADMIN_PASSWORD=changeme \
     PLATFORM_ADMIN_FULL_NAME="Platform Administrator" \
     mcpgateway --host 0.0.0.0 --port 4444
@@ -190,7 +190,6 @@ And is readily available as open source, published a container image and as a Py
     * Display results and JSON output directly within the VS Code interface
 
     Try it yourself-and don't forget to ⭐ the project at [ContextForge MCP Gateway](https://github.com/IBM/mcp-context-forge)!
-
 
 ## 🖼️ Logo & Images
 

@@ -77,7 +77,7 @@ JWT_SECRET_KEY = _get_config("JWT_SECRET_KEY", "my-test-key")
 JWT_ALGORITHM = _get_config("JWT_ALGORITHM", "HS256")
 JWT_AUDIENCE = _get_config("JWT_AUDIENCE", "mcpgateway-api")
 JWT_ISSUER = _get_config("JWT_ISSUER", "mcpgateway")
-JWT_USERNAME = _get_config("PLATFORM_ADMIN_EMAIL", "admin@example.com")
+JWT_USERNAME = _get_config("PLATFORM_ADMIN_EMAIL", "admin@apollosai.dev")
 
 _CACHED_TOKEN: str | None = None
 

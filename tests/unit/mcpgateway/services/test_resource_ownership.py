@@ -107,7 +107,7 @@ class TestCheckResourceOwnership:
         permission_service._is_user_admin = AsyncMock(return_value=False)
         permission_service._get_user_team_role = AsyncMock(return_value="owner")
 
-        result = await permission_service.check_resource_ownership("admin@example.com", mock_resource)
+        result = await permission_service.check_resource_ownership("admin@apollosai.dev", mock_resource)
 
         assert result == True
 
@@ -453,7 +453,7 @@ class TestTeamAdminSpecialCase:
             # Team admin returns True for ownership check
             mock_perm_service.check_resource_ownership = AsyncMock(return_value=True)
 
-            await gateway_service.delete_gateway(mock_db_session, "gateway-1", user_email="admin@example.com")
+            await gateway_service.delete_gateway(mock_db_session, "gateway-1", user_email="admin@apollosai.dev")
 
             # Verify execute was called (for select and delete)
             assert mock_db_session.execute.call_count >= 2

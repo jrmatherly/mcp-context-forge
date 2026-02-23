@@ -53,12 +53,12 @@ pytest tests/unit/mcpgateway/plugins/framework/test_manager.py::test_manager_fil
 PLUGINS_ENABLED=true
 ```
 
-2. Start the gateway:
+1. Start the gateway:
 ```bash
 python -m mcpgateway.main
 ```
 
-3. Test with curl:
+1. Test with curl:
 ```bash
 # Test PII detection in prompt arguments
 curl -X POST http://localhost:8000/prompts/test_prompt \
@@ -81,7 +81,7 @@ curl -X POST http://localhost:8000/prompts/test_prompt \
 Here's a prompt that trips the checks:
 
 ```bash
-export MCPGATEWAY_BEARER_TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token -u admin@example.com --secret my-test-key)
+export MCPGATEWAY_BEARER_TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token -u admin@apollosai.dev --secret my-test-key)
 
 curl -X POST -H "Authorization: Bearer $MCPGATEWAY_BEARER_TOKEN" \
      -H "Content-Type: application/json" \
@@ -100,7 +100,7 @@ curl -X POST -H "Authorization: Bearer $MCPGATEWAY_BEARER_TOKEN" \
 ## CURL Command to Test
 
 ```bash
-export MCPGATEWAY_BEARER_TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token -u admin@example.com --secret my-test-key)
+export MCPGATEWAY_BEARER_TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token -u admin@apollosai.dev --secret my-test-key)
 
 # Then test with a prompt containing deny words
 curl -X POST -H "Authorization: Bearer $MCPGATEWAY_BEARER_TOKEN" \

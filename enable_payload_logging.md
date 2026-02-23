@@ -52,7 +52,7 @@ LOG_MAX_SIZE_MB=4
 # Other settings
 MCPGATEWAY_UI_ENABLED=true
 MCPGATEWAY_ADMIN_API_ENABLED=true
-PLATFORM_ADMIN_EMAIL=admin@example.com
+PLATFORM_ADMIN_EMAIL=admin@apollosai.dev
 PLATFORM_ADMIN_PASSWORD=changeme
 PLATFORM_ADMIN_FULL_NAME="Platform Administrator"
 ```

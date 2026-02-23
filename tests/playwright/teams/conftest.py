@@ -74,7 +74,7 @@ def invite_and_accept(admin_api: APIRequestContext, playwright: Playwright, team
 @pytest.fixture(scope="module")
 def admin_api(playwright: Playwright) -> Generator[APIRequestContext, None, None]:
     """Admin-authenticated API context for team tests."""
-    token = _make_jwt("admin@example.com", is_admin=True)
+    token = _make_jwt("admin@apollosai.dev", is_admin=True)
     ctx = playwright.request.new_context(
         base_url=BASE_URL,
         extra_http_headers={"Authorization": f"Bearer {token}", "Accept": "application/json"},

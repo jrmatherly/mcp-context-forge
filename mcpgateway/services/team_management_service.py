@@ -237,7 +237,7 @@ class TeamManagementService:
             >>> from mcpgateway.services.team_management_service import TeamManagementService
             >>> from unittest.mock import Mock
             >>> service = TeamManagementService(Mock())
-            >>> service._log_team_member_action("tm-123", "team-123", "user@example.com", "member", "added", "admin@example.com")
+            >>> service._log_team_member_action("tm-123", "team-123", "user@example.com", "member", "added", "admin@apollosai.dev")
         """
         history = EmailTeamMemberHistory(team_member_id=team_member_id, team_id=team_id, user_email=user_email, role=role, action=action, action_by=action_by, action_timestamp=utc_now())
         self.db.add(history)
@@ -289,7 +289,7 @@ class TeamManagementService:
             True
 
             Test creator validation:
-            >>> created_by = "admin@example.com"
+            >>> created_by = "admin@apollosai.dev"
             >>> "@" in created_by
             True
             >>> len(created_by) > 0
@@ -596,7 +596,7 @@ class TeamManagementService:
             >>> asyncio.iscoroutinefunction(service.add_member_to_team)
             True
             >>> # After adding, EmailTeamMemberHistory is updated
-            >>> # service._log_team_member_action("tm-123", "team-123", "user@example.com", "member", "added", "admin@example.com")
+            >>> # service._log_team_member_action("tm-123", "team-123", "user@example.com", "member", "added", "admin@apollosai.dev")
         """
         # Validate role
         valid_roles = ["owner", "member"]

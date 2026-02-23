@@ -26,13 +26,13 @@ Related design docs:
 
 - Client Credentials (machine-to-machine)
 
-  - Uses client ID/secret to fetch access tokens
-  - Best for service integrations without user consent
+    - Uses client ID/secret to fetch access tokens
+    - Best for service integrations without user consent
 
 - Authorization Code (user delegation)
 
-  - Redirects the user to the provider for consent
-  - Exchanges code for access token, with optional refresh tokens
+    - Redirects the user to the provider for consent
+    - Exchanges code for access token, with optional refresh tokens
 
 See the flow details and security model in the architecture docs.
 
@@ -43,9 +43,9 @@ See the flow details and security model in the architecture docs.
 - An OAuth 2.0 provider (e.g., GitHub, Google, custom OIDC)
 - A registered application with:
 
-  - Client ID and Client Secret
-  - Authorization URL and Token URL
-  - Redirect URI pointing to the gateway callback (for Authorization Code)
+    - Client ID and Client Secret
+    - Authorization URL and Token URL
+    - Redirect URI pointing to the gateway callback (for Authorization Code)
 
 ---
 

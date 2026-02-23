@@ -138,7 +138,7 @@ export TEST_BASE_URL=http://localhost:8080
 export MCP_AUTH=your-test-token
 
 # Admin login credentials for UI tests
-export PLATFORM_ADMIN_EMAIL=admin@example.com
+export PLATFORM_ADMIN_EMAIL=admin@apollosai.dev
 export PLATFORM_ADMIN_PASSWORD=changeme
 
 # Optional: password used when the UI forces a password change

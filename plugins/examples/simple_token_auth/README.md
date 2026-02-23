@@ -109,7 +109,6 @@ config:
   transform_to_bearer: true            # Transform to Authorization: Bearer
 ```
 
-
 ## Usage
 
 ### Creating Tokens
@@ -121,7 +120,7 @@ Use the CLI tool to create tokens:
 python -m plugins.simple_token_auth.token_cli create user@example.com "John Doe"
 
 # Create an admin token that never expires
-python -m plugins.simple_token_auth.token_cli create admin@example.com "Admin User" --admin --expires 0
+python -m plugins.simple_token_auth.token_cli create admin@apollosai.dev "Admin User" --admin --expires 0
 
 # Create a token that expires in 7 days
 python -m plugins.simple_token_auth.token_cli create temp@example.com "Temp User" --expires 7
@@ -235,7 +234,7 @@ Token: k7j3h4g5f6d7s8a9w0e1...
 Created: 2025-01-01T10:00:00Z
 Expires: 2025-02-01T10:00:00Z
 
-Email: admin@example.com [ADMIN]
+Email: admin@apollosai.dev [ADMIN]
 Name: Admin User
 Token: x9y8z7w6v5u4t3s2r1q0...
 Created: 2025-01-01T11:00:00Z

@@ -130,7 +130,7 @@ section "SETUP: Generate tokens and create test users"
 echo "Generating tokens..."
 
 # Admin bypass token (teams=null + is_admin=true)
-ADMIN_T=$(gen_admin_bypass_token "admin@example.com")
+ADMIN_T=$(gen_admin_bypass_token "admin@apollosai.dev")
 if [ -z "$ADMIN_T" ]; then
     echo "FATAL: Could not generate admin bypass token"
     exit 1

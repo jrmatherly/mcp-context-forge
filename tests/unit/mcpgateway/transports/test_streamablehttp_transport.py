@@ -820,7 +820,7 @@ async def test_list_resource_templates_admin_unrestricted(monkeypatch):
     monkeypatch.setattr(resource_service, "list_resource_templates", mock_list_templates)
 
     # Set admin user context with no team restrictions
-    token = user_context_var.set({"email": "admin@example.com", "teams": None, "is_admin": True})
+    token = user_context_var.set({"email": "admin@apollosai.dev", "teams": None, "is_admin": True})
     try:
         result = await list_resource_templates()
     finally:
@@ -1827,7 +1827,7 @@ async def test_streamable_http_auth_top_level_is_admin(monkeypatch):
 
     async def fake_verify(token):
         return {
-            "sub": "admin@example.com",
+            "sub": "admin@apollosai.dev",
             "teams": [],
             "is_admin": True,  # Top-level is_admin (legacy format)
         }
@@ -1853,7 +1853,7 @@ async def test_streamable_http_auth_nested_is_admin_takes_precedence(monkeypatch
 
     async def fake_verify(token):
         return {
-            "sub": "admin@example.com",
+            "sub": "admin@apollosai.dev",
             "teams": [],
             "is_admin": False,  # Top-level says not admin
             "user": {"is_admin": True},  # Nested says admin
@@ -6228,7 +6228,7 @@ async def test_auth_session_token_admin_bypass(monkeypatch):
 
     async def fake_verify(token):
         return {
-            "sub": "admin@example.com",
+            "sub": "admin@apollosai.dev",
             "token_use": "session",
             "is_admin": True,
         }
@@ -8015,9 +8015,9 @@ def test_normalize_jwt_payload_session_token_admin(monkeypatch):
     # First-Party
     from mcpgateway.transports.streamablehttp_transport import _normalize_jwt_payload
 
-    raw = {"sub": "admin@example.com", "token_use": "session", "is_admin": True}
+    raw = {"sub": "admin@apollosai.dev", "token_use": "session", "is_admin": True}
     result = _normalize_jwt_payload(raw)
-    assert result == {"email": "admin@example.com", "teams": None, "is_admin": True, "is_authenticated": True}
+    assert result == {"email": "admin@apollosai.dev", "teams": None, "is_admin": True, "is_authenticated": True}
 
 
 def test_normalize_jwt_payload_session_token_non_admin(monkeypatch):
@@ -8037,7 +8037,7 @@ def test_normalize_jwt_payload_nested_is_admin():
     # First-Party
     from mcpgateway.transports.streamablehttp_transport import _normalize_jwt_payload
 
-    raw = {"sub": "nested-admin@example.com", "token_use": "session", "user": {"is_admin": True}}
+    raw = {"sub": "nested-admin@apollosai.dev", "token_use": "session", "user": {"is_admin": True}}
     result = _normalize_jwt_payload(raw)
     assert result["is_admin"] is True
     assert result["teams"] is None  # Admin bypass

@@ -16,7 +16,7 @@ docker run -d --name mcpgateway \
   -e JWT_AUDIENCE=mcpgateway-api \
   -e JWT_ISSUER=mcpgateway \
   -e AUTH_REQUIRED=true \
-  -e PLATFORM_ADMIN_EMAIL=admin@example.com \
+  -e PLATFORM_ADMIN_EMAIL=admin@apollosai.dev \
   -e PLATFORM_ADMIN_PASSWORD=changeme \
   -e PLATFORM_ADMIN_FULL_NAME="Platform Administrator" \
   -e DATABASE_URL=sqlite:///./mcp.db \
@@ -49,7 +49,6 @@ Or
 ```
 podman run [... all your options...] --arch arm64 ghcr.io/ibm/mcp-context-forge:VERSION
 ```
-
 
 ## 🐳 Build the Container
 
@@ -102,7 +101,7 @@ docker run -d --name mcpgateway \
   -e HOST=0.0.0.0 \
   -e JWT_SECRET_KEY=my-test-key \
   -e AUTH_REQUIRED=true \
-  -e PLATFORM_ADMIN_EMAIL=admin@example.com \
+  -e PLATFORM_ADMIN_EMAIL=admin@apollosai.dev \
   -e PLATFORM_ADMIN_PASSWORD=changeme \
   -e DATABASE_URL=sqlite:///./mcp.db \
   mcpgateway:airgapped
@@ -143,8 +142,8 @@ https://localhost:4444
 
 All environment variables can be passed via:
 
-* `docker run -e KEY=value`
-* A mounted `.env` file (`--env-file .env`)
+- `docker run -e KEY=value`
+- A mounted `.env` file (`--env-file .env`)
 
 ---
 

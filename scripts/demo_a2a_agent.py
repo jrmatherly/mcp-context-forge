@@ -189,7 +189,7 @@ JWT_SECRET = os.environ.get("JWT_SECRET_KEY", "my-test-key")  # noqa: S105 - def
 AGENT_ID = None
 
 
-def create_jwt_token(username: str = "admin@example.com") -> str:
+def create_jwt_token(username: str = "admin@apollosai.dev") -> str:
     """Create a JWT token for ContextForge authentication."""
     import datetime
 

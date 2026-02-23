@@ -16,10 +16,6 @@ ingester:
   trace_idle_period: 10s
   max_block_duration: 5m
 
-compactor:
-  compaction:
-    block_retention: 24h
-
 storage:
   trace:
     backend: local
@@ -27,5 +23,5 @@ storage:
       path: /var/tempo/traces
     wal:
       path: /var/tempo/wal
-
-search_enabled: true
+    block:
+      bloom_filter_false_positive: 0.05

@@ -294,12 +294,12 @@ class TestRBACOwnershipHTTP:
 
         # Set up user context as team admin
         mock_user = MagicMock()
-        mock_user.email = "admin@example.com"
+        mock_user.email = "admin@apollosai.dev"
 
-        app.dependency_overrides[require_auth] = lambda: "admin@example.com"
+        app.dependency_overrides[require_auth] = lambda: "admin@apollosai.dev"
         app.dependency_overrides[get_current_user] = lambda: mock_user
         app.dependency_overrides[get_current_user_with_permissions] = create_user_context(
-            "admin@example.com", is_admin=True, TestSessionLocal=TestSessionLocal
+            "admin@apollosai.dev", is_admin=True, TestSessionLocal=TestSessionLocal
         )
 
         client = TestClient(app)

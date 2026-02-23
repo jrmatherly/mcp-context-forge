@@ -25,23 +25,23 @@ MCP Gateway: Full Project Overview
 **Environment & Setup**
 - Requirements: Python 3.11+, GNU Make
 - Create venv and install dev deps:
-  - `make venv`
-  - `make install-dev`
+    - `make venv`
+    - `make install-dev`
 - Copy env and set secrets:
-  - `cp .env.example .env`
-  - Set `JWT_SECRET_KEY`, optional Redis/DB settings
+    - `cp .env.example .env`
+    - Set `JWT_SECRET_KEY`, optional Redis/DB settings
 - Optional helpers:
-  - JWT: `python -m mcpgateway.utils.create_jwt_token --username admin@example.com --exp 10080 --secret KEY`
-  - Expose stdio server through wrapper: `python -m mcpgateway.translate --stdio "uvx mcp-server-git" --port 9000`
+    - JWT: `python -m mcpgateway.utils.create_jwt_token --username admin@apollosai.dev --exp 10080 --secret KEY`
+    - Expose stdio server through wrapper: `python -m mcpgateway.translate --stdio "uvx mcp-server-git" --port 9000`
 
 **Run the Gateway**
 - Dev (reload, :8000): `make dev`
 - Prod (Gunicorn, :4444): `make serve`
 - Prod with TLS (self-signed certs in ./certs):
-  - `make certs`
-  - `make serve-ssl`
+    - `make certs`
+    - `make serve-ssl`
 - CLI entry:
-  - `mcpgateway --host 0.0.0.0 --port 4444`
+    - `mcpgateway --host 0.0.0.0 --port 4444`
 
 **Configuration**
 - Copy `.env.example` → `.env`; verify with `make check-env`.
@@ -55,10 +55,10 @@ MCP Gateway: Full Project Overview
 - Configuration: `plugins/config.yaml` with `plugins`, `plugin_dirs`, `plugin_settings`.
 - Modes: `enforce | enforce_ignore_error | permissive | disabled`; priority ascending.
 - Built‑ins: Argument Normalizer, PII filter, regex search/replace, denylist, resource filter; OPA external example.
-  - Default ordering (lower runs first): Argument Normalizer (40) → PII Filter (50) → Resource Filter (75) → Deny/Regex (100+/150). This ensures inputs are stabilized before detection/redaction.
+    - Default ordering (lower runs first): Argument Normalizer (40) → PII Filter (50) → Resource Filter (75) → Deny/Regex (100+/150). This ensures inputs are stabilized before detection/redaction.
 - Authoring helpers:
-  - Bootstrap templates: `mcpplugins bootstrap --destination <dir> --type native|external`
-  - External runtime default: Streamable HTTP at `http://localhost:8000/mcp`
+    - Bootstrap templates: `mcpplugins bootstrap --destination <dir> --type native|external`
+    - External runtime default: Streamable HTTP at `http://localhost:8000/mcp`
 - See also: `llms/plugins-llms.md` (deep-dive + testing patterns)
 
 **API Usage**
@@ -70,20 +70,20 @@ MCP Gateway: Full Project Overview
 
 **Testing & Quality**
 - Quick runs:
-  - Unit tests: `make test`
-  - Doctest + test: `make doctest test`
-  - Coverage (md/HTML/XML/badge/annotated): `make coverage`; HTML at `docs/docs/coverage/index.html`
-  - HTML coverage only: `make htmlcov`
+    - Unit tests: `make test`
+    - Doctest + test: `make doctest test`
+    - Coverage (md/HTML/XML/badge/annotated): `make coverage`; HTML at `docs/docs/coverage/index.html`
+    - HTML coverage only: `make htmlcov`
 - Selective pytest: `pytest -k "fragment"`, `pytest -m "not slow"`
 - Lint & static analysis:
-  - Format & hooks: `make autoflake isort black pre-commit`
-  - Static: `make pylint flake8`, full lint: `make lint`
-  - Security/docs QA (as configured): `make bandit interrogate verify check-manifest`
+    - Format & hooks: `make autoflake isort black pre-commit`
+    - Static: `make pylint flake8`, full lint: `make lint`
+    - Security/docs QA (as configured): `make bandit interrogate verify check-manifest`
 - PR readiness (recommended):
-  - `make doctest test htmlcov smoketest lint-web flake8 bandit interrogate pylint verify`
+    - `make doctest test htmlcov smoketest lint-web flake8 bandit interrogate pylint verify`
 - Structure & conventions:
-  - Tests in `tests/{unit,integration,e2e,playwright}`; mark `slow|ui|api|smoke|e2e` to keep defaults fast.
-  - Prefer editing existing test files; target coverage gaps first.
+    - Tests in `tests/{unit,integration,e2e,playwright}`; mark `slow|ui|api|smoke|e2e` to keep defaults fast.
+    - Prefer editing existing test files; target coverage gaps first.
 - See: `llms/testing.md` for a coverage-first workflow and tips.
 
 **Documentation (MkDocs)**
@@ -98,10 +98,10 @@ MCP Gateway: Full Project Overview
 **Kubernetes (Helm)**
 - Chart: `charts/mcp-stack` (gateway + Postgres + Redis; optional UIs)
 - Common tasks (from chart dir):
-  - Lint/validate: `make validate-all`
-  - Template/dry-run: `make test-template` / `make test-dry-run`
-  - Install/upgrade: `make install` / `make upgrade`
-  - Package/push: `make package` / `make push`
+    - Lint/validate: `make validate-all`
+    - Template/dry-run: `make test-template` / `make test-dry-run`
+    - Install/upgrade: `make install` / `make upgrade`
+    - Package/push: `make package` / `make push`
 - Dev overrides via `my-values.yaml`.
 - See: `llms/helm.md` for workflows and examples.
 
@@ -114,13 +114,13 @@ MCP Gateway: Full Project Overview
 **Authentication & RBAC**
 
 - Two-layer security model:
-  - Layer 1 (Token Scoping): Controls what resources users CAN SEE via `teams` JWT claim
-  - Layer 2 (RBAC): Controls what actions users CAN DO via permission checks
+    - Layer 1 (Token Scoping): Controls what resources users CAN SEE via `teams` JWT claim
+    - Layer 2 (RBAC): Controls what actions users CAN DO via permission checks
 - Token scoping quick reference:
-  - Missing `teams` key → PUBLIC-ONLY (secure default)
-  - `teams: null` + `is_admin: true` → ADMIN BYPASS (unrestricted)
-  - `teams: []` → PUBLIC-ONLY (even for admins)
-  - `teams: ["team-id"]` → Team + Public resources
+    - Missing `teams` key → PUBLIC-ONLY (secure default)
+    - `teams: null` + `is_admin: true` → ADMIN BYPASS (unrestricted)
+    - `teams: []` → PUBLIC-ONLY (even for admins)
+    - `teams: ["team-id"]` → Team + Public resources
 - Built-in roles: `platform_admin` (global, all permissions), `team_admin`, `developer`, `viewer` (team-scoped)
 - Resource visibility: `public` (all users), `team` (team members), `private` (owner only)
 - Key implementation: `normalize_token_teams()` in `mcpgateway/auth.py` is single source of truth

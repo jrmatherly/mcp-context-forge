@@ -14,7 +14,7 @@ Security Model Notes:
 - Users must exist in the database for non-admin token validation
 - Team memberships claimed in tokens are validated against EmailTeamMember table
 - Tokens claiming membership to non-existent or unauthorized teams are rejected
-- admin@example.com is pre-seeded as the platform admin and member of the default team
+- admin@apollosai.dev is pre-seeded as the platform admin and member of the default team
 
 Test Cases:
 1. Admin with no teams key -> should see ALL 5 tools (unrestricted)
@@ -190,35 +190,35 @@ async def run_tests(base_url: str, team_id: str):
 
     # Test 1: Admin with no teams key (UNRESTRICTED)
     print(f"\n{YELLOW}Test 1: Admin with NO teams key{NC}")
-    token = generate_token("admin@example.com", is_admin=True, teams="OMIT")
+    token = generate_token("admin@apollosai.dev", is_admin=True, teams="OMIT")
     result = await test_with_http_rpc(base_url, token, "Admin no teams", 4, 1)
     results.append(result)
     print_result(result)
 
     # Test 2: Admin with teams: null (UNRESTRICTED)
     print(f"\n{YELLOW}Test 2: Admin with teams: null{NC}")
-    token = generate_token("admin@example.com", is_admin=True, teams=None)
+    token = generate_token("admin@apollosai.dev", is_admin=True, teams=None)
     result = await test_with_http_rpc(base_url, token, "Admin teams:null", 4, 1)
     results.append(result)
     print_result(result)
 
     # Test 3: Admin with teams: [] (PUBLIC-ONLY)
     print(f"\n{YELLOW}Test 3: Admin with teams: []{NC}")
-    token = generate_token("admin@example.com", is_admin=True, teams=[])
+    token = generate_token("admin@apollosai.dev", is_admin=True, teams=[])
     result = await test_with_http_rpc(base_url, token, "Admin teams:[]", 4, 0)
     results.append(result)
     print_result(result)
 
     # Test 4: Admin with matching team
     print(f"\n{YELLOW}Test 4: Admin with matching team{NC}")
-    token = generate_token("admin@example.com", is_admin=True, teams=[team_id])
+    token = generate_token("admin@apollosai.dev", is_admin=True, teams=[team_id])
     result = await test_with_http_rpc(base_url, token, "Admin + team", 4, 1)
     results.append(result)
     print_result(result)
 
     # Test 5: Admin with wrong team - token should be rejected due to team membership validation
     print(f"\n{YELLOW}Test 5: Admin with wrong team (REJECTED){NC}")
-    token = generate_token("admin@example.com", is_admin=True, teams=["wrong-team"])
+    token = generate_token("admin@apollosai.dev", is_admin=True, teams=["wrong-team"])
     result = await test_with_http_rpc(base_url, token, "Admin wrong team", 0, 0)  # Expect rejection
     # For this test, we expect an error (0 tools), not a successful list
     if result.error and "team" in result.error.lower():
@@ -228,21 +228,21 @@ async def run_tests(base_url: str, team_id: str):
 
     # Test 6: Non-admin with no teams (secure default) - uses admin email as it exists in DB
     print(f"\n{YELLOW}Test 6: Non-admin with NO teams{NC}")
-    token = generate_token("admin@example.com", is_admin=False, teams="OMIT")
+    token = generate_token("admin@apollosai.dev", is_admin=False, teams="OMIT")
     result = await test_with_http_rpc(base_url, token, "Non-admin no teams", 4, 0)
     results.append(result)
     print_result(result)
 
     # Test 7: Non-admin with matching team - uses admin email as it exists in DB
     print(f"\n{YELLOW}Test 7: Non-admin with matching team{NC}")
-    token = generate_token("admin@example.com", is_admin=False, teams=[team_id])
+    token = generate_token("admin@apollosai.dev", is_admin=False, teams=[team_id])
     result = await test_with_http_rpc(base_url, token, "Non-admin + team", 4, 1)
     results.append(result)
     print_result(result)
 
     # Test 8: Non-admin with teams: [] - uses admin email as it exists in DB
     print(f"\n{YELLOW}Test 8: Non-admin with teams: []{NC}")
-    token = generate_token("admin@example.com", is_admin=False, teams=[])
+    token = generate_token("admin@apollosai.dev", is_admin=False, teams=[])
     result = await test_with_http_rpc(base_url, token, "Non-admin teams:[]", 4, 0)
     results.append(result)
     print_result(result)
@@ -333,20 +333,20 @@ async def main():
     print(f"{CYAN}{'='*70}{NC}")
 
     # Admin unrestricted - should see 5 tools
-    token = generate_token("admin@example.com", is_admin=True, teams="OMIT")
+    token = generate_token("admin@apollosai.dev", is_admin=True, teams="OMIT")
     t1 = await test_mcp_transport(f"{base_url}/mcp/", token, "Admin (unrestricted)", 5)
 
     # Admin public-only - should see 4 tools
-    token = generate_token("admin@example.com", is_admin=True, teams=[])
+    token = generate_token("admin@apollosai.dev", is_admin=True, teams=[])
     t2 = await test_mcp_transport(f"{base_url}/mcp/", token, "Admin (public-only)", 4)
 
     # Non-admin with team - should see 5 tools (uses admin email as it exists in DB)
-    token = generate_token("admin@example.com", is_admin=False, teams=[team_id])
+    token = generate_token("admin@apollosai.dev", is_admin=False, teams=[team_id])
     t3 = await test_mcp_transport(f"{base_url}/mcp/", token, "Non-admin + team", 5)
 
     # Virtual server test
     server_id = "9779b6698cbd4b4995ee04a4fab38737"
-    token = generate_token("admin@example.com", is_admin=True, teams="OMIT")
+    token = generate_token("admin@apollosai.dev", is_admin=True, teams="OMIT")
     t4 = await test_mcp_transport(f"{base_url}/servers/{server_id}/mcp/", token, "Virtual Server", 2)
 
     transport_passed = all([t1, t2, t3, t4])

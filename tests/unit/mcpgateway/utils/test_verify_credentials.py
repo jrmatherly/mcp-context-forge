@@ -1031,14 +1031,14 @@ async def test_require_admin_auth_email_auth_success_admin_user(monkeypatch):
             return DummyUser(email=email, is_admin=True)
 
     monkeypatch.setattr("mcpgateway.services.email_auth_service.EmailAuthService", DummyEmailAuthService)
-    monkeypatch.setattr(vc, "verify_jwt_token_cached", AsyncMock(return_value={"sub": "admin@example.com"}))
+    monkeypatch.setattr(vc, "verify_jwt_token_cached", AsyncMock(return_value={"sub": "admin@apollosai.dev"}))
 
     mock_request = Mock(spec=Request)
     mock_request.headers = {"accept": "application/json"}
     mock_request.scope = {"root_path": ""}
 
     result = await vc.require_admin_auth(request=mock_request, credentials=None, jwt_token="token", basic_credentials=None)
-    assert result == "admin@example.com"
+    assert result == "admin@apollosai.dev"
 
 
 @pytest.mark.asyncio
@@ -1063,7 +1063,7 @@ async def test_require_admin_auth_email_auth_uses_token_from_bearer_credentials(
             return DummyUser(email=email, is_admin=True)
 
     monkeypatch.setattr("mcpgateway.services.email_auth_service.EmailAuthService", DummyEmailAuthService)
-    monkeypatch.setattr(vc, "verify_jwt_token_cached", AsyncMock(return_value={"sub": "admin@example.com"}))
+    monkeypatch.setattr(vc, "verify_jwt_token_cached", AsyncMock(return_value={"sub": "admin@apollosai.dev"}))
 
     mock_request = Mock(spec=Request)
     mock_request.headers = {"accept": "application/json"}
@@ -1071,7 +1071,7 @@ async def test_require_admin_auth_email_auth_uses_token_from_bearer_credentials(
 
     bearer_creds = HTTPAuthorizationCredentials(scheme="Bearer", credentials="token")
     result = await vc.require_admin_auth(request=mock_request, credentials=bearer_creds, jwt_token=None, basic_credentials=None)
-    assert result == "admin@example.com"
+    assert result == "admin@apollosai.dev"
 
 
 @pytest.mark.asyncio

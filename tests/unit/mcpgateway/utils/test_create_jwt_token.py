@@ -312,9 +312,9 @@ def test_create_token_with_scopes():
 
 def test_create_rich_token_all_fields():
     """_create_jwt_token includes all rich token fields when provided."""
-    payload: Dict[str, Any] = {"sub": "admin@example.com", "jti": "custom-jti"}
+    payload: Dict[str, Any] = {"sub": "admin@apollosai.dev", "jti": "custom-jti"}
     user_data = {
-        "email": "admin@example.com",
+        "email": "admin@apollosai.dev",
         "full_name": "Admin User",
         "is_admin": True,
         "auth_provider": "cli",
@@ -331,13 +331,13 @@ def test_create_rich_token_all_fields():
     dec = jwt.decode(tok, TEST_SECRET, algorithms=[TEST_ALGO], audience="mcpgateway-api", issuer="mcpgateway")
 
     # Verify all standard claims
-    assert dec["sub"] == "admin@example.com"
+    assert dec["sub"] == "admin@apollosai.dev"
     assert dec["jti"] == "custom-jti"
     assert "iat" in dec
     assert "exp" in dec
 
     # Verify rich claims
-    assert dec["user"]["email"] == "admin@example.com"
+    assert dec["user"]["email"] == "admin@apollosai.dev"
     assert dec["user"]["is_admin"] is True
     assert dec["teams"] == ["team-123"]
     assert "namespaces" not in dec

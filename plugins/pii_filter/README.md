@@ -154,12 +154,12 @@ pytest tests/unit/mcpgateway/plugins/pii_filter/test_pii_filter.py::TestPIIFilte
 PLUGINS_ENABLED=true
 ```
 
-2. Start the gateway:
+1. Start the gateway:
 ```bash
 python -m mcpgateway.main
 ```
 
-3. Test with curl:
+1. Test with curl:
 ```bash
 # Test PII detection in prompt arguments
 curl -X POST http://localhost:8000/prompts/test_prompt \
@@ -293,7 +293,6 @@ config:
    - Verify whitelist patterns don't expose real PII
    - Regularly update patterns for new PII formats
 
-
 ## Sample Prompt
 
 Here's a prompt that trips the checks:
@@ -309,7 +308,7 @@ DOB: 01/15/1985
 ## CURL Command to Test
 
 ```bash
-export MCPGATEWAY_BEARER_TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token -u admin@example.com --secret my-test-key)
+export MCPGATEWAY_BEARER_TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token -u admin@apollosai.dev --secret my-test-key)
 
 # Then test with a prompt containing various PII
 curl -X GET "http://localhost:4444/prompts/test_prompt" \
@@ -337,12 +336,12 @@ if self.config.detect_my_pattern:
     ))
 ```
 
-2. Add configuration option to `PIIFilterConfig`:
+1. Add configuration option to `PIIFilterConfig`:
 ```python
 detect_my_pattern: bool = Field(default=True, description="Detect my pattern")
 ```
 
-3. Add tests to verify detection and masking
+1. Add tests to verify detection and masking
 
 ## License
 

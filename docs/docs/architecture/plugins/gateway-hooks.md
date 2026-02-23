@@ -23,6 +23,7 @@ The framework provides administrative hooks for gateway management operations:
 | [`gateway_post_delete()`](#gateway-post-delete-hook) | Process gateway deletion results after successful removal | After peer gateway deletion completes | Federation cleanup, resource deregistration, monitoring teardown, cache invalidation |
 | [`gateway_pre_status_change()`](#gateway-pre-status-change-hook) | Process gateway status change requests before enabling/disabling | Before peer gateway is enabled or disabled | Federation impact assessment, dependency validation, connection management |
 | [`gateway_post_status_change()`](#gateway-post-status-change-hook) | Process gateway status change results after successful toggle | After peer gateway status change completes | Federation connection activation/deactivation, discovery updates, monitoring adjustments |
+
 ## Server Management Hooks
 
 ### Server Pre-Register Hook
@@ -105,7 +106,7 @@ class ServerPostOperationPayload(BaseModel):
 
 | Attribute | Type | Description | Example |
 |-----------|------|-------------|---------|
-| `created_by` | `str` | User performing the operation | `"admin@example.com"` |
+| `created_by` | `str` | User performing the operation | `"admin@apollosai.dev"` |
 | `created_from_ip` | `str` | Client IP address | `"192.168.1.100"` |
 | `created_via` | `str` | Operation source | `"api"`, `"ui"`, `"bulk_import"`, `"federation"` |
 | `created_user_agent` | `str` | Client user agent | `"curl/7.68.0"` |
@@ -473,8 +474,8 @@ async def server_post_register(self, payload: ServerPostOperationPayload,
 
 - Same fields as register hooks, **plus**:
 
-  - `server_id` - ID of server being updated
-  - `original_server_info` - Server state before the update
+    - `server_id` - ID of server being updated
+    - `original_server_info` - Server state before the update
 
 **Return Type (`ServerPreOperationResult`)**:
 
@@ -571,9 +572,9 @@ async def server_pre_update(self, payload: ServerPreOperationPayload,
 
 - Same fields as register hooks, **plus**:
 
-  - `server_id` - ID of server that was updated
-  - `original_server_info` - Server state before the update
-  - `updated_at` - Database timestamp of the update
+    - `server_id` - ID of server that was updated
+    - `original_server_info` - Server state before the update
+    - `updated_at` - Database timestamp of the update
 
 **Return Type (`ServerPostOperationResult`)**:
 
@@ -658,8 +659,8 @@ async def server_post_update(self, payload: ServerPostOperationPayload,
 
 - Same fields as other operations, **plus**:
 
-  - `server_id` - ID of server being deleted
-  - `original_server_info` - Complete server state before deletion (same as `payload.server_info`)
+    - `server_id` - ID of server being deleted
+    - `original_server_info` - Complete server state before deletion (same as `payload.server_info`)
 
 **Return Type (`ServerPreOperationResult`)**:
 
@@ -794,9 +795,9 @@ async def server_pre_delete(self, payload: ServerPreOperationPayload,
 
 - Same fields as other operations, **plus**:
 
-  - `server_id` - ID of server that was deleted
-  - `original_server_info` - Complete server state before deletion
-  - Database timestamps reflect the deletion operation
+    - `server_id` - ID of server that was deleted
+    - `original_server_info` - Complete server state before deletion
+    - Database timestamps reflect the deletion operation
 
 **Return Type (`ServerPostOperationResult`)**:
 
@@ -902,8 +903,8 @@ async def server_post_delete(self, payload: ServerPostOperationPayload,
 
 - Same fields as other operations, **plus**:
 
-  - `server_id` - ID of server whose status is changing
-  - `original_server_info` - Server state before status change (with current `is_active` value)
+    - `server_id` - ID of server whose status is changing
+    - `original_server_info` - Server state before status change (with current `is_active` value)
 
 **Special Context Fields for Status Change:**
 
@@ -1057,9 +1058,9 @@ async def server_pre_status_change(self, payload: ServerPreOperationPayload,
 
 - Same fields as other operations, **plus**:
 
-  - `server_id` - ID of server whose status changed
-  - `original_server_info` - Server state before status change
-  - Database timestamps reflect the status change operation
+    - `server_id` - ID of server whose status changed
+    - `original_server_info` - Server state before status change
+    - Database timestamps reflect the status change operation
 
 **Return Type (`ServerPostOperationResult`)**:
 
@@ -1352,8 +1353,8 @@ async def gateway_post_register(self, payload: GatewayPostOperationPayload,
 
 - Same fields as register hooks, **plus**:
 
-  - `gateway_id` - ID of gateway being updated
-  - `original_gateway_info` - Gateway state before the update
+    - `gateway_id` - ID of gateway being updated
+    - `original_gateway_info` - Gateway state before the update
 
 **Example Use Cases**:
 

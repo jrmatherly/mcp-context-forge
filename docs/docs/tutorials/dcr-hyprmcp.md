@@ -135,7 +135,7 @@ expiry:
     signingKeys: 8760h # 1 year
 staticPasswords:
 
-    - email: "admin@example.com"
+    - email: "admin@apollosai.dev"
       # bcrypt hash of the string "password" for user admin: $(echo password | htpasswd -BinC 10 admin | cut -d: -f2)
       hash: "$2a$10$2b2cU8CPhOTaGrs1HRQuAueS7JTT5ZHsHSzYiFPm1leZck7Mc8T4W"
       username: "admin"
@@ -212,7 +212,7 @@ context-forge:
         PORT: "4444"
         MCPGATEWAY_UI_ENABLED: true
         MCPGATEWAY_ADMIN_API_ENABLED: true
-        PLATFORM_ADMIN_EMAIL: admin@example.com
+        PLATFORM_ADMIN_EMAIL: admin@apollosai.dev
         PLATFORM_ADMIN_PASSWORD: changeme
         AUTH_REQUIRED: false
         MCP_CLIENT_AUTH_ENABLED: false
@@ -227,7 +227,7 @@ For this tutorial we will use the Context7 MCP server as an example, but you can
 To get started, go to https://context7.com/ and create an account. Note down your API key, as you will need it shortly.
 
 Next, open ContextForge by navigating to http://localhost:4444.
-Log in with the email/password credentials (admin@example.com / changeme) and configure the Context7 MCP server.
+Log in with the email/password credentials (admin@apollosai.dev / changeme) and configure the Context7 MCP server.
 To do so, go to "MCP Servers" and at the bottom of the page:
 
 - Enter `https://mcp.context7.com/mcp` as the MCP Server URL
@@ -375,7 +375,7 @@ services:
             PORT: "4444"
             MCPGATEWAY_UI_ENABLED: true
             MCPGATEWAY_ADMIN_API_ENABLED: true
-            PLATFORM_ADMIN_EMAIL: admin@example.com
+            PLATFORM_ADMIN_EMAIL: admin@apollosai.dev
             PLATFORM_ADMIN_PASSWORD: changeme
             AUTH_REQUIRED: false
             MCP_CLIENT_AUTH_ENABLED: false

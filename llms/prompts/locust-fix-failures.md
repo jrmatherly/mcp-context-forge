@@ -40,7 +40,7 @@ Reset stats between runs via the Locust UI "Reset Stats" button at `http://local
 # Generate admin JWT (teams:null + is_admin:true for full access)
 export JWT=$(python3 -c "
 import jwt, datetime, uuid
-payload = {'sub':'admin@example.com',
+payload = {'sub':'admin@apollosai.dev',
   'exp':datetime.datetime.now(datetime.timezone.utc)+datetime.timedelta(hours=1),
   'iat':datetime.datetime.now(datetime.timezone.utc),
   'aud':'mcpgateway-api','iss':'mcpgateway',

@@ -206,7 +206,6 @@ gcloud redis instances describe mcpgw-redis \
 
 Cloud Run only accepts container images that live in Artifact Registry or the older Container Registry endpoints; anything pulled from the public internet (for example ghcr.io) must first be proxied or copied into Artifact Registry.
 
-
 #### Set Your Project ID
 
 Begin by setting your Google Cloud project ID as an environment variable:
@@ -252,8 +251,7 @@ It will output something like this:
 your-project-id:us-central1:mcpgw-db
 ```
 
-
-#### Allow ingress to your database.
+#### Allow ingress to your database
 
 Consider only allowing the Cloud Run IP range.
 
@@ -262,7 +260,7 @@ gcloud sql instances patch mcpgw-db \
   --authorized-networks=0.0.0.0/0
 ```
 
-#### Deploy the MCP Gateway container with minimal resource allocation:
+#### Deploy the MCP Gateway container with minimal resource allocation
 
 ```bash
 gcloud run deploy mcpgateway \
@@ -297,7 +295,7 @@ gcloud run services logs read mcpgateway --region=us-central1
 ```
 ---
 
-#### Check that the database is created:
+#### Check that the database is created
 
 You can use any PostgreSQL client, such as `psql`. You should see the list of tables when using `dt;`
 
@@ -337,7 +335,7 @@ Use the MCP Gateway container to generate a JWT token:
 
 ```bash
 docker run -it --rm ghcr.io/ibm/mcp-context-forge:1.0.0-RC-1 \
-  python3 -m mcpgateway.utils.create_jwt_token -u admin@example.com --secret jwt-secret-key
+  python3 -m mcpgateway.utils.create_jwt_token -u admin@apollosai.dev --secret jwt-secret-key
 ```
 
 Export the token as an environment variable:

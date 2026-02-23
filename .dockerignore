@@ -376,6 +376,9 @@ $RECYCLE.BIN/
 .Trash-*
 .nfs*
 
+# Scratchpad (local notes, reviews, plans)
+.scratchpad/
+
 #----------------------------------------------------------------------
 # End of .dockerignore
 #----------------------------------------------------------------------

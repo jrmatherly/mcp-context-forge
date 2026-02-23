@@ -199,7 +199,7 @@ class TestRBACProxyAuthentication:
             proxy_user_header = "X-Authenticated-User"
             require_token_expiration = False
             docs_allow_basic_auth = False
-            platform_admin_email = "admin@example.com"
+            platform_admin_email = "admin@apollosai.dev"
             app_root_path = ""
 
         return MockSettings()
@@ -343,14 +343,14 @@ class TestRBACProxyAuthentication:
         # First-Party
         from mcpgateway.middleware import rbac
 
-        mock_request.headers = {"X-Authenticated-User": "admin@example.com"}
+        mock_request.headers = {"X-Authenticated-User": "admin@apollosai.dev"}
 
         # Mock the platform_admin_email check
-        mock_settings.platform_admin_email = "admin@example.com"
+        mock_settings.platform_admin_email = "admin@apollosai.dev"
 
         with patch.object(rbac, "settings", mock_settings):
             result = await rbac.get_current_user_with_permissions(mock_request, None, None)
-            assert result["email"] == "admin@example.com"
+            assert result["email"] == "admin@apollosai.dev"
             assert result["is_admin"] is True  # Matches platform_admin_email
             assert result["auth_method"] == "proxy"
 

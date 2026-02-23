@@ -28,8 +28,8 @@ from .conftest import BASE_URL
 
 def _make_admin_jwt() -> str:
     return _create_jwt_token(
-        {"sub": "admin@example.com"},
-        user_data={"email": "admin@example.com", "is_admin": True, "auth_provider": "local"},
+        {"sub": "admin@apollosai.dev"},
+        user_data={"email": "admin@apollosai.dev", "is_admin": True, "auth_provider": "local"},
     )
 
 

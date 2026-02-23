@@ -48,7 +48,6 @@ When `policy_lang` is set to cedar, policies are written in the Cedar language u
 When `policy_lang` is set to `custom_dsl`, policies are written in a compact, human-readable mini-language as a YAML multiline string. This allows non-experts to define role, resource, and action in a single, easy-to-scan block.
 following syntax:
 
-
 ## Syntax
 
 Policies use the following basic pattern:
@@ -67,7 +66,6 @@ For example:
 ```
 
 In this example, role is hr, resource is server, and action is hr_tool. The line update_payroll represents the specific operation being authorized for that role–resource–action tuple.
-
 
 ## Configuration
 
@@ -220,13 +218,10 @@ In another policy defined for tools
             - Server::"askHR"
 ```
 
-
 The actions like `view_full_output` and `view_redacted_output` has been used. This basically controls the
 level of output visibile to the user. In the above policy, user with role `hr` is only allowed to view the output of `update_payroll`. Similary for the second policy, user with role `employee` is only allowed to view redacted output of the tool.
 
-
 #### Prompt Invocation Policies
-
 
 ```yaml
 
@@ -248,7 +243,6 @@ level of output visibile to the user. In the above policy, user with role `hr` i
 ```
 
 Here, in the above polcicy, given a prompt template `judge_prompts`, user of role `admin` is only allowed to view full prompt. However, if a user is of role `employee`, then it could only see redacted version of the prompt.
-
 
 #### Resource Invocation Policies
 
@@ -274,7 +268,6 @@ Here, in the above polcicy, given a prompt template `judge_prompts`, user of rol
 Here, `Resource` word used in policy, is if resource hooks are invoked. So, in the above policy,
 user with role `admin` is only allowed to view full output of uri `https://example.com/data`. Where, the user is of `employee` role, it can only see the redacted versionaaaaa of the resource output.
 
-
 #### policy_output_keywords
 
 ```
@@ -285,10 +278,7 @@ user with role `admin` is only allowed to view full output of uri `https://examp
 has been provided, so everytime a user defines a policy, if it wants to control the output visibility of
 any of the tool, prompt, resource or agent in MCP gateway, it can provide the keyword, it's supposed to use in the policy in `policy_output_keywords`. CedarPolicyPlugin will internally use this mapping to redact or fully display the tool, prompt or resource response in post hooks.
 
-
-
-
-3. Now, the policy and plugin configurations are defined in `resources/config.yaml` file, next step is build this as an external MCP server.
+1. Now, the policy and plugin configurations are defined in `resources/config.yaml` file, next step is build this as an external MCP server.
 
 * `make venv`: This will create a virtual environment to develop or build your plugin.
 * `make install && make install-dev`: To install all the required libraries in the environment.
@@ -306,8 +296,8 @@ INFO:     127.0.0.1:55196 - "GET /health HTTP/1.1" 200 OK
 
 ```
 
-4. Now, you can add this external plugin configuration, in `plugins/config.yaml`:
-3. The next step is to enable the opa plugin which you can do by adding `PLUGINS_ENABLED=true` and the following blob in `plugins/config.yaml` file. This will indicate that OPA Plugin is running as an external MCP server.
+1. Now, you can add this external plugin configuration, in `plugins/config.yaml`:
+2. The next step is to enable the opa plugin which you can do by adding `PLUGINS_ENABLED=true` and the following blob in `plugins/config.yaml` file. This will indicate that OPA Plugin is running as an external MCP server.
 
   ```yaml
   - name: "CedarPolicyPlugin"
@@ -329,12 +319,11 @@ Run the following from the project root folder:
 
 ```bash
 # Generate JWT bearer token
-python3 -m mcpgateway.utils.create_jwt_token --username admin@example.com --exp 10080 --secret my-test-key
+python3 -m mcpgateway.utils.create_jwt_token --username admin@apollosai.dev --exp 10080 --secret my-test-key
 
 # Export for API calls
-export MCPGATEWAY_BEARER_TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token --username admin@example.com --exp 0 --secret my-test-key)
+export MCPGATEWAY_BEARER_TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token --username admin@apollosai.dev --exp 0 --secret my-test-key)
 ```
-
 
 1. Add server fast-time that exposes git tools in the mcp gateway
 
@@ -356,18 +345,18 @@ curl -s -X POST -H "Authorization: Bearer $MCPGATEWAY_BEARER_TOKEN" \
      http://localhost:4444/gateways
 ```
 
-2. This adds server to the gateway and exposes all the tools for git. You would see `fast-time-git-status` as the tool appearing in the tools tab of mcp gateway.
+1. This adds server to the gateway and exposes all the tools for git. You would see `fast-time-git-status` as the tool appearing in the tools tab of mcp gateway.
 
-3. The next step is to run CedarPolicyPlugin as an external MCP server
+2. The next step is to run CedarPolicyPlugin as an external MCP server
 Go into `plugins/external/cedar` and run the following:
-- `make venv`, and enter the environment
-- `make install && make install-dev` installs all the packages
-- `make build`
-- `make start`
+* `make venv`, and enter the environment
+* `make install && make install-dev` installs all the packages
+* `make build`
+* `make start`
 
 This will start CedarPolicyPlugin on port `8000`.
 
-4. Next step, is to add CedarPolicyPlugin in plugins by `PLUGINS_ENABLED=true` and the following blob in `plugins/config.yaml` file. This will indicate that CedarPolicyPlugin is running as an external MCP server.
+1. Next step, is to add CedarPolicyPlugin in plugins by `PLUGINS_ENABLED=true` and the following blob in `plugins/config.yaml` file. This will indicate that CedarPolicyPlugin is running as an external MCP server.
 
   ```yaml
   - name: "CedarPolicyPlugin"
@@ -378,7 +367,7 @@ This will start CedarPolicyPlugin on port `8000`.
       url: http://127.0.0.1:8000/mcp
   ```
 
-2. To test cedar plugin from the UI
+1. To test cedar plugin from the UI
 Invoke the `fast-time-git-status` from the UI, with `admin` as role.
 The request will be allowed by the CedarPolicyPlugin.
 
@@ -394,7 +383,6 @@ You get the following as output in the UI:
     }
   }
 ```
-
 
 ## Difference from OPAPlugin
 

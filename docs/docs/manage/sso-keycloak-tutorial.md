@@ -26,10 +26,10 @@ Preconfigured local endpoints and credentials:
 - Callback URL: `http://localhost:8080/auth/sso/callback/keycloak`
 - Compose wiring: internal Keycloak URL `http://keycloak:8080`, browser URL `http://localhost:8180`
 - Test users (all password `changeme`):
-  - `admin@example.com`
-  - `developer@example.com`
-  - `viewer@example.com`
-  - `newuser@example.com`
+    - `admin@apollosai.dev`
+    - `developer@example.com`
+    - `viewer@example.com`
+    - `newuser@example.com`
 
 ## Prerequisites
 
@@ -839,7 +839,7 @@ SSO_KEYCLOAK_MAP_REALM_ROLES=true
 SSO_KEYCLOAK_MAP_CLIENT_ROLES=true
 ```
 
-3. Assign roles to user:
+1. Assign roles to user:
 
    - Go to **Users** → Select user → **Role mapping**
    - Assign appropriate roles
@@ -881,9 +881,9 @@ docker ps | grep keycloak
 docker logs keycloak-container
 ```
 
-2. Check network and firewall rules
-3. Verify admin user credentials
-4. Reset admin password if needed:
+1. Check network and firewall rules
+2. Verify admin user credentials
+3. Reset admin password if needed:
 ```bash
 # Inside Keycloak container
 cd /opt/keycloak/bin

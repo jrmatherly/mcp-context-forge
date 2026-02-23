@@ -410,19 +410,19 @@ async def test_admin_login_handler_paths(monkeypatch):
     monkeypatch.setattr(admin.settings, "password_change_enforcement_enabled", False)
     monkeypatch.setattr(admin.settings, "detect_default_password_on_login", False)
 
-    request.form = AsyncMock(return_value={"email": "admin@example.com"})
+    request.form = AsyncMock(return_value={"email": "admin@apollosai.dev"})
     response = await admin.admin_login_handler(request, mock_db)
     assert isinstance(response, RedirectResponse)
     assert "missing_fields" in response.headers["location"]
 
-    request.form = AsyncMock(return_value={"email": "admin@example.com", "password": "pw"})
+    request.form = AsyncMock(return_value={"email": "admin@apollosai.dev", "password": "pw"})
     auth_service = MagicMock()
     auth_service.authenticate_user = AsyncMock(return_value=None)
     monkeypatch.setattr(admin, "EmailAuthService", lambda db: auth_service)
     response = await admin.admin_login_handler(request, mock_db)
     assert "invalid_credentials" in response.headers["location"]
 
-    user = SimpleNamespace(email="admin@example.com", password_change_required=True, password_changed_at=None, password_hash="hash")
+    user = SimpleNamespace(email="admin@apollosai.dev", password_change_required=True, password_changed_at=None, password_hash="hash")
     auth_service.authenticate_user = AsyncMock(return_value=user)
     monkeypatch.setattr(admin.settings, "password_change_enforcement_enabled", True)
     monkeypatch.setattr(admin, "create_access_token", AsyncMock(return_value=("token", None)))
@@ -449,9 +449,9 @@ async def test_admin_login_handler_default_password(monkeypatch):
     monkeypatch.setattr(admin.settings, "detect_default_password_on_login", True)
     monkeypatch.setattr(admin.settings, "require_password_change_for_default_password", True)
 
-    request.form = AsyncMock(return_value={"email": "admin@example.com", "password": "pw"})
+    request.form = AsyncMock(return_value={"email": "admin@apollosai.dev", "password": "pw"})
 
-    user = SimpleNamespace(email="admin@example.com", password_change_required=False, password_changed_at=None, password_hash="hash")
+    user = SimpleNamespace(email="admin@apollosai.dev", password_change_required=False, password_changed_at=None, password_hash="hash")
     auth_service = MagicMock()
     auth_service.authenticate_user = AsyncMock(return_value=user)
     monkeypatch.setattr(admin, "EmailAuthService", lambda db: auth_service)
@@ -1227,7 +1227,7 @@ async def test_admin_get_all_team_ids_admin_and_user(monkeypatch):
     _allow_permissions(monkeypatch)
 
     auth_service._user = SimpleNamespace(is_admin=True)
-    result = await admin.admin_get_all_team_ids(include_inactive=True, visibility=None, q=None, db=mock_db, user={"email": "admin@example.com"})
+    result = await admin.admin_get_all_team_ids(include_inactive=True, visibility=None, q=None, db=mock_db, user={"email": "admin@apollosai.dev"})
     assert result["team_ids"] == ["team-1", "team-2"]
     assert result["count"] == 2
 
@@ -1286,7 +1286,7 @@ async def test_admin_search_teams_admin_and_user(monkeypatch):
     _allow_permissions(monkeypatch)
 
     auth_service._user = SimpleNamespace(is_admin=True)
-    result = await admin.admin_search_teams(q="alp", include_inactive=False, limit=10, visibility=None, db=mock_db, user={"email": "admin@example.com"})
+    result = await admin.admin_search_teams(q="alp", include_inactive=False, limit=10, visibility=None, db=mock_db, user={"email": "admin@apollosai.dev"})
     assert result == [
         {"id": "t-1", "name": "Alpha", "slug": "alpha", "description": "desc", "visibility": "public", "is_active": True}
     ]

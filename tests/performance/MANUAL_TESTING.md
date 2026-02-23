@@ -34,7 +34,7 @@ curl -s http://localhost:4444/health | jq .
 echo -e "\n2. Login:"
 export TOKEN=$(curl -s -X POST http://localhost:4444/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email": "admin@example.com", "password": "changeme"}' \
+  -d '{"email": "admin@apollosai.dev", "password": "changeme"}' \
   | jq -r '.access_token')
 echo "Token: ${TOKEN:0:50}..."
 
@@ -77,7 +77,7 @@ curl -s http://localhost:4444/health | jq .
 # Login and get token
 export TOKEN=$(curl -s -X POST http://localhost:4444/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email": "admin@example.com", "password": "changeme"}' \
+  -d '{"email": "admin@apollosai.dev", "password": "changeme"}' \
   | jq -r '.access_token')
 
 # Verify token was received
@@ -152,7 +152,7 @@ curl -s -X GET "http://localhost:4444/auth/email/me" \
 
 # Expected output:
 # {
-#   "email": "admin@example.com",
+#   "email": "admin@apollosai.dev",
 #   "full_name": "Platform Administrator",
 #   "is_admin": true,
 #   "auth_provider": "local",
@@ -168,7 +168,7 @@ curl -s -X GET "http://localhost:4444/auth/email/me" \
 # Get token first
 export TOKEN=$(curl -s -X POST http://localhost:4444/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email": "admin@example.com", "password": "changeme"}' \
+  -d '{"email": "admin@apollosai.dev", "password": "changeme"}' \
   | jq -r '.access_token')
 
 # Performance test: 1000 requests, 50 concurrent
@@ -204,7 +204,7 @@ hey -n 5000 -c 100 -m GET \
 # Generate token
 export TOKEN=$(curl -s -X POST http://localhost:4444/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email": "admin@example.com", "password": "changeme"}' \
+  -d '{"email": "admin@apollosai.dev", "password": "changeme"}' \
   | jq -r '.access_token')
 
 # Test multiple endpoints in parallel
@@ -243,7 +243,7 @@ echo "Starting at $(date)"
 # Get token
 export TOKEN=$(curl -s -X POST http://localhost:4444/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email": "admin@example.com", "password": "changeme"}' \
+  -d '{"email": "admin@apollosai.dev", "password": "changeme"}' \
   | jq -r '.access_token')
 
 # Test 1: Health endpoint (no auth)
@@ -297,7 +297,7 @@ With optimized logging settings (`LOG_LEVEL=ERROR`, `DISABLE_ACCESS_LOG=true`):
 # If you get "Invalid authentication credentials", regenerate token:
 export TOKEN=$(curl -s -X POST http://localhost:4444/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email": "admin@example.com", "password": "changeme"}' \
+  -d '{"email": "admin@apollosai.dev", "password": "changeme"}' \
   | jq -r '.access_token')
 ```
 
@@ -339,7 +339,7 @@ while true; do
   # Get token
   TOKEN=$(curl -s -X POST http://localhost:4444/auth/login \
     -H "Content-Type: application/json" \
-    -d '{"email": "admin@example.com", "password": "changeme"}' \
+    -d '{"email": "admin@apollosai.dev", "password": "changeme"}' \
     | jq -r '.access_token')
 
   # Test endpoints
@@ -379,7 +379,7 @@ cd tests/performance
 
 TOKEN=$(curl -s -X POST http://localhost:4444/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email": "admin@example.com", "password": "changeme"}' \
+  -d '{"email": "admin@apollosai.dev", "password": "changeme"}' \
   | jq -r '.access_token')
 
 # Test critical endpoints
@@ -403,7 +403,7 @@ fi
 
 TOKEN=$(curl -s -X POST http://localhost:4444/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email": "admin@example.com", "password": "changeme"}' \
+  -d '{"email": "admin@apollosai.dev", "password": "changeme"}' \
   | jq -r '.access_token')
 
 echo "Running load test..."
@@ -431,7 +431,7 @@ fi
 
 TOKEN=$(curl -s -X POST http://localhost:4444/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email": "admin@example.com", "password": "changeme"}' \
+  -d '{"email": "admin@apollosai.dev", "password": "changeme"}' \
   | jq -r '.access_token')
 
 # Measure response time

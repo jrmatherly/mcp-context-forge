@@ -106,7 +106,7 @@ async def test_create_user_admin_platform_admin_role_assignment_fails(email_auth
             with patch("mcpgateway.services.role_service.RoleService", return_value=mock_role_service):
                 # Should not raise exception, just log warning
                 user = await email_auth_service.create_user(
-                    email="admin@example.com",
+                    email="admin@apollosai.dev",
                     password="ValidPass123!",
                     is_admin=True,
                 )
@@ -147,7 +147,7 @@ async def test_create_user_admin_team_admin_role_assignment(email_auth_service, 
             with patch("mcpgateway.services.personal_team_service.PersonalTeamService", return_value=mock_personal_team_service):
                 with patch("mcpgateway.services.role_service.RoleService", return_value=mock_role_service):
                     user = await email_auth_service.create_user(
-                        email="admin@example.com",
+                        email="admin@apollosai.dev",
                         password="ValidPass123!",
                         is_admin=True,
                     )
@@ -187,7 +187,7 @@ async def test_create_user_admin_team_admin_role_not_found(email_auth_service, m
             with patch("mcpgateway.services.personal_team_service.PersonalTeamService", return_value=mock_personal_team_service):
                 with patch("mcpgateway.services.role_service.RoleService", return_value=mock_role_service):
                     user = await email_auth_service.create_user(
-                        email="admin@example.com",
+                        email="admin@apollosai.dev",
                         password="ValidPass123!",
                         is_admin=True,
                     )
@@ -346,7 +346,7 @@ async def test_create_user_admin_team_owner_role_assignment_fails(email_auth_ser
             with patch("mcpgateway.services.personal_team_service.PersonalTeamService", return_value=mock_personal_team_service):
                 with patch("mcpgateway.services.role_service.RoleService", return_value=mock_role_service):
                     user = await email_auth_service.create_user(
-                        email="admin@example.com",
+                        email="admin@apollosai.dev",
                         password="ValidPass123!",
                         is_admin=True,
                     )

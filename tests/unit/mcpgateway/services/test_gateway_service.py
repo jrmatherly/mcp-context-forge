@@ -2010,7 +2010,7 @@ class TestGatewayService:
                 session,
                 "gw-update-123",
                 update_data,
-                modified_by="admin@example.com",
+                modified_by="admin@apollosai.dev",
             )
 
         # Verify gateway_mode was updated
@@ -2040,7 +2040,7 @@ class TestGatewayService:
             session,
             "gw-update-456",
             update_data,
-            modified_by="admin@example.com",
+            modified_by="admin@apollosai.dev",
         )
 
         # Verify gateway_mode was updated
@@ -2599,7 +2599,7 @@ class TestGatewayHealth:
         monkeypatch.setattr(gs, "REDIS_AVAILABLE", True)
         monkeypatch.setattr(gs.settings, "cache_type", "redis")
         monkeypatch.setattr(gs.settings, "redis_url", "redis://localhost:6379")
-        monkeypatch.setattr(gs.settings, "platform_admin_email", "admin@example.com")
+        monkeypatch.setattr(gs.settings, "platform_admin_email", "admin@apollosai.dev")
 
         service = gs.GatewayService()
         service._event_service = AsyncMock()

@@ -25,7 +25,7 @@ Before using the API, you need to:
     ```bash
     # Generate token (replace secret with your JWT_SECRET_KEY from .env)
     export TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token \
-      --username admin@example.com \
+      --username admin@apollosai.dev \
       --exp 10080 \
       --secret my-test-key 2>/dev/null | head -1)
 
@@ -37,7 +37,7 @@ Before using the API, you need to:
     ```bash
     # Generate admin token for testing admin operations
     export TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token \
-      --username admin@example.com \
+      --username admin@apollosai.dev \
       --admin \
       --full-name "Admin User" \
       --exp 10080 \
@@ -635,8 +635,6 @@ curl -s -H "Authorization: Bearer $TOKEN" $BASE_URL/servers/$SERVER_ID | jq '.'
 }
 ```
 
-
-
 #### Complete Example: Virtual Server Creation
 
 ```bash
@@ -797,7 +795,6 @@ curl -s -H "Authorization: Bearer $TOKEN" $BASE_URL/resources/$RESOURCE_ID | jq 
   "mimeType": "application/json"
 }
 ```
-
 
 ### Read Resource Content
 
@@ -1042,7 +1039,7 @@ curl -s -X POST -H "Authorization: Bearer $TOKEN" \
     "import_data": {
       "version": "2025-03-26",
       "exported_at": "2025-10-24T18:41:55.776238Z",
-      "exported_by": "admin@example.com",
+      "exported_by": "admin@apollosai.dev",
       "source_gateway": "http://0.0.0.0:4444",
       "encryption_method": "AES-256-GCM",
       "entities": {
@@ -1232,7 +1229,7 @@ export BASE_URL="http://localhost:4444"
 # export BASE_URL="http://localhost:8080"  # docker-compose with nginx
 # export BASE_URL="http://localhost:8000"  # make dev (uvicorn)
 export TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token \
-  --username admin@example.com \
+  --username admin@apollosai.dev \
   --exp 10080 \
   --secret my-test-key 2>/dev/null | head -1)
 

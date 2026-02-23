@@ -1266,7 +1266,7 @@ class SecurityValidator:
             Safe strings pass validation:
 
             >>> SecurityValidator.validate_no_xss('Hello World', 'test_field')
-            >>> SecurityValidator.validate_no_xss('User: admin@example.com', 'email')
+            >>> SecurityValidator.validate_no_xss('User: admin@apollosai.dev', 'email')
             >>> SecurityValidator.validate_no_xss('Price: $10.99', 'price')
 
             Empty/None strings are considered safe:

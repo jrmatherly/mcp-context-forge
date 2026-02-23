@@ -768,7 +768,7 @@ class TestTokenScopingMiddleware:
         mock_request.method = "GET"
         mock_request.headers = {"Authorization": "Bearer token"}
 
-        payload = {"sub": "admin@example.com", "is_admin": True, "scopes": {"permissions": ["*"]}}
+        payload = {"sub": "admin@apollosai.dev", "is_admin": True, "scopes": {"permissions": ["*"]}}
 
         with (
             patch.object(middleware, "_extract_token_scopes", return_value=payload),
@@ -787,7 +787,7 @@ class TestTokenScopingMiddleware:
         mock_request.method = "GET"
         mock_request.headers = {"Authorization": "Bearer token"}
 
-        payload = {"sub": "admin@example.com", "teams": None, "is_admin": True, "scopes": {"permissions": ["*"]}}
+        payload = {"sub": "admin@apollosai.dev", "teams": None, "is_admin": True, "scopes": {"permissions": ["*"]}}
 
         with (
             patch.object(middleware, "_extract_token_scopes", return_value=payload),
@@ -880,7 +880,7 @@ class TestTokenScopingMiddleware:
         mock_request.method = "GET"
         mock_request.headers = {"Authorization": "Bearer token"}
 
-        payload = {"sub": "admin@example.com", "is_admin": True, "scopes": {"ip_restrictions": ["10.0.0.0/24"], "permissions": ["*"]}}
+        payload = {"sub": "admin@apollosai.dev", "is_admin": True, "scopes": {"ip_restrictions": ["10.0.0.0/24"], "permissions": ["*"]}}
 
         with (
             patch.object(middleware, "_extract_token_scopes", return_value=payload),
@@ -900,7 +900,7 @@ class TestTokenScopingMiddleware:
         mock_request.method = "GET"
         mock_request.headers = {"Authorization": "Bearer token"}
 
-        payload = {"sub": "admin@example.com", "is_admin": True, "scopes": {"time_restrictions": {"weekdays_only": True}, "permissions": ["*"]}}
+        payload = {"sub": "admin@apollosai.dev", "is_admin": True, "scopes": {"time_restrictions": {"weekdays_only": True}, "permissions": ["*"]}}
 
         with (
             patch.object(middleware, "_extract_token_scopes", return_value=payload),

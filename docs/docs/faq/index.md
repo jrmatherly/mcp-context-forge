@@ -9,7 +9,7 @@
     # Using pipx - pip install pipx
     pipx run --spec mcp-contextforge-gateway mcpgateway --host 0.0.0.0 --port 4444
 
-    # Or uvx - pip install uv (default login: admin@example.com/changeme)
+    # Or uvx - pip install uv (default login: admin@apollosai.dev/changeme)
     uvx --from mcp-contextforge-gateway mcpgateway --host 0.0.0.0 --port 4444
     ```
 
@@ -67,7 +67,7 @@
     JWT_SECRET_KEY=my-test-key
 
     # Admin UI login credentials
-    PLATFORM_ADMIN_EMAIL=admin@example.com
+    PLATFORM_ADMIN_EMAIL=admin@apollosai.dev
     PLATFORM_ADMIN_PASSWORD=changeme
     ```
 
@@ -135,7 +135,7 @@
 ???+ example "🔑 How do I generate and use a JWT token?"
     ```bash
     export MCPGATEWAY_BEARER_TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token \
-        --username admin@example.com --exp 10080 --secret my-test-key)
+        --username admin@apollosai.dev --exp 10080 --secret my-test-key)
     curl -H "Authorization: Bearer $MCPGATEWAY_BEARER_TOKEN" http://localhost:4444/tools
     ```
 
@@ -309,7 +309,7 @@
 
     ```bash
     EMAIL_AUTH_ENABLED=true
-    PLATFORM_ADMIN_EMAIL=admin@example.com
+    PLATFORM_ADMIN_EMAIL=admin@apollosai.dev
     PLATFORM_ADMIN_PASSWORD=changeme
     AUTO_CREATE_PERSONAL_TEAMS=true
     ```

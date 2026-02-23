@@ -14,30 +14,30 @@ Plugins: How They Work in MCP Context Forge
 
 **Core Interfaces**
 - Base class: `mcpgateway.plugins.framework.base.Plugin`
-  - Exposes async methods for each hook; plugins override only the hooks they need.
-  - Properties from config: `.name`, `.mode`, `.priority`, `.hooks`, `.tags`, `.conditions`.
+    - Exposes async methods for each hook; plugins override only the hooks they need.
+    - Properties from config: `.name`, `.mode`, `.priority`, `.hooks`, `.tags`, `.conditions`.
 - Hook payload/result models (Pydantic) in `mcpgateway/plugins/framework/models.py`:
-  - Prompt
-    - `PromptPrehookPayload(name: str, args: dict[str, str])`
-    - `PromptPosthookPayload(name: str, result: PromptResult)`
-    - Results: `PromptPrehookResult`, `PromptPosthookResult`
-  - Tool
-    - `ToolPreInvokePayload(name: str, args: dict[str, Any])`
-    - `ToolPostInvokePayload(name: str, result: Any)`
-    - Results: `ToolPreInvokeResult`, `ToolPostInvokeResult`
-  - Resource
-    - `ResourcePreFetchPayload(uri: str, metadata: dict[str, Any])`
-    - `ResourcePostFetchPayload(uri: str, content: Any)`
-    - Results: `ResourcePreFetchResult`, `ResourcePostFetchResult`
-  - Result schema for all hooks: `PluginResult[T]` with fields
-    - `continue_processing: bool = True`
-    - `modified_payload: Optional[T]` (when transforming)
-    - `violation: Optional[PluginViolation]` (when blocking or auditing)
-    - `metadata: dict[str, Any] = {}` (accumulates across plugins)
+    - Prompt
+        - `PromptPrehookPayload(name: str, args: dict[str, str])`
+        - `PromptPosthookPayload(name: str, result: PromptResult)`
+        - Results: `PromptPrehookResult`, `PromptPosthookResult`
+    - Tool
+        - `ToolPreInvokePayload(name: str, args: dict[str, Any])`
+        - `ToolPostInvokePayload(name: str, result: Any)`
+        - Results: `ToolPreInvokeResult`, `ToolPostInvokeResult`
+    - Resource
+        - `ResourcePreFetchPayload(uri: str, metadata: dict[str, Any])`
+        - `ResourcePostFetchPayload(uri: str, content: Any)`
+        - Results: `ResourcePreFetchResult`, `ResourcePostFetchResult`
+    - Result schema for all hooks: `PluginResult[T]` with fields
+        - `continue_processing: bool = True`
+        - `modified_payload: Optional[T]` (when transforming)
+        - `violation: Optional[PluginViolation]` (when blocking or auditing)
+        - `metadata: dict[str, Any] = {}` (accumulates across plugins)
 - Violation schema: `PluginViolation(reason, description, code, details)`; manager injects `violation.plugin_name` at runtime.
 - Contexts in `models.py`
-  - `GlobalContext(request_id, user?, tenant_id?, server_id?, state={}, metadata={})`
-  - `PluginContext(state={}, global_context: GlobalContext, metadata={})` with helpers `get_state`/`set_state`.
+    - `GlobalContext(request_id, user?, tenant_id?, server_id?, state={}, metadata={})`
+    - `PluginContext(state={}, global_context: GlobalContext, metadata={})` with helpers `get_state`/`set_state`.
 
 **Hook Semantics**
 - `prompt_pre_fetch`: Before retrieving/rendering a prompt. Typical: validate/transform args; mask PII; may block.
@@ -51,60 +51,60 @@ Plugins: How They Work in MCP Context Forge
 - Ordering: Deterministic, by ascending `priority`. Lower runs first.
 - Conditions: A plugin's `conditions` must match for the current context to execute it. Fields include `server_ids`, `tenant_ids`, `tools`, `prompts`, `resources`, `user_patterns`, `content_types`. Matching helpers in `utils.py`.
 - Modes and blocking:
-  - `enforce`: If a result sets `continue_processing=False`, manager immediately returns a block with the violation.
-  - `enforce_ignore_error`: Enforce violations; errors don't block (manager may continue based on global settings).
-  - `permissive`: Log/report violations; continue.
-  - `disabled`: Loaded but not executed.
+    - `enforce`: If a result sets `continue_processing=False`, manager immediately returns a block with the violation.
+    - `enforce_ignore_error`: Enforce violations; errors don't block (manager may continue based on global settings).
+    - `permissive`: Log/report violations; continue.
+    - `disabled`: Loaded but not executed.
 - Timeouts and errors:
-  - Per-plugin timeout (default 30s) enforced via `asyncio.wait_for`.
-  - Payload size guardrails (~1MB) for prompt args and results.
-  - Error isolation: behavior controlled by `plugin_settings.fail_on_plugin_error` and plugin `mode`.
+    - Per-plugin timeout (default 30s) enforced via `asyncio.wait_for`.
+    - Payload size guardrails (~1MB) for prompt args and results.
+    - Error isolation: behavior controlled by `plugin_settings.fail_on_plugin_error` and plugin `mode`.
 - Context lifecycle: Manager stores per-request plugin contexts between pre/post hooks and cleans them periodically (every 5m; expire at 1h).
 
 **Configuration File (`plugins/config.yaml`)**
 - Top-level keys: `plugins: []`, `plugin_dirs: []`, `plugin_settings: {}`.
 - Plugin entries (validated by `PluginConfig`):
-  - `name`: unique id
-  - `kind`: fully-qualified class path for native, or literal `external` for MCP plugins
-  - `description`, `version`, `author`, `tags`
-  - `hooks`: any of the six production hooks
-  - `mode`: `enforce | enforce_ignore_error | permissive | disabled`
-  - `priority`: int (smaller → earlier)
-  - `conditions`: list of selector blocks (see Execution Model)
-  - `applied_to` (optional): advanced targeting templates for tools/prompts/resources and context extraction
-  - `config`: plugin-specific dict (native only; external config lives on the external server)
-  - `mcp` (external only):
-    - `proto`: `STDIO | STREAMABLEHTTP | SSE`
-    - `url` for HTTP-like transports, `script` or `cmd` for STDIO, `uds` for Streamable HTTP over unix sockets
+    - `name`: unique id
+    - `kind`: fully-qualified class path for native, or literal `external` for MCP plugins
+    - `description`, `version`, `author`, `tags`
+    - `hooks`: any of the six production hooks
+    - `mode`: `enforce | enforce_ignore_error | permissive | disabled`
+    - `priority`: int (smaller → earlier)
+    - `conditions`: list of selector blocks (see Execution Model)
+    - `applied_to` (optional): advanced targeting templates for tools/prompts/resources and context extraction
+    - `config`: plugin-specific dict (native only; external config lives on the external server)
+    - `mcp` (external only):
+        - `proto`: `STDIO | STREAMABLEHTTP | SSE`
+        - `url` for HTTP-like transports, `script` or `cmd` for STDIO, `uds` for Streamable HTTP over unix sockets
 - Global `plugin_settings`:
-  - `parallel_execution_within_band` (reserved)
-  - `plugin_timeout` (seconds)
-  - `fail_on_plugin_error` (bool)
-  - `enable_plugin_api` (bool)
-  - `plugin_health_check_interval` (reserved)
+    - `parallel_execution_within_band` (reserved)
+    - `plugin_timeout` (seconds)
+    - `fail_on_plugin_error` (bool)
+    - `enable_plugin_api` (bool)
+    - `plugin_health_check_interval` (reserved)
 - Jinja support: File is rendered with Jinja; `${env}` values can be injected from environment.
 
 **External Plugins over MCP**
 - Client: `ExternalPlugin` in `external/mcp/client.py` handles session, tool calls, merging remote config into local.
 - Required tool names on server match hook names:
-  - `get_plugin_config`
-  - `prompt_pre_fetch`, `prompt_post_fetch`
-  - `tool_pre_invoke`, `tool_post_invoke`
-  - `resource_pre_fetch`, `resource_post_fetch`
+    - `get_plugin_config`
+    - `prompt_pre_fetch`, `prompt_post_fetch`
+    - `tool_pre_invoke`, `tool_post_invoke`
+    - `resource_pre_fetch`, `resource_post_fetch`
 - Call contract (JSON over MCP):
-  - Request to each hook: `{ "plugin_name": str, "payload": <HookPayload>, "context": <PluginContext> }`
-  - Response expected as JSON text with one of:
-    - `{ "result": <PluginResult serialized> }`
-    - `{ "context": <PluginContext serialized> }` (to update context)
-    - `{ "error": <PluginErrorModel> }` to signal errors
+    - Request to each hook: `{ "plugin_name": str, "payload": <HookPayload>, "context": <PluginContext> }`
+    - Response expected as JSON text with one of:
+        - `{ "result": <PluginResult serialized> }`
+        - `{ "context": <PluginContext serialized> }` (to update context)
+        - `{ "error": <PluginErrorModel> }` to signal errors
 - `get_plugin_config` must return a `PluginConfig`-compatible JSON; the gateway merges remote+local with local taking precedence for gateway-owned fields. For external plugins, gateway-side `config` is disallowed (plugin's own server owns it).
 - Transports: `STDIO` (spawn script/command) or `STREAMABLEHTTP` (connect to `url`, optionally via `uds`).
 - Validation: `script` must exist (if absolute) and be `.py`/`.sh` or executable; `url` must pass security validation.
 
 **Authoring Workflow**
 - CLI: `mcpplugins bootstrap --destination <dir> [--type native|external]` creates a project from templates in `plugin_templates/`.
-  - Native template: Python class extending `Plugin`, with `plugin-manifest.yaml.jinja`, example config, and README.
-  - External template: Full project with runtime config, tests, container build, and MCP server entrypoint.
+    - Native template: Python class extending `Plugin`, with `plugin-manifest.yaml.jinja`, example config, and README.
+    - External template: Full project with runtime config, tests, container build, and MCP server entrypoint.
 - External plugin dev loop (from Lifecycle docs):
   1) `make install-dev` (or `make install-editable`)
   2) Configure `resources/plugins/config.yaml` and `resources/runtime/config.yaml`
@@ -124,7 +124,7 @@ Plugins: How They Work in MCP Context Forge
         #   ca_bundle: /app/certs/plugins/ca.crt
         #   client_cert: /app/certs/plugins/gateway-client.pem
      ```
-  - STDIO alternative:
+    - STDIO alternative:
      ```yaml
      - name: "MyFilter"
        kind: "external"
@@ -197,34 +197,34 @@ Examples:
 
 **Key Plugin Examples:**
 - `ArgumentNormalizer` (`plugins/argument_normalizer/argument_normalizer.py`)
-  - Hooks: prompt pre, tool pre
-  - Normalizes Unicode (NFC/NFD/NFKC/NFKD), trims/collapses whitespace, optional casing, numeric date strings to ISO `YYYY-MM-DD`, and numbers to canonical form (dot decimal, no thousands). Per-field overrides via regex.
-  - Config: `enable_unicode`, `unicode_form`, `remove_control_chars`, `enable_whitespace`, `trim`, `collapse_internal`, `normalize_newlines`, `collapse_blank_lines`, `enable_casing`, `case_strategy`, `enable_dates`, `day_first`, `year_first`, `enable_numbers`, `decimal_detection`, `field_overrides`.
-  - Ordering: place before PII filter (lower priority value) so PII patterns see stabilized inputs. Recommended mode: `permissive`.
+    - Hooks: prompt pre, tool pre
+    - Normalizes Unicode (NFC/NFD/NFKC/NFKD), trims/collapses whitespace, optional casing, numeric date strings to ISO `YYYY-MM-DD`, and numbers to canonical form (dot decimal, no thousands). Per-field overrides via regex.
+    - Config: `enable_unicode`, `unicode_form`, `remove_control_chars`, `enable_whitespace`, `trim`, `collapse_internal`, `normalize_newlines`, `collapse_blank_lines`, `enable_casing`, `case_strategy`, `enable_dates`, `day_first`, `year_first`, `enable_numbers`, `decimal_detection`, `field_overrides`.
+    - Ordering: place before PII filter (lower priority value) so PII patterns see stabilized inputs. Recommended mode: `permissive`.
 - `PIIFilterPlugin` (`plugins/pii_filter/pii_filter.py`)
-  - Hooks: prompt pre/post, tool pre/post
-  - Detects and masks PII (SSN, credit card, email, phone, IP, keys, etc.) via regex; supports strategies: redact/partial/hash/tokenize/remove
-  - Config: detection toggles, `default_mask_strategy`, `redaction_text`, `block_on_detection`, `log_detections`, `whitelist_patterns`, `custom_patterns`
-  - Behavior: may block in `enforce`, otherwise modifies payload (masked values) and sets metadata
+    - Hooks: prompt pre/post, tool pre/post
+    - Detects and masks PII (SSN, credit card, email, phone, IP, keys, etc.) via regex; supports strategies: redact/partial/hash/tokenize/remove
+    - Config: detection toggles, `default_mask_strategy`, `redaction_text`, `block_on_detection`, `log_detections`, `whitelist_patterns`, `custom_patterns`
+    - Behavior: may block in `enforce`, otherwise modifies payload (masked values) and sets metadata
 - `SearchReplacePlugin` (`plugins/regex_filter/search_replace.py`)
-  - Hooks: prompt pre/post, tool pre/post
-  - Regex search/replace on string fields; config: `words: [{search, replace}, ...]`
+    - Hooks: prompt pre/post, tool pre/post
+    - Regex search/replace on string fields; config: `words: [{search, replace}, ...]`
 - `DenyListPlugin` (`plugins/deny_filter/deny.py`)
-  - Hooks: prompt pre
-  - Blocks when any denylisted word is found in prompt args; config: `words: []`
+    - Hooks: prompt pre
+    - Blocks when any denylisted word is found in prompt args; config: `words: []`
 - `ResourceFilterPlugin` (`plugins/resource_filter/resource_filter.py`)
-  - Hooks: resource pre/post
-  - Validates protocol/URI, size limits, domain blocks, content redaction; adds request metadata; config includes `max_content_size`, `allowed_protocols`, `blocked_domains`, `content_filters`
+    - Hooks: resource pre/post
+    - Validates protocol/URI, size limits, domain blocks, content redaction; adds request metadata; config includes `max_content_size`, `allowed_protocols`, `blocked_domains`, `content_filters`
 - External OPA example (`plugins/external/opa`)
-  - Demonstrates external policy enforcement at `tool_pre_invoke` by calling an OPA server; shows `applied_to` usage to target specific tools and feed policy context.
+    - Demonstrates external policy enforcement at `tool_pre_invoke` by calling an OPA server; shows `applied_to` usage to target specific tools and feed policy context.
 
 **Manager and Registry Behavior**
 - `PluginManager` (singleton)
-  - Loads config via `ConfigLoader` (Jinja + YAML); instantiates via `PluginLoader`.
-  - Executes per-hook via `PluginExecutor`, validates payload size, enforces timeouts, manages contexts, aggregates metadata.
-  - Stores per-request contexts between pre/post and cleans them periodically.
+    - Loads config via `ConfigLoader` (Jinja + YAML); instantiates via `PluginLoader`.
+    - Executes per-hook via `PluginExecutor`, validates payload size, enforces timeouts, manages contexts, aggregates metadata.
+    - Stores per-request contexts between pre/post and cleans them periodically.
 - `PluginInstanceRegistry`
-  - Registers `PluginRef` (wrapping plugins with UUIDs), keeps per-hook lists, returns plugins ordered by priority.
+    - Registers `PluginRef` (wrapping plugins with UUIDs), keeps per-hook lists, returns plugins ordered by priority.
 
 **Practical Tips for LLM‑Written Plugins**
 - Keep hook methods pure async and non-blocking; respect timeouts.
@@ -304,15 +304,15 @@ async function toolPreInvoke({ payload, context }: any) {
 
 **Testing Plugins**
 - Code quality & pre-commit (see AGENTS.md for details):
-  - `make autoflake isort black pre-commit` formats, orders imports, applies autoflake, and runs pre-commit hooks.
-  - `make pylint flake8` runs static analysis; fix findings before committing.
-  - `make doctest test` executes doctests then pytest; mirrors CI expectations locally.
+    - `make autoflake isort black pre-commit` formats, orders imports, applies autoflake, and runs pre-commit hooks.
+    - `make pylint flake8` runs static analysis; fix findings before committing.
+    - `make doctest test` executes doctests then pytest; mirrors CI expectations locally.
 
 - Root-level commands:
-  - `make test` runs unit tests.
-  - `make doctest` runs doctests embedded in framework models and helpers.
-  - `make htmlcov` generates HTML coverage at `docs/docs/coverage/index.html`.
-  - Use `pytest -k "name"` and marks (e.g., `pytest -m "not slow"`).
+    - `make test` runs unit tests.
+    - `make doctest` runs doctests embedded in framework models and helpers.
+    - `make htmlcov` generates HTML coverage at `docs/docs/coverage/index.html`.
+    - Use `pytest -k "name"` and marks (e.g., `pytest -m "not slow"`).
 
 - Unit test a native plugin (pytest):
   ```python
@@ -409,8 +409,8 @@ async function toolPreInvoke({ payload, context }: any) {
   ```
 
 - Testing external plugins (unit):
-  - For server code, unit test the underlying policy/transform functions directly, and mock I/O (e.g., mock `requests.post` in the OPA plugin).
-  - Keep tests deterministic and fast; avoid network in unit tests.
+    - For server code, unit test the underlying policy/transform functions directly, and mock I/O (e.g., mock `requests.post` in the OPA plugin).
+    - Keep tests deterministic and fast; avoid network in unit tests.
 
 - Testing external plugins (integration with MCP client):
   1) In the external plugin project directory, start the MCP server: `make start` (default Streamable HTTP at `http://localhost:8000/mcp`).
@@ -438,7 +438,7 @@ async function toolPreInvoke({ payload, context }: any) {
 - Gateway E2E smoke test with external plugin:
   1) Generate a token and export it (JWT helper):
      ```bash
-     export MCPGATEWAY_BEARER_TOKEN=$(python -m mcpgateway.utils.create_jwt_token --username admin@example.com --exp 60 --secret KEY)
+     export MCPGATEWAY_BEARER_TOKEN=$(python -m mcpgateway.utils.create_jwt_token --username admin@apollosai.dev --exp 60 --secret KEY)
      ```
   2) Ensure `.env` has `PLUGINS_ENABLED=true` and `plugins/config.yaml` includes your external plugin pointing to `http://localhost:8000/mcp`.
   3) Start gateway: `make serve`.
@@ -451,5 +451,5 @@ async function toolPreInvoke({ payload, context }: any) {
      ```
 
 - Performance and timeouts:
-  - To test timeout handling, configure `plugin_settings.plugin_timeout` low (e.g., 1–2s) and create a test plugin that `await asyncio.sleep(timeout+ε)` inside a hook, then assert the manager error behavior per mode/settings.
-  - Use `pytest.mark.slow` sparingly; default tests should be fast and deterministic.
+    - To test timeout handling, configure `plugin_settings.plugin_timeout` low (e.g., 1–2s) and create a test plugin that `await asyncio.sleep(timeout+ε)` inside a hook, then assert the manager error behavior per mode/settings.
+    - Use `pytest.mark.slow` sparingly; default tests should be fast and deterministic.

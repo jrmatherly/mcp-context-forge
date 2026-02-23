@@ -165,7 +165,7 @@ class TestAddMemberToTeamExceptionPath:
         db.add.side_effect = RuntimeError("Database error during add")
 
         with pytest.raises(TeamMemberAddError) as exc_info:
-            await svc.add_member_to_team("t1", "newuser@example.com", "member", invited_by="admin@example.com")
+            await svc.add_member_to_team("t1", "newuser@example.com", "member", invited_by="admin@apollosai.dev")
 
         assert "Failed to add member to team" in str(exc_info.value)
         db.rollback.assert_called_once()

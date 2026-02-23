@@ -39,7 +39,7 @@ plugins:
           full_name: "Demo User"
           is_admin: false
         "admin-key-67890":
-          email: "admin@example.com"
+          email: "admin@apollosai.dev"
           full_name: "Admin User"
           is_admin: true
 

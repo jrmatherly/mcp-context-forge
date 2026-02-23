@@ -301,7 +301,7 @@ class TestRustPIIDetector:
                 {"ssn": "987-65-4321", "name": "Bob"}
             ],
             "contact": {
-                "email": "admin@example.com",
+                "email": "admin@apollosai.dev",
                 "phone": "555-1234"
             }
         }

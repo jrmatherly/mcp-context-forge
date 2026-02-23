@@ -94,7 +94,7 @@ class TestTeamManagementService:
         team.name = "Test Team"
         team.slug = "test-team"
         team.description = "A test team"
-        team.created_by = "admin@example.com"
+        team.created_by = "admin@apollosai.dev"
         team.is_personal = False
         team.visibility = "private"
         team.max_members = 100
@@ -177,7 +177,7 @@ class TestTeamManagementService:
             MockTeam.return_value = mock_team
             mock_slugify.return_value = "test-team"
 
-            result = await service.create_team(name="Test Team", description="A test team", created_by="admin@example.com", visibility="private")
+            result = await service.create_team(name="Test Team", description="A test team", created_by="admin@apollosai.dev", visibility="private")
 
             assert result == mock_team
             mock_db.add.assert_called()
@@ -188,7 +188,7 @@ class TestTeamManagementService:
     async def test_create_team_invalid_visibility(self, service):
         """Test team creation with invalid visibility."""
         with pytest.raises(ValueError, match="Invalid visibility"):
-            await service.create_team(name="Test Team", description="A test team", created_by="admin@example.com", visibility="invalid")
+            await service.create_team(name="Test Team", description="A test team", created_by="admin@apollosai.dev", visibility="invalid")
 
     @pytest.mark.asyncio
     async def test_create_team_database_error(self, service, mock_db):
@@ -200,7 +200,7 @@ class TestTeamManagementService:
         with patch("mcpgateway.services.team_management_service.EmailTeam"), patch("mcpgateway.utils.create_slug.slugify") as mock_slugify:
             mock_slugify.return_value = "test-team"
             with pytest.raises(Exception):
-                await service.create_team(name="Test Team", description="A test team", created_by="admin@example.com")
+                await service.create_team(name="Test Team", description="A test team", created_by="admin@apollosai.dev")
 
             mock_db.rollback.assert_called_once()
 
@@ -222,7 +222,7 @@ class TestTeamManagementService:
             MockTeam.return_value = mock_team
             mock_slugify.return_value = "test-team"
 
-            await service.create_team(name="Test Team", description="A test team", created_by="admin@example.com")
+            await service.create_team(name="Test Team", description="A test team", created_by="admin@apollosai.dev")
 
             MockTeam.assert_called_once()
             call_kwargs = MockTeam.call_args[1]
@@ -240,7 +240,7 @@ class TestTeamManagementService:
         # Mock existing inactive membership
         mock_existing_membership = MagicMock(spec=EmailTeamMember)
         mock_existing_membership.team_id = "existing_team_id"
-        mock_existing_membership.user_email = "admin@example.com"
+        mock_existing_membership.user_email = "admin@apollosai.dev"
         mock_existing_membership.is_active = False
 
         # Setup mock queries to return existing inactive team and membership
@@ -251,7 +251,7 @@ class TestTeamManagementService:
             mock_slugify.return_value = "test-team"
             mock_utc_now.return_value = "2023-01-01T00:00:00Z"
 
-            result = await service.create_team(name="Test Team", description="A reactivated team", created_by="admin@example.com", visibility="public")
+            result = await service.create_team(name="Test Team", description="A reactivated team", created_by="admin@apollosai.dev", visibility="public")
 
             # Verify the existing team was reactivated with new details
             assert result == mock_existing_team
@@ -387,7 +387,7 @@ class TestTeamManagementService:
         mock_db.query.return_value = mock_query
 
         with patch.object(service, "get_team_by_id", return_value=mock_team):
-            result = await service.delete_team(team_id="team123", deleted_by="admin@example.com")
+            result = await service.delete_team(team_id="team123", deleted_by="admin@apollosai.dev")
 
             assert result is True
             assert mock_team.is_active is False
@@ -397,7 +397,7 @@ class TestTeamManagementService:
     async def test_delete_team_not_found(self, service):
         """Test deleting non-existent team."""
         with patch.object(service, "get_team_by_id", return_value=None):
-            result = await service.delete_team(team_id="nonexistent", deleted_by="admin@example.com")
+            result = await service.delete_team(team_id="nonexistent", deleted_by="admin@apollosai.dev")
 
             assert result is False
 
@@ -407,7 +407,7 @@ class TestTeamManagementService:
         mock_team.is_personal = True
 
         with patch.object(service, "get_team_by_id", return_value=mock_team):
-            result = await service.delete_team(team_id="team123", deleted_by="admin@example.com")
+            result = await service.delete_team(team_id="team123", deleted_by="admin@apollosai.dev")
             assert result is False
 
     @pytest.mark.asyncio
@@ -416,7 +416,7 @@ class TestTeamManagementService:
         mock_db.commit.side_effect = Exception("Database error")
 
         with patch.object(service, "get_team_by_id", return_value=mock_team):
-            result = await service.delete_team(team_id="team123", deleted_by="admin@example.com")
+            result = await service.delete_team(team_id="team123", deleted_by="admin@apollosai.dev")
 
             assert result is False
             mock_db.rollback.assert_called_once()
@@ -653,14 +653,14 @@ class TestTeamManagementService:
         service._role_service = mock_role_service
 
         with patch.object(service, "get_team_by_id", return_value=mock_team):
-            result = await service.update_member_role(team_id="team123", user_email="user@example.com", new_role="owner", updated_by="admin@example.com")
+            result = await service.update_member_role(team_id="team123", user_email="user@example.com", new_role="owner", updated_by="admin@apollosai.dev")
 
             assert result is True
             assert mock_membership.role == "owner"
             # Should revoke member role
             mock_role_service.revoke_role_from_user.assert_called_with(user_email="user@example.com", role_id="member-role-id", scope="team", scope_id="team123")
             # Should assign owner role
-            mock_role_service.assign_role_to_user.assert_called_with(user_email="user@example.com", role_id="owner-role-id", scope="team", scope_id="team123", granted_by="admin@example.com")
+            mock_role_service.assign_role_to_user.assert_called_with(user_email="user@example.com", role_id="owner-role-id", scope="team", scope_id="team123", granted_by="admin@apollosai.dev")
 
     @pytest.mark.asyncio
     async def test_update_member_role_owner_to_member_transitions_rbac(self, service, mock_team, mock_membership, mock_db):
@@ -700,14 +700,14 @@ class TestTeamManagementService:
         service._role_service = mock_role_service
 
         with patch.object(service, "get_team_by_id", return_value=mock_team):
-            result = await service.update_member_role(team_id="team123", user_email="user@example.com", new_role="member", updated_by="admin@example.com")
+            result = await service.update_member_role(team_id="team123", user_email="user@example.com", new_role="member", updated_by="admin@apollosai.dev")
 
             assert result is True
             assert mock_membership.role == "member"
             # Should revoke owner role
             mock_role_service.revoke_role_from_user.assert_called_with(user_email="user@example.com", role_id="owner-role-id", scope="team", scope_id="team123")
             # Should assign member role
-            mock_role_service.assign_role_to_user.assert_called_with(user_email="user@example.com", role_id="member-role-id", scope="team", scope_id="team123", granted_by="admin@example.com")
+            mock_role_service.assign_role_to_user.assert_called_with(user_email="user@example.com", role_id="member-role-id", scope="team", scope_id="team123", granted_by="admin@apollosai.dev")
 
     @pytest.mark.asyncio
     async def test_update_member_role_invalid_role(self, service):
@@ -1154,7 +1154,7 @@ class TestTeamManagementService:
         mock_db.query.return_value.filter.return_value.first.return_value = None
 
         with pytest.raises(ValueError, match="not found"):
-            await service.approve_join_request("req-1", "admin@example.com")
+            await service.approve_join_request("req-1", "admin@apollosai.dev")
 
         mock_db.rollback.assert_called_once()
 
@@ -1166,7 +1166,7 @@ class TestTeamManagementService:
         mock_db.query.return_value.filter.return_value.first.return_value = join_request
 
         with pytest.raises(ValueError, match="expired"):
-            await service.approve_join_request("req-1", "admin@example.com")
+            await service.approve_join_request("req-1", "admin@apollosai.dev")
 
         assert join_request.status == "expired"
         mock_db.commit.assert_called_once()
@@ -1200,7 +1200,7 @@ class TestTeamManagementService:
             patch("mcpgateway.services.team_management_service.auth_cache.invalidate_team_membership", new=AsyncMock()),
             patch("mcpgateway.services.team_management_service.admin_stats_cache.invalidate_teams", new=AsyncMock()),
         ):
-            result = await service.approve_join_request("req-1", "admin@example.com")
+            result = await service.approve_join_request("req-1", "admin@apollosai.dev")
 
         assert result is member
         mock_db.flush.assert_called_once()
@@ -1250,7 +1250,7 @@ class TestTeamManagementService:
                 patch("mcpgateway.services.team_management_service.auth_cache.invalidate_team_membership", new=AsyncMock()),
                 patch("mcpgateway.services.team_management_service.admin_stats_cache.invalidate_teams", new=AsyncMock()),
             ):
-                result = await service.approve_join_request("req-1", "admin@example.com")
+                result = await service.approve_join_request("req-1", "admin@apollosai.dev")
 
         assert result is member
         mock_role_service.get_role_by_name.assert_called_once_with("viewer", scope="team")
@@ -1296,7 +1296,7 @@ class TestTeamManagementService:
                 patch("mcpgateway.services.team_management_service.auth_cache.invalidate_team_membership", new=AsyncMock()),
                 patch("mcpgateway.services.team_management_service.admin_stats_cache.invalidate_teams", new=AsyncMock()),
             ):
-                result = await service.approve_join_request("req-1", "admin@example.com")
+                result = await service.approve_join_request("req-1", "admin@apollosai.dev")
 
         # Should still return member even without role
         assert result is member
@@ -1311,7 +1311,7 @@ class TestTeamManagementService:
         join_request.team_id = "team-1"
         mock_db.query.return_value.filter.return_value.first.return_value = join_request
 
-        result = await service.reject_join_request("req-1", "admin@example.com")
+        result = await service.reject_join_request("req-1", "admin@apollosai.dev")
 
         assert result is True
         assert join_request.status == "rejected"
@@ -1323,7 +1323,7 @@ class TestTeamManagementService:
         mock_db.query.return_value.filter.return_value.first.return_value = None
 
         with pytest.raises(ValueError, match="not found"):
-            await service.reject_join_request("req-1", "admin@example.com")
+            await service.reject_join_request("req-1", "admin@apollosai.dev")
 
         mock_db.rollback.assert_called_once()
 
@@ -1885,7 +1885,7 @@ class TestTeamManagementService:
 
             with patch.object(service, "get_team_by_id", return_value=mock_team):
                 # Execute
-                result = await service.add_member_to_team(team_id="team123", user_email="user@example.com", role="member", invited_by="admin@example.com")
+                result = await service.add_member_to_team(team_id="team123", user_email="user@example.com", role="member", invited_by="admin@apollosai.dev")
 
                 # Verify
                 assert result is not None
@@ -1943,7 +1943,7 @@ class TestTeamManagementService:
 
         with patch.object(service, "get_team_by_id", return_value=mock_team):
             # Execute
-            result = await service.add_member_to_team(team_id="team123", user_email="user@example.com", role="member", invited_by="admin@example.com")
+            result = await service.add_member_to_team(team_id="team123", user_email="user@example.com", role="member", invited_by="admin@apollosai.dev")
 
             # Verify - should NOT assign role again
             assert result is not None
@@ -1987,7 +1987,7 @@ class TestTeamManagementService:
                 mock_db.query.return_value.filter.return_value.first.return_value = mock_membership
 
                 # Execute
-                result = await service.remove_member_from_team(team_id="team123", user_email="user@example.com", removed_by="admin@example.com")
+                result = await service.remove_member_from_team(team_id="team123", user_email="user@example.com", removed_by="admin@apollosai.dev")
 
                 # Verify - both owner and member roles are revoked defensively
                 assert result is True
@@ -2036,7 +2036,7 @@ class TestTeamManagementService:
 
             with patch.object(service, "get_team_by_id", return_value=mock_team):
                 # Execute
-                result = await service.add_member_to_team(team_id="team123", user_email="user@example.com", role="member", invited_by="admin@example.com")
+                result = await service.add_member_to_team(team_id="team123", user_email="user@example.com", role="member", invited_by="admin@apollosai.dev")
 
                 # Verify - member should still be added even without role
                 assert result is not None
@@ -2086,7 +2086,7 @@ class TestTeamManagementService:
 
         with patch.object(service, "get_team_by_id", return_value=mock_team):
             # Execute - should not raise
-            result = await service.add_member_to_team(team_id="team123", user_email="user@example.com", role="member", invited_by="admin@example.com")
+            result = await service.add_member_to_team(team_id="team123", user_email="user@example.com", role="member", invited_by="admin@apollosai.dev")
 
             # Verify - member should still be added
             assert result is not None
@@ -2140,7 +2140,7 @@ class TestTeamManagementService:
 
             with patch.object(service, "get_team_by_id", return_value=mock_team):
                 # Execute
-                result = await service.add_member_to_team(team_id="team123", user_email="user@example.com", role="member", invited_by="admin@example.com")
+                result = await service.add_member_to_team(team_id="team123", user_email="user@example.com", role="member", invited_by="admin@apollosai.dev")
 
                 # Verify
                 assert result is not None
@@ -2171,7 +2171,7 @@ class TestTeamManagementService:
                 mock_db.query.return_value.filter.return_value.first.return_value = mock_membership
 
                 # Execute
-                result = await service.remove_member_from_team(team_id="team123", user_email="user@example.com", removed_by="admin@example.com")
+                result = await service.remove_member_from_team(team_id="team123", user_email="user@example.com", removed_by="admin@apollosai.dev")
 
                 # Verify - member should still be removed even when roles not found
                 assert result is True
@@ -2205,7 +2205,7 @@ class TestTeamManagementService:
                 mock_db.query.return_value.filter.return_value.first.return_value = mock_membership
 
                 # Execute
-                result = await service.remove_member_from_team(team_id="team123", user_email="user@example.com", removed_by="admin@example.com")
+                result = await service.remove_member_from_team(team_id="team123", user_email="user@example.com", removed_by="admin@apollosai.dev")
 
                 # Verify - both roles attempted for revocation
                 assert result is True
@@ -2235,7 +2235,7 @@ class TestTeamManagementService:
             mock_db.query.return_value.filter.return_value.first.return_value = mock_membership
 
             # Execute - should not raise
-            result = await service.remove_member_from_team(team_id="team123", user_email="user@example.com", removed_by="admin@example.com")
+            result = await service.remove_member_from_team(team_id="team123", user_email="user@example.com", removed_by="admin@apollosai.dev")
 
             # Verify - member should still be removed
             assert result is True

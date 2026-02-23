@@ -527,7 +527,7 @@ async def message_send(message: AgentMessage, identity: str = Depends(verify_aut
 AGENT_ID = None
 
 
-def create_jwt_token(username: str = "admin@example.com") -> str:
+def create_jwt_token(username: str = "admin@apollosai.dev") -> str:
     """Create a JWT token for ContextForge authentication."""
     payload = {
         "sub": username,

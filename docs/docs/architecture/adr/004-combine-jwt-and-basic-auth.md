@@ -222,7 +222,7 @@ Basic authentication for API endpoints is now **disabled by default** to improve
 ```bash
 # Recommended: Use JWT tokens
 export MCPGATEWAY_BEARER_TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token \
-    --username admin@example.com --exp 10080 --secret $JWT_SECRET_KEY)
+    --username admin@apollosai.dev --exp 10080 --secret $JWT_SECRET_KEY)
 
 # If Basic auth is required (development only):
 export API_ALLOW_BASIC_AUTH=true
@@ -231,7 +231,7 @@ export API_ALLOW_BASIC_AUTH=true
 **For Admin UI:**
 ```bash
 # Use email/password authentication
-PLATFORM_ADMIN_EMAIL=admin@example.com
+PLATFORM_ADMIN_EMAIL=admin@apollosai.dev
 PLATFORM_ADMIN_PASSWORD=your-secure-password
 ```
 

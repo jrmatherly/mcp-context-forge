@@ -114,7 +114,7 @@ You can load your `.env` as a ConfigMap:
     DATABASE_URL=sqlite:///./mcp.db
     JWT_ALGORITHM=HS256
     JWT_SECRET_KEY=your-strong-secret-key-here
-    PLATFORM_ADMIN_EMAIL=admin@example.com
+    PLATFORM_ADMIN_EMAIL=admin@apollosai.dev
     PLATFORM_ADMIN_PASSWORD=changeme
     MCPGATEWAY_UI_ENABLED=true
     MCPGATEWAY_ADMIN_API_ENABLED=true
@@ -149,7 +149,7 @@ You can load your `.env` as a ConfigMap:
     PORT=4444
     DATABASE_URL=mysql+pymysql://mysql:changeme@mariadb-service:3306/mcp
     JWT_SECRET_KEY=your-secret-key
-    PLATFORM_ADMIN_EMAIL=admin@example.com
+    PLATFORM_ADMIN_EMAIL=admin@apollosai.dev
     PLATFORM_ADMIN_PASSWORD=changeme
     MCPGATEWAY_UI_ENABLED=true
     MCPGATEWAY_ADMIN_API_ENABLED=true
@@ -166,7 +166,7 @@ You can load your `.env` as a ConfigMap:
     PORT=4444
     DATABASE_URL=mysql+pymysql://mysql:changeme@mysql-service:3306/mcp
     JWT_SECRET_KEY=your-secret-key
-    PLATFORM_ADMIN_EMAIL=admin@example.com
+    PLATFORM_ADMIN_EMAIL=admin@apollosai.dev
     PLATFORM_ADMIN_PASSWORD=changeme
     MCPGATEWAY_UI_ENABLED=true
     MCPGATEWAY_ADMIN_API_ENABLED=true
@@ -183,7 +183,7 @@ You can load your `.env` as a ConfigMap:
     PORT=4444
     DATABASE_URL=postgresql+psycopg://postgres:changeme@postgres-service:5432/mcp
     JWT_SECRET_KEY=your-secret-key
-    PLATFORM_ADMIN_EMAIL=admin@example.com
+    PLATFORM_ADMIN_EMAIL=admin@apollosai.dev
     PLATFORM_ADMIN_PASSWORD=changeme
     MCPGATEWAY_UI_ENABLED=true
     MCPGATEWAY_ADMIN_API_ENABLED=true

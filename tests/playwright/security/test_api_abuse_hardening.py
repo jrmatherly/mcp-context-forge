@@ -59,7 +59,7 @@ def _api_context(playwright: Playwright, token: str) -> APIRequestContext:
 
 @pytest.fixture
 def hpp_servers(playwright: Playwright):
-    admin_ctx = _api_context(playwright, _make_jwt("admin@example.com", is_admin=True, teams=None))
+    admin_ctx = _api_context(playwright, _make_jwt("admin@apollosai.dev", is_admin=True, teams=None))
     team_id: str | None = None
     public_server_id: str | None = None
     team_server_id: str | None = None
@@ -119,7 +119,7 @@ class TestAPISecurityAbuseCases:
             body = response.json()
             token_id = _extract_token_id(body)
             token_obj = body.get("token", body)
-            assert token_obj.get("user_email") == "admin@example.com"
+            assert token_obj.get("user_email") == "admin@apollosai.dev"
         else:
             assert response.status == 422, f"Unexpected response for mass-assignment probe: {response.status} {response.text()}"
 
@@ -172,7 +172,7 @@ class TestAPISecurityAbuseCases:
                 admin_api.delete(f"/auth/email/admin/users/{email_b}")
 
     def test_query_parameter_pollution_does_not_bypass_public_only_scope(self, hpp_servers: dict[str, str], playwright: Playwright):
-        public_only_token = _make_jwt("admin@example.com", is_admin=True)
+        public_only_token = _make_jwt("admin@apollosai.dev", is_admin=True)
         ctx = _api_context(playwright, public_only_token)
         try:
             response = ctx.get("/servers?visibility=public&visibility=team")

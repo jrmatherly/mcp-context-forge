@@ -156,18 +156,18 @@ class TestSSOApprovalWorkflow:
         # Test approval
         approval = PendingUserApproval(email="test@example.com", full_name="Test User", auth_provider="github", expires_at=utc_now() + timedelta(days=30))
 
-        approval.approve("admin@example.com", "Looks good")
+        approval.approve("admin@apollosai.dev", "Looks good")
         assert approval.status == "approved"
-        assert approval.approved_by == "admin@example.com"
+        assert approval.approved_by == "admin@apollosai.dev"
         assert approval.admin_notes == "Looks good"
         assert approval.approved_at is not None
 
         # Test rejection
         approval2 = PendingUserApproval(email="test2@example.com", full_name="Test User 2", auth_provider="google", expires_at=utc_now() + timedelta(days=30))
 
-        approval2.reject("admin@example.com", "Suspicious activity", "Account flagged")
+        approval2.reject("admin@apollosai.dev", "Suspicious activity", "Account flagged")
         assert approval2.status == "rejected"
-        assert approval2.approved_by == "admin@example.com"
+        assert approval2.approved_by == "admin@apollosai.dev"
         assert approval2.rejection_reason == "Suspicious activity"
         assert approval2.admin_notes == "Account flagged"
         assert approval2.approved_at is not None

@@ -3,7 +3,7 @@
 
 # Generate token
 echo "Generating JWT token..."
-export TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token --username admin@example.com --exp 0 --secret changeme123 2>/dev/null | head -1)
+export TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token --username admin@apollosai.dev --exp 0 --secret changeme123 2>/dev/null | head -1)
 
 echo "Token: ${TOKEN:0:50}..."
 echo ""

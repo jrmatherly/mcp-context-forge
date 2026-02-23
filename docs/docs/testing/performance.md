@@ -148,8 +148,8 @@ sysctl net.core.somaxconn \
 
 Check your current limits with `ulimit -n`. For load testing, ensure:
 
-- Soft limit: 65535+
-- Hard limit: 65535+
+* Soft limit: 65535+
+* Hard limit: 65535+
 
 Edit `/etc/security/limits.conf` if needed:
 ```
@@ -220,9 +220,9 @@ sudo sysctl --system
 
 Without tuning, you may see errors like:
 
-- `All connection attempts failed` - ephemeral port exhaustion
-- `Connection refused` - listen backlog overflow
-- High failure rates at 500+ concurrent users
+* `All connection attempts failed` - ephemeral port exhaustion
+* `Connection refused` - listen backlog overflow
+* High failure rates at 500+ concurrent users
 
 The docker-compose.yml includes per-container TCP tuning via `sysctls`, but host-level settings provide the foundation.
 
@@ -366,12 +366,12 @@ For testing with 4000+ concurrent users:
 
 ### Performance Tips
 
-- **Start small**: Test with 100-500 users first to identify bottlenecks
-- **Scale gradually**: Increase users in steps (500 → 1000 → 2000 → 4000)
-- **Monitor errors**: High error rates indicate server saturation
-- **Check p95/p99**: Tail latency matters more than average
-- **Use `constant_throughput`**: For predictable RPS instead of random waits
-- **Nginx caching**: Admin pages use 5s TTL caching by default (see [Nginx Tuning](../manage/tuning.md#7-nginx-reverse-proxy-tuning))
+* **Start small**: Test with 100-500 users first to identify bottlenecks
+* **Scale gradually**: Increase users in steps (500 → 1000 → 2000 → 4000)
+* **Monitor errors**: High error rates indicate server saturation
+* **Check p95/p99**: Tail latency matters more than average
+* **Use `constant_throughput`**: For predictable RPS instead of random waits
+* **Nginx caching**: Admin pages use 5s TTL caching by default (see [Nginx Tuning](../manage/tuning.md#7-nginx-reverse-proxy-tuning))
 
 ---
 
@@ -426,14 +426,14 @@ The benchmark stack consists of:
 
 1. **benchmark_server** - A single Go binary that spawns multiple HTTP servers
 
-   - Each server exposes MCP endpoints on a unique port (9000-9099)
-   - Default: 50 tools, 20 resources, 10 prompts per server
-   - Supports graceful shutdown via SIGINT/SIGTERM
+   * Each server exposes MCP endpoints on a unique port (9000-9099)
+   * Default: 50 tools, 20 resources, 10 prompts per server
+   * Supports graceful shutdown via SIGINT/SIGTERM
 
 2. **register_benchmark** - Auto-registration service
 
-   - Registers all benchmark servers as gateways at compose startup
-   - No manual registration required
+   * Registers all benchmark servers as gateways at compose startup
+   * No manual registration required
 
 ### Endpoints per Server
 
@@ -491,10 +491,10 @@ make build
 
 The Go benchmark server is optimized for:
 
-- **Low memory footprint**: ~5-10 MB per server
-- **Fast startup**: All servers ready in <1 second
-- **High throughput**: 10,000+ req/s per server
-- **Graceful shutdown**: Clean termination on SIGINT/SIGTERM
+* **Low memory footprint**: ~5-10 MB per server
+* **Fast startup**: All servers ready in <1 second
+* **High throughput**: 10,000+ req/s per server
+* **Graceful shutdown**: Clean termination on SIGINT/SIGTERM
 
 ---
 
@@ -506,12 +506,12 @@ MCP Gateway uses **orjson** for high-performance JSON serialization, providing *
 
 orjson is a fast, correct JSON library for Python implemented in Rust. It provides:
 
-- **5-6x faster serialization** than stdlib json
-- **1.5-2x faster deserialization** than stdlib json
-- **7% smaller output** (more compact JSON)
-- **Native type support**: datetime, UUID, numpy arrays, Pydantic models
-- **RFC 8259 compliance**: strict JSON specification adherence
-- **Zero configuration**: drop-in replacement, works automatically
+* **5-6x faster serialization** than stdlib json
+* **1.5-2x faster deserialization** than stdlib json
+* **7% smaller output** (more compact JSON)
+* **Native type support**: datetime, UUID, numpy arrays, Pydantic models
+* **RFC 8259 compliance**: strict JSON specification adherence
+* **Zero configuration**: drop-in replacement, works automatically
 
 ### Performance Benchmarks
 
@@ -541,12 +541,12 @@ python scripts/benchmark_json_serialization.py
 
 orjson provides the biggest impact for:
 
-- **Large list endpoints**: `GET /tools`, `GET /servers`, `GET /gateways` (100+ items)
-- **Bulk export operations**: Exporting 1000+ entities to JSON
-- **High-throughput APIs**: Services handling >1000 req/s
-- **Real-time streaming**: SSE and WebSocket with frequent JSON events
-- **Federation sync**: Tool catalog exchange between gateways
-- **Admin UI data loading**: Large tables with many records
+* **Large list endpoints**: `GET /tools`, `GET /servers`, `GET /gateways` (100+ items)
+* **Bulk export operations**: Exporting 1000+ entities to JSON
+* **High-throughput APIs**: Services handling >1000 req/s
+* **Real-time streaming**: SSE and WebSocket with frequent JSON events
+* **Federation sync**: Tool catalog exchange between gateways
+* **Admin UI data loading**: Large tables with many records
 
 ### Implementation Details
 
@@ -563,14 +563,14 @@ app = FastAPI(
 
 **Options enabled:**
 
-- `OPT_NON_STR_KEYS`: Allow non-string dict keys (integers, UUIDs)
-- `OPT_SERIALIZE_NUMPY`: Support numpy arrays if numpy is installed
+* `OPT_NON_STR_KEYS`: Allow non-string dict keys (integers, UUIDs)
+* `OPT_SERIALIZE_NUMPY`: Support numpy arrays if numpy is installed
 
 **Datetime serialization:**
 
-- Uses RFC 3339 format (ISO 8601 with timezone)
-- Naive datetimes treated as UTC
-- Example: `2025-01-19T12:00:00+00:00`
+* Uses RFC 3339 format (ISO 8601 with timezone)
+* Naive datetimes treated as UTC
+* Example: `2025-01-19T12:00:00+00:00`
 
 ### Testing orjson Integration
 
@@ -614,11 +614,11 @@ Based on benchmark results, orjson provides:
 
 **Production benefits:**
 
-- Higher requests/second capacity
-- Lower CPU utilization per request
-- Faster page loads for Admin UI
-- Reduced bandwidth usage (smaller JSON)
-- Better tail latency (p95, p99)
+* Higher requests/second capacity
+* Lower CPU utilization per request
+* Faster page loads for Admin UI
+* Reduced bandwidth usage (smaller JSON)
+* Better tail latency (p95, p99)
 
 ---
 
@@ -650,7 +650,7 @@ export PATH=$PATH:$(pwd)/apache-jmeter-5.6.3/bin
 ```bash
 # Set up authentication token
 export MCPGATEWAY_BEARER_TOKEN=$(python -m mcpgateway.utils.create_jwt_token \
-  --username admin@example.com --exp 10080 --secret $JWT_SECRET_KEY)
+  --username admin@apollosai.dev --exp 10080 --secret $JWT_SECRET_KEY)
 
 # Launch JMeter GUI for interactive editing
 make jmeter-ui

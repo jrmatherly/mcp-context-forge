@@ -85,7 +85,7 @@ curl -u admin:changeme \
 
 The migration uses your `.env` configuration to create the platform admin user.
 
-#### If you don't have a `.env` file:
+#### If you don't have a `.env` file
 ```bash
 # Copy the example file
 cp .env.example .env
@@ -94,7 +94,7 @@ cp .env.example .env
 nano .env  # or your preferred editor
 ```
 
-#### If you already have a `.env` file:
+#### If you already have a `.env` file
 ```bash
 # Backup your current .env (already done above)
 cp .env .env.bak
@@ -416,7 +416,7 @@ with SessionLocal() as db:
 
 ### Issue: Migration Uses Wrong Admin Email
 
-**Problem**: Migration created admin user with default email (`admin@example.com`) instead of your configured email.
+**Problem**: Migration created admin user with default email (`admin@apollosai.dev`) instead of your configured email.
 
 **Root Cause**: `.env` file not properly configured before migration.
 
@@ -481,7 +481,7 @@ from mcpgateway.services.personal_team_service import PersonalTeamService
 async def create_admin_team():
     with SessionLocal() as db:
         # Replace with your admin email
-        admin_email = 'admin@example.com'
+        admin_email = 'admin@apollosai.dev'
         admin = db.query(EmailUser).filter(EmailUser.email == admin_email).first()
         if admin:
             service = PersonalTeamService(db)

@@ -68,8 +68,8 @@ def create_test_jwt_token():
 
     expire = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(minutes=60)
     payload = {
-        "sub": "admin@example.com",
-        "email": "admin@example.com",
+        "sub": "admin@apollosai.dev",
+        "email": "admin@apollosai.dev",
         "iat": int(datetime.datetime.now(datetime.timezone.utc).timestamp()),
         "exp": int(expire.timestamp()),
         "iss": "mcpgateway",
@@ -88,7 +88,7 @@ TEST_AUTH_HEADER = {"Authorization": f"Bearer {TEST_JWT_TOKEN}"}
 # Test user for the updated authentication system
 from tests.utils.rbac_mocks import create_mock_email_user  # noqa: E402
 
-TEST_USER = create_mock_email_user(email="admin@example.com", full_name="Test Admin", is_admin=True, is_active=True)
+TEST_USER = create_mock_email_user(email="admin@apollosai.dev", full_name="Test Admin", is_admin=True, is_active=True)
 
 
 # -------------------------
@@ -135,10 +135,10 @@ async def client(app_with_temp_db):
 
     from mcpgateway.db import EmailUser, Role, UserRole
 
-    if test_db_session.get(EmailUser, "admin@example.com") is None:
+    if test_db_session.get(EmailUser, "admin@apollosai.dev") is None:
         test_db_session.add(
             EmailUser(
-                email="admin@example.com",
+                email="admin@apollosai.dev",
                 password_hash="not-a-real-hash",
                 full_name="Test Admin",
                 is_admin=True,
@@ -154,7 +154,7 @@ async def client(app_with_temp_db):
             description="Test platform admin role (wildcard permissions)",
             scope="global",
             permissions=["*"],
-            created_by="admin@example.com",
+            created_by="admin@apollosai.dev",
             is_system_role=True,
             is_active=True,
         )
@@ -165,7 +165,7 @@ async def client(app_with_temp_db):
     assignment = (
         test_db_session.execute(
             select(UserRole).where(
-                UserRole.user_email == "admin@example.com",
+                UserRole.user_email == "admin@apollosai.dev",
                 UserRole.role_id == role.id,
                 UserRole.scope == "global",
                 UserRole.scope_id.is_(None),
@@ -178,23 +178,23 @@ async def client(app_with_temp_db):
     if assignment is None:
         test_db_session.add(
             UserRole(
-                user_email="admin@example.com",
+                user_email="admin@apollosai.dev",
                 role_id=role.id,
                 scope="global",
                 scope_id=None,
-                granted_by="admin@example.com",
+                granted_by="admin@apollosai.dev",
                 is_active=True,
             )
         )
         test_db_session.commit()
 
-    test_user_context = create_mock_user_context(email="admin@example.com", full_name="Test Admin", is_admin=True)
+    test_user_context = create_mock_user_context(email="admin@apollosai.dev", full_name="Test Admin", is_admin=True)
     test_user_context["db"] = test_db_session
 
     # Mock admin authentication function
     async def mock_require_admin_auth():
         """Mock admin auth that returns admin email."""
-        return "admin@example.com"
+        return "admin@apollosai.dev"
 
     # Mock JWT token function
     async def mock_get_jwt_token():
@@ -440,7 +440,7 @@ class TestAdminToolAPIs:
                 pass
         assert db is not None, "Test database session not found. Ensure your test fixture exposes db."
         team_service = TeamManagementService(db)
-        new_team = await team_service.create_team(name=f"Test Team - {uuid.uuid4().hex[:8]}", description="A team for testing", created_by="admin@example.com", visibility="private")
+        new_team = await team_service.create_team(name=f"Test Team - {uuid.uuid4().hex[:8]}", description="A team for testing", created_by="admin@apollosai.dev", visibility="private")
         # Private scope (owner-level)
         form_data_private = {
             "name": unique_name,
@@ -450,7 +450,7 @@ class TestAdminToolAPIs:
             "headers": "{}",
             "input_schema": "{}",
             "visibility": "private",
-            "user_email": "admin@example.com",
+            "user_email": "admin@apollosai.dev",
             "team_id": new_team.id,
         }
         response = await client.post("/admin/tools/", data=form_data_private, headers=TEST_AUTH_HEADER)
@@ -472,7 +472,7 @@ class TestAdminToolAPIs:
             "input_schema": "{}",
             "visibility": "team",
             "team_id": real_team_id,
-            "user_email": "admin@example.com",
+            "user_email": "admin@apollosai.dev",
         }
         print("DEBUG: form_data_team before request:", form_data_team, "team_id type:", type(form_data_team["team_id"]))
         response = await client.post("/admin/tools/", data=form_data_team, headers=TEST_AUTH_HEADER)
@@ -493,7 +493,7 @@ class TestAdminToolAPIs:
             "headers": "{}",
             "input_schema": "{}",
             "visibility": "public",
-            "user_email": "admin@example.com",
+            "user_email": "admin@apollosai.dev",
             "team_id": new_team.id,
         }
         response = await client.post("/admin/tools/", data=form_data_public, headers=TEST_AUTH_HEADER)
@@ -524,8 +524,8 @@ class TestAdminToolOpsAPIs:
 
         # Create two teams (creator is automatically added as owner)
         team_service = TeamManagementService(db)
-        team1 = await team_service.create_team(name=f"Team 1 - {uuid.uuid4().hex[:8]}", description="First team", created_by="admin@example.com", visibility="private")
-        team2 = await team_service.create_team(name=f"Team 2 - {uuid.uuid4().hex[:8]}", description="Second team", created_by="admin@example.com", visibility="private")
+        team1 = await team_service.create_team(name=f"Team 1 - {uuid.uuid4().hex[:8]}", description="First team", created_by="admin@apollosai.dev", visibility="private")
+        team2 = await team_service.create_team(name=f"Team 2 - {uuid.uuid4().hex[:8]}", description="Second team", created_by="admin@apollosai.dev", visibility="private")
 
         # Create tools in different teams
         # Note: tool names get normalized to use hyphens instead of underscores
@@ -883,8 +883,8 @@ class TestTeamFiltering:
 
         # Create two teams (creator is automatically added as owner)
         team_service = TeamManagementService(db)
-        team1 = await team_service.create_team(name=f"Team 1 - {uuid.uuid4().hex[:8]}", description="First team", created_by="admin@example.com", visibility="private")
-        team2 = await team_service.create_team(name=f"Team 2 - {uuid.uuid4().hex[:8]}", description="Second team", created_by="admin@example.com", visibility="private")
+        team1 = await team_service.create_team(name=f"Team 1 - {uuid.uuid4().hex[:8]}", description="First team", created_by="admin@apollosai.dev", visibility="private")
+        team2 = await team_service.create_team(name=f"Team 2 - {uuid.uuid4().hex[:8]}", description="Second team", created_by="admin@apollosai.dev", visibility="private")
 
         # Create tools in different teams
         # Note: tool names get normalized to use hyphens instead of underscores
@@ -944,8 +944,8 @@ class TestTeamFiltering:
 
         # Create TWO teams
         team_service = TeamManagementService(db)
-        team1 = await team_service.create_team(name=f"Team 1 IDs - {uuid.uuid4().hex[:8]}", description="Test", created_by="admin@example.com", visibility="private")
-        team2 = await team_service.create_team(name=f"Team 2 IDs - {uuid.uuid4().hex[:8]}", description="Test", created_by="admin@example.com", visibility="private")
+        team1 = await team_service.create_team(name=f"Team 1 IDs - {uuid.uuid4().hex[:8]}", description="Test", created_by="admin@apollosai.dev", visibility="private")
+        team2 = await team_service.create_team(name=f"Team 2 IDs - {uuid.uuid4().hex[:8]}", description="Test", created_by="admin@apollosai.dev", visibility="private")
 
         # Create tools in different teams
         team1_tool_id = uuid.uuid4().hex
@@ -956,7 +956,7 @@ class TestTeamFiltering:
             description="Team 1 tool",
             visibility="team",
             team_id=team1.id,
-            owner_email="admin@example.com",
+            owner_email="admin@apollosai.dev",
             enabled=True,
             input_schema={},
         )
@@ -970,7 +970,7 @@ class TestTeamFiltering:
             description="Team 2 tool",
             visibility="team",
             team_id=team2.id,
-            owner_email="admin@example.com",
+            owner_email="admin@apollosai.dev",
             enabled=True,
             input_schema={},
         )
@@ -1004,8 +1004,8 @@ class TestTeamFiltering:
 
         # Create TWO teams (creator is automatically added as owner)
         team_service = TeamManagementService(db)
-        team1 = await team_service.create_team(name=f"Search Team 1 - {uuid.uuid4().hex[:8]}", description="Test", created_by="admin@example.com", visibility="private")
-        team2 = await team_service.create_team(name=f"Search Team 2 - {uuid.uuid4().hex[:8]}", description="Test", created_by="admin@example.com", visibility="private")
+        team1 = await team_service.create_team(name=f"Search Team 1 - {uuid.uuid4().hex[:8]}", description="Test", created_by="admin@apollosai.dev", visibility="private")
+        team2 = await team_service.create_team(name=f"Search Team 2 - {uuid.uuid4().hex[:8]}", description="Test", created_by="admin@apollosai.dev", visibility="private")
 
         # Create searchable tools in different teams
         search_term = f"searchable_{uuid.uuid4().hex[:8]}"
@@ -1111,8 +1111,8 @@ class TestTeamFiltering:
 
         # Create TWO teams (creator is automatically added as owner)
         team_service = TeamManagementService(db)
-        team1 = await team_service.create_team(name=f"Resource Team 1 - {uuid.uuid4().hex[:8]}", description="Test", created_by="admin@example.com", visibility="private")
-        team2 = await team_service.create_team(name=f"Resource Team 2 - {uuid.uuid4().hex[:8]}", description="Test", created_by="admin@example.com", visibility="private")
+        team1 = await team_service.create_team(name=f"Resource Team 1 - {uuid.uuid4().hex[:8]}", description="Test", created_by="admin@apollosai.dev", visibility="private")
+        team2 = await team_service.create_team(name=f"Resource Team 2 - {uuid.uuid4().hex[:8]}", description="Test", created_by="admin@apollosai.dev", visibility="private")
 
         # Create resources in different teams
         team1_resource = {
@@ -1157,8 +1157,8 @@ class TestTeamFiltering:
 
         # Create TWO teams (creator is automatically added as owner)
         team_service = TeamManagementService(db)
-        team1 = await team_service.create_team(name=f"Prompt Team 1 - {uuid.uuid4().hex[:8]}", description="Test", created_by="admin@example.com", visibility="private")
-        team2 = await team_service.create_team(name=f"Prompt Team 2 - {uuid.uuid4().hex[:8]}", description="Test", created_by="admin@example.com", visibility="private")
+        team1 = await team_service.create_team(name=f"Prompt Team 1 - {uuid.uuid4().hex[:8]}", description="Test", created_by="admin@apollosai.dev", visibility="private")
+        team2 = await team_service.create_team(name=f"Prompt Team 2 - {uuid.uuid4().hex[:8]}", description="Test", created_by="admin@apollosai.dev", visibility="private")
 
         # Create prompts in different teams
         team1_prompt = {
@@ -1199,8 +1199,8 @@ class TestTeamFiltering:
 
         # Create two teams
         team_service = TeamManagementService(db)
-        team1 = await team_service.create_team(name=f"Server Team 1 - {uuid.uuid4().hex[:8]}", description="Test", created_by="admin@example.com", visibility="private")
-        team2 = await team_service.create_team(name=f"Server Team 2 - {uuid.uuid4().hex[:8]}", description="Test", created_by="admin@example.com", visibility="private")
+        team1 = await team_service.create_team(name=f"Server Team 1 - {uuid.uuid4().hex[:8]}", description="Test", created_by="admin@apollosai.dev", visibility="private")
+        team2 = await team_service.create_team(name=f"Server Team 2 - {uuid.uuid4().hex[:8]}", description="Test", created_by="admin@apollosai.dev", visibility="private")
 
         # Create servers in different teams
         team1_server = {
@@ -1240,8 +1240,8 @@ class TestTeamFiltering:
 
         # Create two teams
         team_service = TeamManagementService(db)
-        team1 = await team_service.create_team(name=f"Gateway Team 1 - {uuid.uuid4().hex[:8]}", description="Test", created_by="admin@example.com", visibility="private")
-        team2 = await team_service.create_team(name=f"Gateway Team 2 - {uuid.uuid4().hex[:8]}", description="Test", created_by="admin@example.com", visibility="private")
+        team1 = await team_service.create_team(name=f"Gateway Team 1 - {uuid.uuid4().hex[:8]}", description="Test", created_by="admin@apollosai.dev", visibility="private")
+        team2 = await team_service.create_team(name=f"Gateway Team 2 - {uuid.uuid4().hex[:8]}", description="Test", created_by="admin@apollosai.dev", visibility="private")
 
         # Create gateways directly in DB (gateway creation via form is complex)
         team1_gw_name = f"team1_gw_{uuid.uuid4().hex[:8]}"
@@ -1255,7 +1255,7 @@ class TestTeamFiltering:
             transport="SSE",
             visibility="team",
             team_id=team1.id,
-            owner_email="admin@example.com",
+            owner_email="admin@apollosai.dev",
             enabled=True,
             capabilities={},
         )
@@ -1272,7 +1272,7 @@ class TestTeamFiltering:
             transport="SSE",
             visibility="team",
             team_id=team2.id,
-            owner_email="admin@example.com",
+            owner_email="admin@apollosai.dev",
             enabled=True,
             capabilities={},
         )
@@ -1298,7 +1298,7 @@ class TestTeamFiltering:
 
         # Create a team
         team_service = TeamManagementService(db)
-        team = await team_service.create_team(name=f"Visibility Test Team - {uuid.uuid4().hex[:8]}", description="Test", created_by="admin@example.com", visibility="private")
+        team = await team_service.create_team(name=f"Visibility Test Team - {uuid.uuid4().hex[:8]}", description="Test", created_by="admin@apollosai.dev", visibility="private")
 
         # Create a PRIVATE tool owned by another user in the same team
         private_tool_name = f"private_tool_{uuid.uuid4().hex[:8]}"
@@ -1359,7 +1359,7 @@ class TestAdminListingGracefulErrorHandling:
             url="http://example.com/valid1",
             description="A valid tool",
             visibility="public",
-            owner_email="admin@example.com",
+            owner_email="admin@apollosai.dev",
             enabled=True,
             input_schema={"type": "object"},
         )
@@ -1369,7 +1369,7 @@ class TestAdminListingGracefulErrorHandling:
             url="http://example.com/corrupted",
             description="Tool that will fail conversion",
             visibility="public",
-            owner_email="admin@example.com",
+            owner_email="admin@apollosai.dev",
             enabled=True,
             input_schema={"type": "object"},
         )
@@ -1379,7 +1379,7 @@ class TestAdminListingGracefulErrorHandling:
             url="http://example.com/valid2",
             description="Another valid tool",
             visibility="public",
-            owner_email="admin@example.com",
+            owner_email="admin@apollosai.dev",
             enabled=True,
             input_schema={"type": "object"},
         )
@@ -1448,7 +1448,7 @@ class TestAdminListingGracefulErrorHandling:
             uri=f"file:///valid1_{uuid.uuid4().hex[:8]}",
             description="A valid resource",
             visibility="public",
-            owner_email="admin@example.com",
+            owner_email="admin@apollosai.dev",
             enabled=True,
         )
         corrupted_resource = DbResource(
@@ -1457,7 +1457,7 @@ class TestAdminListingGracefulErrorHandling:
             uri=f"file:///corrupted_{uuid.uuid4().hex[:8]}",
             description="Resource that will fail conversion",
             visibility="public",
-            owner_email="admin@example.com",
+            owner_email="admin@apollosai.dev",
             enabled=True,
         )
         valid_resource_2 = DbResource(
@@ -1466,7 +1466,7 @@ class TestAdminListingGracefulErrorHandling:
             uri=f"file:///valid2_{uuid.uuid4().hex[:8]}",
             description="Another valid resource",
             visibility="public",
-            owner_email="admin@example.com",
+            owner_email="admin@apollosai.dev",
             enabled=True,
         )
 
@@ -1520,7 +1520,7 @@ class TestAdminListingGracefulErrorHandling:
             template="Hello {{ name }}",
             argument_schema={"type": "object"},
             visibility="public",
-            owner_email="admin@example.com",
+            owner_email="admin@apollosai.dev",
             enabled=True,
         )
         uid2 = uuid.uuid4().hex[:8]
@@ -1534,7 +1534,7 @@ class TestAdminListingGracefulErrorHandling:
             template="Hello {{ name }}",
             argument_schema={"type": "object"},
             visibility="public",
-            owner_email="admin@example.com",
+            owner_email="admin@apollosai.dev",
             enabled=True,
         )
         uid3 = uuid.uuid4().hex[:8]
@@ -1548,7 +1548,7 @@ class TestAdminListingGracefulErrorHandling:
             template="Hello {{ name }}",
             argument_schema={"type": "object"},
             visibility="public",
-            owner_email="admin@example.com",
+            owner_email="admin@apollosai.dev",
             enabled=True,
         )
 
@@ -1596,7 +1596,7 @@ class TestAdminListingGracefulErrorHandling:
             name=f"valid_server_1_{uuid.uuid4().hex[:8]}",
             description="A valid server",
             visibility="public",
-            owner_email="admin@example.com",
+            owner_email="admin@apollosai.dev",
             enabled=True,
         )
         corrupted_server = DbServer(
@@ -1604,7 +1604,7 @@ class TestAdminListingGracefulErrorHandling:
             name=f"corrupted_server_{uuid.uuid4().hex[:8]}",
             description="Server that will fail conversion",
             visibility="public",
-            owner_email="admin@example.com",
+            owner_email="admin@apollosai.dev",
             enabled=True,
         )
         valid_server_2 = DbServer(
@@ -1612,7 +1612,7 @@ class TestAdminListingGracefulErrorHandling:
             name=f"valid_server_2_{uuid.uuid4().hex[:8]}",
             description="Another valid server",
             visibility="public",
-            owner_email="admin@example.com",
+            owner_email="admin@apollosai.dev",
             enabled=True,
         )
 
@@ -1663,7 +1663,7 @@ class TestAdminListingGracefulErrorHandling:
             description="A valid gateway",
             transport="SSE",
             visibility="public",
-            owner_email="admin@example.com",
+            owner_email="admin@apollosai.dev",
             enabled=True,
             capabilities={},
         )
@@ -1675,7 +1675,7 @@ class TestAdminListingGracefulErrorHandling:
             description="Gateway that will fail conversion",
             transport="SSE",
             visibility="public",
-            owner_email="admin@example.com",
+            owner_email="admin@apollosai.dev",
             enabled=True,
             capabilities={},
         )
@@ -1687,7 +1687,7 @@ class TestAdminListingGracefulErrorHandling:
             description="Another valid gateway",
             transport="SSE",
             visibility="public",
-            owner_email="admin@example.com",
+            owner_email="admin@apollosai.dev",
             enabled=True,
             capabilities={},
         )
@@ -1739,7 +1739,7 @@ class TestAdminListingGracefulErrorHandling:
             endpoint_url=f"http://valid1.example.com/{uid1}",
             description="A valid A2A agent",
             visibility="public",
-            owner_email="admin@example.com",
+            owner_email="admin@apollosai.dev",
             enabled=True,
         )
         uid2 = uuid.uuid4().hex[:8]
@@ -1750,7 +1750,7 @@ class TestAdminListingGracefulErrorHandling:
             endpoint_url=f"http://corrupted.example.com/{uid2}",
             description="A2A agent that will fail conversion",
             visibility="public",
-            owner_email="admin@example.com",
+            owner_email="admin@apollosai.dev",
             enabled=True,
         )
         uid3 = uuid.uuid4().hex[:8]
@@ -1761,7 +1761,7 @@ class TestAdminListingGracefulErrorHandling:
             endpoint_url=f"http://valid2.example.com/{uid3}",
             description="Another valid A2A agent",
             visibility="public",
-            owner_email="admin@example.com",
+            owner_email="admin@apollosai.dev",
             enabled=True,
         )
 

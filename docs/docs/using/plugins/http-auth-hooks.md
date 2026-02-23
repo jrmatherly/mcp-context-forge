@@ -413,7 +413,7 @@ plugins:
           full_name: "Production Service"
           is_admin: false
         "sk-admin-xyz789":
-          email: "admin@example.com"
+          email: "admin@apollosai.dev"
           full_name: "Admin User"
           is_admin: true
 ```

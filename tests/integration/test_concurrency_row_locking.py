@@ -62,8 +62,8 @@ def create_test_jwt_token():
     test_secret = "integration-test-jwt-secret-key-with-minimum-32-bytes"
     expire = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(minutes=60)
     payload = {
-        "sub": "admin@example.com",
-        "email": "admin@example.com",
+        "sub": "admin@apollosai.dev",
+        "email": "admin@apollosai.dev",
         "iat": int(datetime.datetime.now(datetime.timezone.utc).timestamp()),
         "exp": int(expire.timestamp()),
         "iss": "mcpgateway",
@@ -86,7 +86,7 @@ async def client(app_with_temp_db):
     from mcpgateway.db import EmailUser
     from tests.utils.rbac_mocks import create_mock_email_user, create_mock_user_context
 
-    TEST_USER = create_mock_email_user(email="admin@example.com", full_name="Test Admin", is_admin=True, is_active=True)
+    TEST_USER = create_mock_email_user(email="admin@apollosai.dev", full_name="Test Admin", is_admin=True, is_active=True)
 
     test_db_dependency = app_with_temp_db.dependency_overrides.get(get_db) or get_db
 
@@ -100,18 +100,18 @@ async def client(app_with_temp_db):
     # Create admin user in database for permission checks (if not exists)
     from sqlalchemy import select
 
-    existing_user = test_db_session.execute(select(EmailUser).where(EmailUser.email == "admin@example.com")).scalar_one_or_none()
+    existing_user = test_db_session.execute(select(EmailUser).where(EmailUser.email == "admin@apollosai.dev")).scalar_one_or_none()
 
     if not existing_user:
-        admin_user = EmailUser(email="admin@example.com", full_name="Test Admin", is_admin=True, is_active=True, password_hash="dummy_hash")
+        admin_user = EmailUser(email="admin@apollosai.dev", full_name="Test Admin", is_admin=True, is_active=True, password_hash="dummy_hash")
         test_db_session.add(admin_user)
         test_db_session.commit()
 
-    test_user_context = create_mock_user_context(email="admin@example.com", full_name="Test Admin", is_admin=True)
+    test_user_context = create_mock_user_context(email="admin@apollosai.dev", full_name="Test Admin", is_admin=True)
     test_user_context["db"] = test_db_session
 
     async def mock_require_admin_auth():
-        return "admin@example.com"
+        return "admin@apollosai.dev"
 
     # Mock only the gateway initialization to prevent actual connection attempts
     # but keep the database operations intact

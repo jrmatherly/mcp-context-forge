@@ -14,7 +14,7 @@ These variables have insecure defaults and **must be changed** before production
 | `AUTH_ENCRYPTION_SECRET` | Passphrase for encrypting stored credentials | `my-test-salt` | Generate with `openssl rand -hex 32` |
 | `BASIC_AUTH_USER` | Username for HTTP Basic auth | `admin` | Change for production |
 | `BASIC_AUTH_PASSWORD` | Password for HTTP Basic auth | `changeme` | Set a strong password |
-| `PLATFORM_ADMIN_EMAIL` | Email for bootstrap admin user | `admin@example.com` | Use real admin email |
+| `PLATFORM_ADMIN_EMAIL` | Email for bootstrap admin user | `admin@apollosai.dev` | Use real admin email |
 | `PLATFORM_ADMIN_PASSWORD` | Password for bootstrap admin user | `changeme` | Set a strong password |
 | `DEFAULT_USER_PASSWORD` | Default password for new users | `changeme` | Set a strong password |
 
@@ -201,7 +201,7 @@ DATABASE_URL=mysql+pymysql://mysql:changeme@localhost:3306/mcp
 | `BASIC_AUTH_PASSWORD`       | Password for HTTP Basic authentication (when enabled)                        | `changeme`          | string      |
 | `API_ALLOW_BASIC_AUTH`      | Enable Basic auth for API endpoints (disabled by default for security)       | `false`             | bool        |
 | `DOCS_ALLOW_BASIC_AUTH`     | Enable Basic auth for docs endpoints (disabled by default)                   | `false`             | bool        |
-| `PLATFORM_ADMIN_EMAIL`      | Email for bootstrap platform admin user (auto-created with admin privileges) | `admin@example.com` | string      |
+| `PLATFORM_ADMIN_EMAIL`      | Email for bootstrap platform admin user (auto-created with admin privileges) | `admin@apollosai.dev` | string      |
 | `AUTH_REQUIRED`             | Require authentication for all API routes                                    | `true`              | bool        |
 | `JWT_ALGORITHM`             | Algorithm used to sign the JWTs (`HS256` is default, HMAC-based)             | `HS256`             | PyJWT algs  |
 | `JWT_SECRET_KEY`            | Secret key used to **sign JWT tokens** for API access                        | `my-test-key`       | string      |
@@ -242,7 +242,7 @@ DATABASE_URL=mysql+pymysql://mysql:changeme@localhost:3306/mcp
 !!! tip "JWT Token Generation"
     `JWT_SECRET_KEY` is used to sign JSON Web Tokens. Generate tokens via:
     ```bash
-    export MCPGATEWAY_BEARER_TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token --username admin@example.com --exp 10080 --secret my-test-key)
+    export MCPGATEWAY_BEARER_TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token --username admin@apollosai.dev --exp 10080 --secret my-test-key)
     ```
 
 ### UI Features
@@ -442,7 +442,7 @@ curl -X POST -H "Authorization: Bearer $TOKEN" \
 | Setting                        | Description                                      | Default               | Options |
 | ------------------------------ | ------------------------------------------------ | --------------------- | ------- |
 | `EMAIL_AUTH_ENABLED`          | Enable email-based authentication system         | `true`                | bool    |
-| `PLATFORM_ADMIN_EMAIL`        | Email for bootstrap platform admin user          | `admin@example.com`   | string  |
+| `PLATFORM_ADMIN_EMAIL`        | Email for bootstrap platform admin user          | `admin@apollosai.dev`   | string  |
 | `PLATFORM_ADMIN_PASSWORD`     | Password for bootstrap platform admin user       | `changeme`            | string  |
 | `PLATFORM_ADMIN_FULL_NAME`    | Full name for bootstrap platform admin user      | `Platform Administrator` | string |
 | `DEFAULT_USER_PASSWORD`       | Default password for newly created users         | `changeme`            | string  |

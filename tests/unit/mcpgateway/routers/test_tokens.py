@@ -75,7 +75,7 @@ def mock_current_user(mock_db):
 def mock_admin_user(mock_db):
     """Create a mock admin user with db context."""
     return {
-        "email": "admin@example.com",
+        "email": "admin@apollosai.dev",
         "is_admin": True,
         "permissions": ["*"],
         "db": mock_db,  # Include db in user context for RBAC decorator
@@ -263,7 +263,7 @@ class TestListTokens:
         """Test listing tokens with revoked token."""
         revocation_info = MagicMock()
         revocation_info.revoked_at = datetime.now(timezone.utc)
-        revocation_info.revoked_by = "admin@example.com"
+        revocation_info.revoked_by = "admin@apollosai.dev"
         revocation_info.reason = "Security concern"
 
         with patch("mcpgateway.routers.tokens.TokenCatalogService") as mock_service_class:
@@ -276,7 +276,7 @@ class TestListTokens:
 
             assert len(response.tokens) == 1
             assert response.tokens[0].is_revoked is True
-            assert response.tokens[0].revoked_by == "admin@example.com"
+            assert response.tokens[0].revoked_by == "admin@apollosai.dev"
             assert response.tokens[0].revocation_reason == "Security concern"
 
     @pytest.mark.asyncio
@@ -697,7 +697,7 @@ class TestApiTokenAuth:
     def admin_api_token_user(self, mock_db):
         """Create an admin user context authenticated via API token."""
         return {
-            "email": "admin@example.com",
+            "email": "admin@apollosai.dev",
             "is_admin": True,
             "permissions": ["*"],
             "db": mock_db,

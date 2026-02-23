@@ -153,7 +153,7 @@ def mock_tool(mock_gateway):
     tool.enabled = True
     tool.reachable = True
     tool.team_id = None
-    tool.owner_email = "admin@example.com"
+    tool.owner_email = "admin@apollosai.dev"
     tool.visibility = "public"
     tool.tags = []
     tool.team = None

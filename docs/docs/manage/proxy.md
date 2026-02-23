@@ -77,7 +77,7 @@ PROXY_USER_HEADER=X-Authenticated-User
 
 # Keep admin UI protected (uses email/password authentication)
 AUTH_REQUIRED=true
-PLATFORM_ADMIN_EMAIL=admin@example.com
+PLATFORM_ADMIN_EMAIL=admin@apollosai.dev
 PLATFORM_ADMIN_PASSWORD=secure-password
 ```
 
@@ -568,7 +568,7 @@ Configure your load balancer to use these endpoints:
 ??? question "Warning: MCP auth disabled without trust"
     **You're seeing:**
     ```
-    WARNING - MCP client authentication is disabled but trust_proxy_auth is not set
+WARNING - MCP client authentication is disabled but trust_proxy_auth is not set
     ```
 
     **Solution:** Set `TRUST_PROXY_AUTH=true` to acknowledge proxy authentication.

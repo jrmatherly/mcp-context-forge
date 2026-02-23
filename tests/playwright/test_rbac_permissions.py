@@ -189,7 +189,7 @@ def _submit_server_form_and_get_status(srv_page: ServersPage, name: str) -> int:
 @pytest.fixture(scope="module")
 def admin_api(playwright: Playwright) -> Generator[APIRequestContext, None, None]:
     """Admin-authenticated API context for test setup/teardown."""
-    token = _make_user_jwt("admin@example.com", is_admin=True)
+    token = _make_user_jwt("admin@apollosai.dev", is_admin=True)
     ctx = playwright.request.new_context(
         base_url=BASE_URL,
         extra_http_headers={"Authorization": f"Bearer {token}", "Accept": "application/json"},
@@ -412,7 +412,7 @@ class TestRBACGatewayCreate:
 
     def test_admin_create_gateway_all_teams_view(self, page: Page, base_url: str):
         """Admin (platform_admin role) should be able to create gateways from All Teams view."""
-        _inject_jwt_cookie(page, "admin@example.com", is_admin=True)
+        _inject_jwt_cookie(page, "admin@apollosai.dev", is_admin=True)
         _wait_for_admin_shell(page)
 
         gw_page = _navigate_to_gateways(page, team_id=None)
@@ -523,7 +523,7 @@ class TestRBACGatewayDelete:
             pytest.skip("Gateway creation returned no ID")
 
         # Log in as admin and navigate to gateways
-        _inject_jwt_cookie(page, "admin@example.com", is_admin=True)
+        _inject_jwt_cookie(page, "admin@apollosai.dev", is_admin=True)
         _wait_for_admin_shell(page)
         gw_page = _navigate_to_gateways(page)
 

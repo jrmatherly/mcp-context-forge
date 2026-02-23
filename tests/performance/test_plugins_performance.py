@@ -128,7 +128,7 @@ def create_sample_payloads() -> Dict[str, Any]:
         type="resource",
         id="res-1",
         uri="https://example.com/document.txt",
-        text="This document contains crap information and crud data. Contact admin@example.com for more details.",
+        text="This document contains crap information and crud data. Contact admin@apollosai.dev for more details.",
     )
     resource_post = ResourcePostFetchPayload(uri="https://example.com/document.txt", content=resource_content)
 
@@ -218,7 +218,7 @@ async def profile_all_plugins(manager: PluginManager, show_details: bool = False
     payloads = create_sample_payloads()
 
     # Create global context
-    global_context = GlobalContext(request_id="perf-test-request", server_id="perf-test-server", user={"email": "admin@example.com", "is_admin": True})
+    global_context = GlobalContext(request_id="perf-test-request", server_id="perf-test-server", user={"email": "admin@apollosai.dev", "is_admin": True})
 
     # Results storage: plugin_name -> hook_type -> avg_time_ms
     results: Dict[str, Dict[str, float]] = defaultdict(dict)

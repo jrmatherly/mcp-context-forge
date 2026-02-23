@@ -83,7 +83,6 @@ Under `extensions`, you can specify which policy to run and what endpoint to cal
 In the `config` key in `config.yaml` for the OPA plugin, the following attribute must be set to configure the OPA server endpoint:
 `opa_base_url` : It is the base url on which opa server is running.
 
-
 In the `config.yaml` file you can specify the information related to which particular tool, prompt or resource, you want to apply policies on. Since, all the tools in the gateway might have different modalities like text, image, etc, you can specify the modality to be used in policy. The result might have different types of content in it, could be image, text etc and using this `policy_modality` endpoint basically, you specify that type of content you extract from the result and apply policy on. This is particularly used in post hook, since the result could be a union of
 `Union[TextContent, JSONContent, ImageContent, ResourceContent]`.
 
@@ -151,10 +150,10 @@ plugin_settings:
   plugin_health_check_interval: 60
 ```
 
-3. Now suppose you have a sample policy in `policy.rego` file that allows a tool invocation only when "IBM" key word is present in the repo_path. Add the sample policy file or policy rego file that you defined, in `plugins/external/opa/opaserver/rego`.
+1. Now suppose you have a sample policy in `policy.rego` file that allows a tool invocation only when "IBM" key word is present in the repo_path. Add the sample policy file or policy rego file that you defined, in `plugins/external/opa/opaserver/rego`.
 
-3. Once you have your plugin defined in `config.yaml` and policy added in the rego file, run the following commands to build your OPA Plugin external MCP server using:
-* `make build`:  This will build a docker image named `opapluginfilter`
+2. Once you have your plugin defined in `config.yaml` and policy added in the rego file, run the following commands to build your OPA Plugin external MCP server using:
+- `make build`:  This will build a docker image named `opapluginfilter`
 
 ```bash
 Verification point:
@@ -163,7 +162,7 @@ REPOSITORY                   TAG       IMAGE ID       CREATED        SIZE
 mcpgateway/opapluginfilter   latest    a94428dd9c64   1 second ago   810MB
 ```
 
-* `make start`: This will start the OPA Plugin server
+- `make start`: This will start the OPA Plugin server
 ```bash
 Verification point:
 ✅ Container started
@@ -178,12 +177,11 @@ Run the following from the project root folder:
 
 ```bash
 # Generate JWT bearer token
-python3 -m mcpgateway.utils.create_jwt_token --username admin@example.com --exp 10080 --secret my-test-key
+python3 -m mcpgateway.utils.create_jwt_token --username admin@apollosai.dev --exp 10080 --secret my-test-key
 
 # Export for API calls
-export MCPGATEWAY_BEARER_TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token --username admin@example.com --exp 0 --secret my-test-key)
+export MCPGATEWAY_BEARER_TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token --username admin@apollosai.dev --exp 0 --secret my-test-key)
 ```
-
 
 1. Add server fast-time that exposes git tools in the mcp gateway
 ```bash
@@ -193,9 +191,9 @@ curl -s -X POST -H "Authorization: Bearer $MCPGATEWAY_BEARER_TOKEN" \
      http://localhost:4444/gateways
 ```
 
-2. This adds server to the gateway and exposes all the tools for git. You would see `fast-time-git-status` as the tool appearing in the tools tab of mcp gateway.
+1. This adds server to the gateway and exposes all the tools for git. You would see `fast-time-git-status` as the tool appearing in the tools tab of mcp gateway.
 
-3. The next step is to enable the opa plugin which you can do by adding `PLUGINS_ENABLED=true` and the following blob in `plugins/config.yaml` file. This will indicate that OPA Plugin is running as an external MCP server.
+2. The next step is to enable the opa plugin which you can do by adding `PLUGINS_ENABLED=true` and the following blob in `plugins/config.yaml` file. This will indicate that OPA Plugin is running as an external MCP server.
 
   ```yaml
   - name: "OPAPluginFilter"
@@ -206,7 +204,7 @@ curl -s -X POST -H "Authorization: Bearer $MCPGATEWAY_BEARER_TOKEN" \
       url: http://127.0.0.1:8000/mcp
   ```
 
-2. To test this plugin with the above tool `fast-time-git-status` you can either invoke it through the UI
+1. To test this plugin with the above tool `fast-time-git-status` you can either invoke it through the UI
 ```bash
 # 1️⃣  Add fast-time server to mcpgateway
 curl -s -X POST -H "Authorization: Bearer $MCPGATEWAY_BEARER_TOKEN" \
@@ -267,13 +265,12 @@ chmod 755 ./opa
 opa --version
 ```
 
-2. Once, OPA is installed run the test using:
+1. Once, OPA is installed run the test using:
 ```bash
 make test
 ```
 
 The`make test` command executes a complete testing workflow: it launches an OPA server using the policy file located at ./opaserver/rego/policy.rego (as specified by `POLICY_PATH`), runs all test cases against this server, and automatically terminates the OPA server process once testing finishes.
-
 
 ## Error Handling Verification
 

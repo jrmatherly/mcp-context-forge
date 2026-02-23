@@ -57,7 +57,7 @@ make compose-up       # Spins up the Docker Compose stack (PostgreSQL + Redis)
 
 # Test the basics
 curl http://localhost:4444/health         # {"status":"healthy"}
-export MCPGATEWAY_BEARER_TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token --username admin@example.com --exp 10080 --secret my-test-key)
+export MCPGATEWAY_BEARER_TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token --username admin@apollosai.dev --exp 10080 --secret my-test-key)
 curl -s -H "Authorization: Bearer $MCPGATEWAY_BEARER_TOKEN" http://localhost:4444/version | jq -c '.database, .redis'
 
 # Add an MCP server to http://localhost:4444 then check logs:
@@ -140,9 +140,9 @@ GitHub will delete the `pr-<number>` branch automatically.
 ## 7. Cleaning Up Locally
 After the PR is merged:
 
-* Switch back to the main branch
-* Delete the local feature branch
-* Prune deleted remote branches
+- Switch back to the main branch
+- Delete the local feature branch
+- Prune deleted remote branches
 ```bash
 git switch main
 git branch -D pr-<PR-number>             # replace <PR-number> with your branch name

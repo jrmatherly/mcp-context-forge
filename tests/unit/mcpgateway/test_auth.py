@@ -375,16 +375,16 @@ class TestGetCurrentUser:
         """Test that platform admin gets a virtual user object if not in database."""
         credentials = HTTPAuthorizationCredentials(scheme="Bearer", credentials="admin_jwt")
 
-        jwt_payload = {"sub": "admin@example.com", "exp": (datetime.now(timezone.utc) + timedelta(hours=1)).timestamp()}
+        jwt_payload = {"sub": "admin@apollosai.dev", "exp": (datetime.now(timezone.utc) + timedelta(hours=1)).timestamp()}
 
         with patch("mcpgateway.auth.verify_jwt_token_cached", AsyncMock(return_value=jwt_payload)):
             with patch("mcpgateway.auth._get_user_by_email_sync", return_value=None):  # User not in DB
                 with patch("mcpgateway.auth._get_personal_team_sync", return_value=None):
-                    with patch("mcpgateway.config.settings.platform_admin_email", "admin@example.com"):
+                    with patch("mcpgateway.config.settings.platform_admin_email", "admin@apollosai.dev"):
                         with patch("mcpgateway.config.settings.platform_admin_full_name", "Platform Administrator"):
                             user = await get_current_user(credentials=credentials)
 
-                            assert user.email == "admin@example.com"
+                            assert user.email == "admin@apollosai.dev"
                             assert user.full_name == "Platform Administrator"
                             assert user.is_admin is True
                             assert user.is_active is True
@@ -394,12 +394,12 @@ class TestGetCurrentUser:
         """Test that REQUIRE_USER_IN_DB=true rejects even platform admin when user not in DB."""
         credentials = HTTPAuthorizationCredentials(scheme="Bearer", credentials="admin_jwt")
 
-        jwt_payload = {"sub": "admin@example.com", "exp": (datetime.now(timezone.utc) + timedelta(hours=1)).timestamp()}
+        jwt_payload = {"sub": "admin@apollosai.dev", "exp": (datetime.now(timezone.utc) + timedelta(hours=1)).timestamp()}
 
         with patch("mcpgateway.auth.verify_jwt_token_cached", AsyncMock(return_value=jwt_payload)):
             with patch("mcpgateway.auth._get_user_by_email_sync", return_value=None):  # User not in DB
                 with patch("mcpgateway.auth._get_personal_team_sync", return_value=None):
-                    with patch("mcpgateway.config.settings.platform_admin_email", "admin@example.com"):
+                    with patch("mcpgateway.config.settings.platform_admin_email", "admin@apollosai.dev"):
                         with patch("mcpgateway.config.settings.require_user_in_db", True):
                             with pytest.raises(HTTPException) as exc_info:
                                 await get_current_user(credentials=credentials)
@@ -439,7 +439,7 @@ class TestGetCurrentUser:
         """Test that REQUIRE_USER_IN_DB rejection is logged."""
         credentials = HTTPAuthorizationCredentials(scheme="Bearer", credentials="admin_jwt")
 
-        jwt_payload = {"sub": "admin@example.com", "exp": (datetime.now(timezone.utc) + timedelta(hours=1)).timestamp()}
+        jwt_payload = {"sub": "admin@apollosai.dev", "exp": (datetime.now(timezone.utc) + timedelta(hours=1)).timestamp()}
 
         with patch("mcpgateway.auth.verify_jwt_token_cached", AsyncMock(return_value=jwt_payload)):
             with patch("mcpgateway.auth._get_user_by_email_sync", return_value=None):
@@ -484,7 +484,7 @@ class TestGetCurrentUser:
         """Test that REQUIRE_USER_IN_DB=true rejects users via batched auth path."""
         credentials = HTTPAuthorizationCredentials(scheme="Bearer", credentials="admin_jwt")
 
-        jwt_payload = {"sub": "admin@example.com", "exp": (datetime.now(timezone.utc) + timedelta(hours=1)).timestamp()}
+        jwt_payload = {"sub": "admin@apollosai.dev", "exp": (datetime.now(timezone.utc) + timedelta(hours=1)).timestamp()}
 
         # Mock the batched query to return no user (user=None means not found)
         mock_batch_result = {"user": None, "is_token_revoked": False, "personal_team_id": None}
@@ -493,7 +493,7 @@ class TestGetCurrentUser:
             with patch("mcpgateway.config.settings.auth_cache_enabled", False):  # Disable cache
                 with patch("mcpgateway.config.settings.auth_cache_batch_queries", True):  # Enable batched queries
                     with patch("mcpgateway.auth._get_auth_context_batched_sync", return_value=mock_batch_result):
-                        with patch("mcpgateway.config.settings.platform_admin_email", "admin@example.com"):
+                        with patch("mcpgateway.config.settings.platform_admin_email", "admin@apollosai.dev"):
                             with patch("mcpgateway.config.settings.require_user_in_db", True):
                                 with pytest.raises(HTTPException) as exc_info:
                                     await get_current_user(credentials=credentials)
@@ -2023,7 +2023,7 @@ class TestCachePathBranches:
         """Cached path with admin token (teams=None) → admin bypass (line 737)."""
         credentials = HTTPAuthorizationCredentials(scheme="Bearer", credentials="jwt")
         payload = {
-            "sub": "admin@example.com",
+            "sub": "admin@apollosai.dev",
             "jti": "jti-1",
             "teams": None,
             "is_admin": True,
@@ -2032,7 +2032,7 @@ class TestCachePathBranches:
 
         cached_ctx = SimpleNamespace(
             is_token_revoked=False,
-            user={"email": "admin@example.com", "is_active": True, "is_admin": True},
+            user={"email": "admin@apollosai.dev", "is_active": True, "is_admin": True},
             personal_team_id=None,
         )
         request = SimpleNamespace(state=SimpleNamespace())
@@ -2177,7 +2177,7 @@ class TestBatchedPathBranches:
         """Batched path with admin token (teams=None) → admin bypass (line 802)."""
         credentials = HTTPAuthorizationCredentials(scheme="Bearer", credentials="jwt")
         payload = {
-            "sub": "admin@example.com",
+            "sub": "admin@apollosai.dev",
             "jti": "jti-1",
             "teams": None,
             "is_admin": True,
@@ -2185,7 +2185,7 @@ class TestBatchedPathBranches:
         }
 
         auth_ctx = {
-            "user": {"email": "admin@example.com", "is_active": True, "is_admin": True},
+            "user": {"email": "admin@apollosai.dev", "is_active": True, "is_admin": True},
             "personal_team_id": None,
             "is_token_revoked": False,
         }
@@ -2309,18 +2309,18 @@ class TestBatchedPathBranches:
     async def test_batch_platform_admin_bootstrap(self, monkeypatch):
         """Batched user not found → platform admin bootstrap (lines 864-882)."""
         credentials = HTTPAuthorizationCredentials(scheme="Bearer", credentials="jwt")
-        payload = {"sub": "admin@example.com", "jti": "jti-1", "user": {"auth_provider": "local"}}
+        payload = {"sub": "admin@apollosai.dev", "jti": "jti-1", "user": {"auth_provider": "local"}}
 
         auth_ctx = {"user": None, "personal_team_id": None, "is_token_revoked": False}
         monkeypatch.setattr(settings, "auth_cache_enabled", False)
         monkeypatch.setattr(settings, "auth_cache_batch_queries", True)
         monkeypatch.setattr(settings, "require_user_in_db", False)
-        monkeypatch.setattr(settings, "platform_admin_email", "admin@example.com")
+        monkeypatch.setattr(settings, "platform_admin_email", "admin@apollosai.dev")
 
         with patch("mcpgateway.auth.verify_jwt_token_cached", AsyncMock(return_value=payload)), patch("mcpgateway.auth._get_auth_context_batched_sync", return_value=auth_ctx):
             user = await get_current_user(credentials=credentials)
 
-        assert user.email == "admin@example.com"
+        assert user.email == "admin@apollosai.dev"
         assert user.is_admin is True
 
     @pytest.mark.asyncio
@@ -2333,7 +2333,7 @@ class TestBatchedPathBranches:
         monkeypatch.setattr(settings, "auth_cache_enabled", False)
         monkeypatch.setattr(settings, "auth_cache_batch_queries", True)
         monkeypatch.setattr(settings, "require_user_in_db", False)
-        monkeypatch.setattr(settings, "platform_admin_email", "admin@example.com")
+        monkeypatch.setattr(settings, "platform_admin_email", "admin@apollosai.dev")
 
         with patch("mcpgateway.auth.verify_jwt_token_cached", AsyncMock(return_value=payload)), patch("mcpgateway.auth._get_auth_context_batched_sync", return_value=auth_ctx):
             with pytest.raises(HTTPException) as exc:
@@ -2949,13 +2949,13 @@ class TestSessionTokenBranches:
         """Batched path session token where user is admin sets teams=None (lines 952-957)."""
         credentials = HTTPAuthorizationCredentials(scheme="Bearer", credentials="jwt")
         payload = {
-            "sub": "admin@example.com",
+            "sub": "admin@apollosai.dev",
             "jti": "jti-1",
             "token_use": "session",
             "user": {"auth_provider": "local"},
         }
         auth_ctx = {
-            "user": {"email": "admin@example.com", "is_active": True, "is_admin": True},
+            "user": {"email": "admin@apollosai.dev", "is_active": True, "is_admin": True},
             "team_ids": ["t1"],
             "personal_team_id": None,
             "is_token_revoked": False,
@@ -2971,7 +2971,7 @@ class TestSessionTokenBranches:
         ):
             user = await get_current_user(credentials=credentials)
 
-        assert user.email == "admin@example.com"
+        assert user.email == "admin@apollosai.dev"
 
     @pytest.mark.asyncio
     async def test_batched_session_token_caches_team_list(self, monkeypatch):

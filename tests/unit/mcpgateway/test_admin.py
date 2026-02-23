@@ -3215,7 +3215,7 @@ class TestAdminUIRoute:
             team_id=None,
             include_inactive=False,
             db=mock_db,
-            user={"email": "admin@example.com", "db": mock_db},
+            user={"email": "admin@apollosai.dev", "db": mock_db},
         )
 
         assert isinstance(response, HTMLResponse)
@@ -3293,7 +3293,7 @@ class TestAdminUIRoute:
             team_id=None,
             include_inactive=False,
             db=mock_db,
-            user={"email": "admin@example.com", "db": mock_db},
+            user={"email": "admin@apollosai.dev", "db": mock_db},
         )
 
         assert isinstance(response, HTMLResponse)
@@ -3343,7 +3343,7 @@ class TestAdminUIRoute:
             team_id=None,
             include_inactive=False,
             db=mock_db,
-            user={"email": "admin@example.com", "db": mock_db},
+            user={"email": "admin@apollosai.dev", "db": mock_db},
         )
 
         assert isinstance(response, HTMLResponse)
@@ -3392,7 +3392,7 @@ class TestAdminUIRoute:
             team_id=None,
             include_inactive=False,
             db=mock_db,
-            user={"email": "admin@example.com", "db": mock_db},
+            user={"email": "admin@apollosai.dev", "db": mock_db},
         )
 
         assert isinstance(response, HTMLResponse)
@@ -3451,7 +3451,7 @@ class TestAdminUIRoute:
             team_id=None,
             include_inactive=False,
             db=mock_db,
-            user={"email": "admin@example.com", "db": mock_db},
+            user={"email": "admin@apollosai.dev", "db": mock_db},
         )
 
         assert isinstance(response, HTMLResponse)
@@ -3506,7 +3506,7 @@ class TestAdminUIRoute:
             team_id=None,
             include_inactive=False,
             db=mock_db,
-            user={"email": "admin@example.com", "db": mock_db},
+            user={"email": "admin@apollosai.dev", "db": mock_db},
         )
 
         assert isinstance(response, HTMLResponse)
@@ -3561,7 +3561,7 @@ class TestAdminUIRoute:
             team_id="some-team-id",
             include_inactive=False,
             db=mock_db,
-            user={"email": "admin@example.com", "db": mock_db},
+            user={"email": "admin@apollosai.dev", "db": mock_db},
         )
 
         assert isinstance(response, HTMLResponse)
@@ -3623,7 +3623,7 @@ class TestAdminUIRoute:
             team_id="not-a-team",
             include_inactive=False,
             db=mock_db,
-            user={"email": "admin@example.com", "db": mock_db},
+            user={"email": "admin@apollosai.dev", "db": mock_db},
         )
         assert isinstance(response, HTMLResponse)
 
@@ -3663,7 +3663,7 @@ class TestAdminUIRoute:
             team_id="team-1",
             include_inactive=False,
             db=mock_db,
-            user={"email": "admin@example.com", "db": mock_db},
+            user={"email": "admin@apollosai.dev", "db": mock_db},
         )
         assert isinstance(response, HTMLResponse)
 
@@ -3730,7 +3730,7 @@ class TestAdminUIRoute:
             team_id="team-1",
             include_inactive=False,
             db=mock_db,
-            user={"email": "admin@example.com", "db": mock_db},
+            user={"email": "admin@apollosai.dev", "db": mock_db},
         )
         assert isinstance(response, HTMLResponse)
         context = mock_request.app.state.templates.TemplateResponse.call_args[0][2]
@@ -3744,7 +3744,7 @@ class TestAdminUIRoute:
             team_id=None,
             include_inactive=False,
             db=mock_db,
-            user={"email": "admin@example.com", "db": mock_db},
+            user={"email": "admin@apollosai.dev", "db": mock_db},
         )
 
     @patch.object(ServerService, "list_servers", new_callable=AsyncMock)
@@ -3784,7 +3784,7 @@ class TestAdminUIRoute:
             team_id="team-1",
             include_inactive=False,
             db=mock_db,
-            user={"email": "admin@example.com", "db": mock_db},
+            user={"email": "admin@apollosai.dev", "db": mock_db},
         )
         assert isinstance(response, HTMLResponse)
 
@@ -3835,7 +3835,7 @@ class TestAdminUIRoute:
             team_id="team-1",
             include_inactive=False,
             db=mock_db,
-            user={"email": "admin@example.com", "db": mock_db},
+            user={"email": "admin@apollosai.dev", "db": mock_db},
         )
         assert isinstance(response, HTMLResponse)
         context = mock_request.app.state.templates.TemplateResponse.call_args[0][2]
@@ -6790,7 +6790,7 @@ async def test_admin_list_users_json(monkeypatch, mock_db, allow_permission):
     auth_service.list_users = AsyncMock(return_value=SimpleNamespace(data=[SimpleNamespace(email="a@example.com", full_name="A", is_active=True, is_admin=False)]))
     monkeypatch.setattr("mcpgateway.admin.EmailAuthService", lambda db: auth_service)
 
-    response = await admin_list_users(request=request, page=1, per_page=50, db=mock_db, user={"email": "admin@example.com", "db": mock_db})
+    response = await admin_list_users(request=request, page=1, per_page=50, db=mock_db, user={"email": "admin@apollosai.dev", "db": mock_db})
     assert response.status_code == 200
     payload = json.loads(response.body)
     assert payload["users"][0]["email"] == "a@example.com"
@@ -6816,7 +6816,7 @@ async def test_admin_list_users_standard(monkeypatch, mock_db, allow_permission)
     )
     monkeypatch.setattr("mcpgateway.admin.EmailAuthService", lambda db: auth_service)
 
-    response = await admin_list_users(request=request, page=1, per_page=50, db=mock_db, user={"email": "admin@example.com", "db": mock_db})
+    response = await admin_list_users(request=request, page=1, per_page=50, db=mock_db, user={"email": "admin@apollosai.dev", "db": mock_db})
     assert response.status_code == 200
     payload = json.loads(response.body)
     assert payload["data"][0]["is_admin"] is True
@@ -6831,7 +6831,7 @@ async def test_admin_list_users_email_auth_disabled_returns_message(monkeypatch,
     request.query_params = {}
     request.scope = {"root_path": ""}
 
-    response = await admin_list_users(request=request, page=1, per_page=50, db=mock_db, user={"email": "admin@example.com", "db": mock_db})
+    response = await admin_list_users(request=request, page=1, per_page=50, db=mock_db, user={"email": "admin@apollosai.dev", "db": mock_db})
     assert isinstance(response, HTMLResponse)
     assert "Email authentication is disabled" in response.body.decode()
 
@@ -6886,7 +6886,7 @@ async def test_admin_users_partial_html_controls(monkeypatch, mock_request, mock
         render="controls",
         team_id=None,
         db=mock_db,
-        user={"email": "admin@example.com", "db": mock_db},
+        user={"email": "admin@apollosai.dev", "db": mock_db},
     )
     assert isinstance(response, HTMLResponse)
 
@@ -6901,7 +6901,7 @@ async def test_admin_users_partial_html_email_auth_disabled(monkeypatch, mock_re
         render=None,
         team_id=None,
         db=mock_db,
-        user={"email": "admin@example.com", "db": mock_db},
+        user={"email": "admin@apollosai.dev", "db": mock_db},
     )
     assert response.status_code == 200
     assert "email authentication is disabled" in response.body.decode().lower()
@@ -6971,7 +6971,7 @@ async def test_admin_users_partial_html_default_render(monkeypatch, mock_request
         render=None,
         team_id=None,
         db=mock_db,
-        user={"email": "admin@example.com", "db": mock_db},
+        user={"email": "admin@apollosai.dev", "db": mock_db},
     )
     assert isinstance(response, HTMLResponse)
     template_call = mock_request.app.state.templates.TemplateResponse.call_args
@@ -6993,7 +6993,7 @@ async def test_admin_users_partial_html_exception(monkeypatch, mock_request, moc
         render=None,
         team_id=None,
         db=mock_db,
-        user={"email": "admin@example.com", "db": mock_db},
+        user={"email": "admin@apollosai.dev", "db": mock_db},
     )
     assert response.status_code == 200
     assert "error loading users" in response.body.decode().lower()
@@ -7006,7 +7006,7 @@ async def test_admin_search_users(monkeypatch, mock_db, allow_permission):
     auth_service.list_users = AsyncMock(return_value=SimpleNamespace(data=[SimpleNamespace(email="a@example.com", full_name="A", is_active=True, is_admin=False)]))
     monkeypatch.setattr("mcpgateway.admin.EmailAuthService", lambda db: auth_service)
 
-    result = await admin_search_users(q="a", limit=5, db=mock_db, user={"email": "admin@example.com", "db": mock_db})
+    result = await admin_search_users(q="a", limit=5, db=mock_db, user={"email": "admin@apollosai.dev", "db": mock_db})
     assert result["count"] == 1
     assert result["users"][0]["email"] == "a@example.com"
 
@@ -7014,7 +7014,7 @@ async def test_admin_search_users(monkeypatch, mock_db, allow_permission):
 @pytest.mark.asyncio
 async def test_admin_search_users_empty_query(monkeypatch, mock_db, allow_permission):
     monkeypatch.setattr(settings, "email_auth_enabled", True)
-    result = await admin_search_users(q="   ", limit=5, db=mock_db, user={"email": "admin@example.com", "db": mock_db})
+    result = await admin_search_users(q="   ", limit=5, db=mock_db, user={"email": "admin@apollosai.dev", "db": mock_db})
     assert result["users"] == []
     assert result["count"] == 0
 
@@ -7022,7 +7022,7 @@ async def test_admin_search_users_empty_query(monkeypatch, mock_db, allow_permis
 @pytest.mark.asyncio
 async def test_admin_search_users_email_auth_disabled(monkeypatch, mock_db, allow_permission):
     monkeypatch.setattr(settings, "email_auth_enabled", False)
-    result = await admin_search_users(q="a", limit=5, db=mock_db, user={"email": "admin@example.com", "db": mock_db})
+    result = await admin_search_users(q="a", limit=5, db=mock_db, user={"email": "admin@apollosai.dev", "db": mock_db})
     assert result["users"] == []
     assert result["count"] == 0
 
@@ -7033,7 +7033,7 @@ async def test_admin_create_user_password_invalid(monkeypatch, mock_db, allow_pe
     request.form = AsyncMock(return_value=FakeForm({"email": "a@example.com", "password": "short"}))
     monkeypatch.setattr("mcpgateway.admin.validate_password_strength", lambda pw: (False, "too weak"))
 
-    response = await admin_create_user(request=request, db=mock_db, user={"email": "admin@example.com", "db": mock_db})
+    response = await admin_create_user(request=request, db=mock_db, user={"email": "admin@apollosai.dev", "db": mock_db})
     assert response.status_code == 400
     assert "Password validation failed" in response.body.decode()
 
@@ -7048,7 +7048,7 @@ async def test_admin_create_user_success(monkeypatch, mock_db, allow_permission)
     auth_service.create_user = AsyncMock(return_value=SimpleNamespace(email="a@example.com", password_change_required=False))
     monkeypatch.setattr("mcpgateway.admin.EmailAuthService", lambda db: auth_service)
 
-    response = await admin_create_user(request=request, db=mock_db, user={"email": "admin@example.com", "db": mock_db})
+    response = await admin_create_user(request=request, db=mock_db, user={"email": "admin@apollosai.dev", "db": mock_db})
     assert response.status_code == 201
     assert response.headers.get("HX-Trigger") == "userCreated"
 
@@ -7069,7 +7069,7 @@ async def test_admin_create_user_default_password_forces_password_change(monkeyp
     auth_service.create_user = AsyncMock(return_value=new_user)
     monkeypatch.setattr("mcpgateway.admin.EmailAuthService", lambda db: auth_service)
 
-    response = await admin_create_user(request=request, db=mock_db, user={"email": "admin@example.com", "db": mock_db})
+    response = await admin_create_user(request=request, db=mock_db, user={"email": "admin@apollosai.dev", "db": mock_db})
     assert response.status_code == 201
     assert new_user.password_change_required is True
     mock_db.commit.assert_called()
@@ -7085,7 +7085,7 @@ async def test_admin_create_user_exception(monkeypatch, mock_db, allow_permissio
     auth_service.create_user = AsyncMock(side_effect=RuntimeError("boom"))
     monkeypatch.setattr("mcpgateway.admin.EmailAuthService", lambda db: auth_service)
 
-    response = await admin_create_user(request=request, db=mock_db, user={"email": "admin@example.com", "db": mock_db})
+    response = await admin_create_user(request=request, db=mock_db, user={"email": "admin@apollosai.dev", "db": mock_db})
     assert response.status_code == 400
     assert "error creating user" in response.body.decode().lower()
 
@@ -7097,7 +7097,7 @@ async def test_admin_get_user_edit_success(monkeypatch, mock_request, mock_db, a
     auth_service.get_user_by_email = AsyncMock(return_value=SimpleNamespace(email="a@example.com", full_name="A", is_admin=False))
     monkeypatch.setattr("mcpgateway.admin.EmailAuthService", lambda db: auth_service)
 
-    response = await admin_get_user_edit("a%40example.com", mock_request, db=mock_db, _user={"email": "admin@example.com", "db": mock_db})
+    response = await admin_get_user_edit("a%40example.com", mock_request, db=mock_db, _user={"email": "admin@apollosai.dev", "db": mock_db})
     assert isinstance(response, HTMLResponse)
     assert "Edit User" in response.body.decode()
 
@@ -7109,7 +7109,7 @@ async def test_admin_get_user_edit_exception(monkeypatch, mock_request, mock_db,
     auth_service.get_user_by_email = AsyncMock(side_effect=RuntimeError("boom"))
     monkeypatch.setattr("mcpgateway.admin.EmailAuthService", lambda db: auth_service)
 
-    response = await admin_get_user_edit("a%40example.com", mock_request, db=mock_db, _user={"email": "admin@example.com", "db": mock_db})
+    response = await admin_get_user_edit("a%40example.com", mock_request, db=mock_db, _user={"email": "admin@apollosai.dev", "db": mock_db})
     assert response.status_code == 500
     assert "error loading user" in response.body.decode().lower()
 
@@ -7124,7 +7124,7 @@ async def test_admin_update_user_password_mismatch(monkeypatch, mock_db, allow_p
     auth_service.get_user_by_email = AsyncMock(return_value=SimpleNamespace(email="a@example.com", is_admin=True))
     monkeypatch.setattr("mcpgateway.admin.EmailAuthService", lambda db: auth_service)
 
-    response = await admin_update_user("a%40example.com", request=request, db=mock_db, _user={"email": "admin@example.com", "db": mock_db})
+    response = await admin_update_user("a%40example.com", request=request, db=mock_db, _user={"email": "admin@apollosai.dev", "db": mock_db})
     assert response.status_code == 400
     assert "Passwords do not match" in response.body.decode()
 
@@ -7140,7 +7140,7 @@ async def test_admin_update_user_last_admin_block(monkeypatch, mock_db, allow_pe
     auth_service.is_last_active_admin = AsyncMock(return_value=True)
     monkeypatch.setattr("mcpgateway.admin.EmailAuthService", lambda db: auth_service)
 
-    response = await admin_update_user("a%40example.com", request=request, db=mock_db, _user={"email": "admin@example.com", "db": mock_db})
+    response = await admin_update_user("a%40example.com", request=request, db=mock_db, _user={"email": "admin@apollosai.dev", "db": mock_db})
     assert response.status_code == 400
     assert "last remaining admin" in response.body.decode()
 
@@ -7158,7 +7158,7 @@ async def test_admin_update_user_success(monkeypatch, mock_db, allow_permission)
     monkeypatch.setattr("mcpgateway.admin.EmailAuthService", lambda db: auth_service)
     monkeypatch.setattr("mcpgateway.admin.validate_password_strength", lambda pw: (True, ""))
 
-    response = await admin_update_user("a%40example.com", request=request, db=mock_db, _user={"email": "admin@example.com", "db": mock_db})
+    response = await admin_update_user("a%40example.com", request=request, db=mock_db, _user={"email": "admin@apollosai.dev", "db": mock_db})
     assert response.status_code == 200
     assert response.headers.get("HX-Trigger") is not None
 
@@ -7167,7 +7167,7 @@ async def test_admin_update_user_success(monkeypatch, mock_db, allow_permission)
 async def test_admin_update_user_email_auth_disabled(monkeypatch, mock_db, allow_permission):
     monkeypatch.setattr(settings, "email_auth_enabled", False)
     request = MagicMock(spec=Request)
-    response = await admin_update_user("a%40example.com", request=request, db=mock_db, _user={"email": "admin@example.com", "db": mock_db})
+    response = await admin_update_user("a%40example.com", request=request, db=mock_db, _user={"email": "admin@apollosai.dev", "db": mock_db})
     assert response.status_code == 403
 
 
@@ -7183,7 +7183,7 @@ async def test_admin_update_user_password_invalid(monkeypatch, mock_db, allow_pe
     auth_service.update_user = AsyncMock(return_value=None)
     monkeypatch.setattr("mcpgateway.admin.EmailAuthService", lambda db: auth_service)
 
-    response = await admin_update_user("a%40example.com", request=request, db=mock_db, _user={"email": "admin@example.com", "db": mock_db})
+    response = await admin_update_user("a%40example.com", request=request, db=mock_db, _user={"email": "admin@apollosai.dev", "db": mock_db})
     assert response.status_code == 400
     assert "password validation failed" in response.body.decode().lower()
 
@@ -7199,7 +7199,7 @@ async def test_admin_update_user_exception(monkeypatch, mock_db, allow_permissio
     auth_service.update_user = AsyncMock(side_effect=RuntimeError("boom"))
     monkeypatch.setattr("mcpgateway.admin.EmailAuthService", lambda db: auth_service)
 
-    response = await admin_update_user("a%40example.com", request=request, db=mock_db, _user={"email": "admin@example.com", "db": mock_db})
+    response = await admin_update_user("a%40example.com", request=request, db=mock_db, _user={"email": "admin@apollosai.dev", "db": mock_db})
     assert response.status_code == 400
     assert "error updating user" in response.body.decode().lower()
 
@@ -7209,11 +7209,11 @@ async def test_admin_get_user_edit_hides_admin_checkbox_when_editing_self(monkey
     """Test that Administrator checkbox is hidden when user edits themselves."""
     monkeypatch.setattr(settings, "email_auth_enabled", True)
     auth_service = MagicMock()
-    auth_service.get_user_by_email = AsyncMock(return_value=SimpleNamespace(email="admin@example.com", full_name="Admin User", is_admin=True))
+    auth_service.get_user_by_email = AsyncMock(return_value=SimpleNamespace(email="admin@apollosai.dev", full_name="Admin User", is_admin=True))
     monkeypatch.setattr("mcpgateway.admin.EmailAuthService", lambda db: auth_service)
 
     # User editing themselves (same email)
-    response = await admin_get_user_edit("admin%40example.com", mock_request, db=mock_db, _user={"email": "admin@example.com", "db": mock_db})
+    response = await admin_get_user_edit("admin%40example.com", mock_request, db=mock_db, _user={"email": "admin@apollosai.dev", "db": mock_db})
     assert isinstance(response, HTMLResponse)
     body = response.body.decode()
     assert "Edit User" in body
@@ -7230,7 +7230,7 @@ async def test_admin_get_user_edit_shows_admin_checkbox_when_editing_other(monke
     monkeypatch.setattr("mcpgateway.admin.EmailAuthService", lambda db: auth_service)
 
     # Admin editing another user (different email)
-    response = await admin_get_user_edit("other%40example.com", mock_request, db=mock_db, _user={"email": "admin@example.com", "db": mock_db})
+    response = await admin_get_user_edit("other%40example.com", mock_request, db=mock_db, _user={"email": "admin@apollosai.dev", "db": mock_db})
     assert isinstance(response, HTMLResponse)
     body = response.body.decode()
     assert "Edit User" in body
@@ -7244,11 +7244,11 @@ async def test_admin_get_user_edit_case_insensitive_self_check(monkeypatch, mock
     """Test that self-editing check is case-insensitive."""
     monkeypatch.setattr(settings, "email_auth_enabled", True)
     auth_service = MagicMock()
-    auth_service.get_user_by_email = AsyncMock(return_value=SimpleNamespace(email="Admin@Example.com", full_name="Admin User", is_admin=True))
+    auth_service.get_user_by_email = AsyncMock(return_value=SimpleNamespace(email="admin@apollosai.dev", full_name="Admin User", is_admin=True))
     monkeypatch.setattr("mcpgateway.admin.EmailAuthService", lambda db: auth_service)
 
     # User with different case should still be recognized as self
-    response = await admin_get_user_edit("admin%40example.com", mock_request, db=mock_db, _user={"email": "ADMIN@EXAMPLE.COM", "db": mock_db})
+    response = await admin_get_user_edit("admin%40example.com", mock_request, db=mock_db, _user={"email": "admin@apollosai.dev", "db": mock_db})
     assert isinstance(response, HTMLResponse)
     body = response.body.decode()
     # Administrator checkbox should NOT be present (case-insensitive match)
@@ -7264,12 +7264,12 @@ async def test_admin_update_user_self_demotion_blocked(monkeypatch, mock_db, all
     request.form = AsyncMock(return_value=FakeForm({"full_name": "Admin User"}))
 
     auth_service = MagicMock()
-    auth_service.get_user_by_email = AsyncMock(return_value=SimpleNamespace(email="admin@example.com", is_admin=True))
+    auth_service.get_user_by_email = AsyncMock(return_value=SimpleNamespace(email="admin@apollosai.dev", is_admin=True))
     auth_service.update_user = AsyncMock(return_value=None)
     monkeypatch.setattr("mcpgateway.admin.EmailAuthService", lambda db: auth_service)
 
     # Self-edit should succeed with admin status preserved
-    response = await admin_update_user("admin%40example.com", request=request, db=mock_db, _user={"email": "admin@example.com", "db": mock_db})
+    response = await admin_update_user("admin%40example.com", request=request, db=mock_db, _user={"email": "admin@apollosai.dev", "db": mock_db})
     assert response.status_code == 200
     # Verify update_user was called with is_admin=True (preserved from DB)
     auth_service.update_user.assert_called_once()
@@ -7285,12 +7285,12 @@ async def test_admin_update_user_self_demotion_case_insensitive(monkeypatch, moc
     request.form = AsyncMock(return_value=FakeForm({"full_name": "Admin User"}))
 
     auth_service = MagicMock()
-    auth_service.get_user_by_email = AsyncMock(return_value=SimpleNamespace(email="Admin@Example.com", is_admin=True))
+    auth_service.get_user_by_email = AsyncMock(return_value=SimpleNamespace(email="admin@apollosai.dev", is_admin=True))
     auth_service.update_user = AsyncMock(return_value=None)
     monkeypatch.setattr("mcpgateway.admin.EmailAuthService", lambda db: auth_service)
 
     # Self-edit with different case should still preserve admin status
-    response = await admin_update_user("admin%40example.com", request=request, db=mock_db, _user={"email": "ADMIN@EXAMPLE.COM", "db": mock_db})
+    response = await admin_update_user("admin%40example.com", request=request, db=mock_db, _user={"email": "admin@apollosai.dev", "db": mock_db})
     assert response.status_code == 200
     auth_service.update_user.assert_called_once()
     call_kwargs = auth_service.update_user.call_args[1]
@@ -7312,7 +7312,7 @@ async def test_admin_update_user_can_demote_others(monkeypatch, mock_db, allow_p
     monkeypatch.setattr("mcpgateway.admin.EmailAuthService", lambda db: auth_service)
 
     # Admin demoting another user (should succeed)
-    response = await admin_update_user("other%40example.com", request=request, db=mock_db, _user={"email": "admin@example.com", "db": mock_db})
+    response = await admin_update_user("other%40example.com", request=request, db=mock_db, _user={"email": "admin@apollosai.dev", "db": mock_db})
     assert response.status_code == 200
     assert response.headers.get("HX-Trigger") is not None
 
@@ -7326,12 +7326,12 @@ async def test_admin_update_user_self_can_update_other_fields(monkeypatch, mock_
     request.form = AsyncMock(return_value=FakeForm({"full_name": "Updated Name", "password": ""}))
 
     auth_service = MagicMock()
-    auth_service.get_user_by_email = AsyncMock(return_value=SimpleNamespace(email="admin@example.com", is_admin=True))
+    auth_service.get_user_by_email = AsyncMock(return_value=SimpleNamespace(email="admin@apollosai.dev", is_admin=True))
     auth_service.update_user = AsyncMock(return_value=None)
     monkeypatch.setattr("mcpgateway.admin.EmailAuthService", lambda db: auth_service)
 
     # User updating their own name; admin status preserved from DB
-    response = await admin_update_user("admin%40example.com", request=request, db=mock_db, _user={"email": "admin@example.com", "db": mock_db})
+    response = await admin_update_user("admin%40example.com", request=request, db=mock_db, _user={"email": "admin@apollosai.dev", "db": mock_db})
     assert response.status_code == 200
     assert response.headers.get("HX-Trigger") is not None
     # Verify admin status was preserved
@@ -7350,14 +7350,14 @@ async def test_admin_activate_user_success(monkeypatch, mock_request, mock_db, a
     auth_service.count_active_admin_users = AsyncMock(return_value=1)
     monkeypatch.setattr("mcpgateway.admin.EmailAuthService", lambda db: auth_service)
 
-    response = await admin_activate_user("a%40example.com", mock_request, db=mock_db, user={"email": "admin@example.com", "db": mock_db})
+    response = await admin_activate_user("a%40example.com", mock_request, db=mock_db, user={"email": "admin@apollosai.dev", "db": mock_db})
     assert isinstance(response, HTMLResponse)
 
 
 @pytest.mark.asyncio
 async def test_admin_activate_user_email_auth_disabled(monkeypatch, mock_request, mock_db, allow_permission):
     monkeypatch.setattr(settings, "email_auth_enabled", False)
-    response = await admin_activate_user("a%40example.com", mock_request, db=mock_db, user={"email": "admin@example.com", "db": mock_db})
+    response = await admin_activate_user("a%40example.com", mock_request, db=mock_db, user={"email": "admin@apollosai.dev", "db": mock_db})
     assert response.status_code == 403
 
 
@@ -7368,7 +7368,7 @@ async def test_admin_activate_user_exception(monkeypatch, mock_request, mock_db,
     auth_service.activate_user = AsyncMock(side_effect=RuntimeError("boom"))
     monkeypatch.setattr("mcpgateway.admin.EmailAuthService", lambda db: auth_service)
 
-    response = await admin_activate_user("a%40example.com", mock_request, db=mock_db, user={"email": "admin@example.com", "db": mock_db})
+    response = await admin_activate_user("a%40example.com", mock_request, db=mock_db, user={"email": "admin@apollosai.dev", "db": mock_db})
     assert response.status_code == 400
     assert "error activating user" in response.body.decode().lower()
 
@@ -7376,7 +7376,7 @@ async def test_admin_activate_user_exception(monkeypatch, mock_request, mock_db,
 @pytest.mark.asyncio
 async def test_admin_deactivate_user_self_block(monkeypatch, mock_request, mock_db, allow_permission):
     monkeypatch.setattr(settings, "email_auth_enabled", True)
-    response = await admin_deactivate_user("admin%40example.com", mock_request, db=mock_db, user={"email": "admin@example.com", "db": mock_db})
+    response = await admin_deactivate_user("admin%40example.com", mock_request, db=mock_db, user={"email": "admin@apollosai.dev", "db": mock_db})
     assert response.status_code == 400
     assert "Cannot deactivate your own account" in response.body.decode()
 
@@ -7384,7 +7384,7 @@ async def test_admin_deactivate_user_self_block(monkeypatch, mock_request, mock_
 @pytest.mark.asyncio
 async def test_admin_deactivate_user_email_auth_disabled(monkeypatch, mock_request, mock_db, allow_permission):
     monkeypatch.setattr(settings, "email_auth_enabled", False)
-    response = await admin_deactivate_user("a%40example.com", mock_request, db=mock_db, user={"email": "admin@example.com", "db": mock_db})
+    response = await admin_deactivate_user("a%40example.com", mock_request, db=mock_db, user={"email": "admin@apollosai.dev", "db": mock_db})
     assert response.status_code == 403
 
 
@@ -7395,7 +7395,7 @@ async def test_admin_deactivate_user_last_admin_block(monkeypatch, mock_request,
     auth_service.is_last_active_admin = AsyncMock(return_value=True)
     monkeypatch.setattr("mcpgateway.admin.EmailAuthService", lambda db: auth_service)
 
-    response = await admin_deactivate_user("a%40example.com", mock_request, db=mock_db, user={"email": "admin@example.com", "db": mock_db})
+    response = await admin_deactivate_user("a%40example.com", mock_request, db=mock_db, user={"email": "admin@apollosai.dev", "db": mock_db})
     assert response.status_code == 400
     assert "last remaining admin" in response.body.decode()
 
@@ -7413,7 +7413,7 @@ async def test_admin_deactivate_user_success(monkeypatch, mock_request, mock_db,
     auth_service.count_active_admin_users = AsyncMock(return_value=1)
     monkeypatch.setattr("mcpgateway.admin.EmailAuthService", lambda db: auth_service)
 
-    response = await admin_deactivate_user("a%40example.com", mock_request, db=mock_db, user={"email": "admin@example.com", "db": mock_db})
+    response = await admin_deactivate_user("a%40example.com", mock_request, db=mock_db, user={"email": "admin@apollosai.dev", "db": mock_db})
     assert isinstance(response, HTMLResponse)
 
 
@@ -7425,7 +7425,7 @@ async def test_admin_deactivate_user_exception(monkeypatch, mock_request, mock_d
     auth_service.deactivate_user = AsyncMock(side_effect=RuntimeError("boom"))
     monkeypatch.setattr("mcpgateway.admin.EmailAuthService", lambda db: auth_service)
 
-    response = await admin_deactivate_user("a%40example.com", mock_request, db=mock_db, user={"email": "admin@example.com", "db": mock_db})
+    response = await admin_deactivate_user("a%40example.com", mock_request, db=mock_db, user={"email": "admin@apollosai.dev", "db": mock_db})
     assert response.status_code == 400
     assert "error deactivating user" in response.body.decode().lower()
 
@@ -7433,7 +7433,7 @@ async def test_admin_deactivate_user_exception(monkeypatch, mock_request, mock_d
 @pytest.mark.asyncio
 async def test_admin_delete_user_self_block(monkeypatch, mock_request, mock_db, allow_permission):
     monkeypatch.setattr(settings, "email_auth_enabled", True)
-    response = await admin_delete_user("admin%40example.com", mock_request, db=mock_db, user={"email": "admin@example.com", "db": mock_db})
+    response = await admin_delete_user("admin%40example.com", mock_request, db=mock_db, user={"email": "admin@apollosai.dev", "db": mock_db})
     assert response.status_code == 400
     assert "Cannot delete your own account" in response.body.decode()
 
@@ -7441,7 +7441,7 @@ async def test_admin_delete_user_self_block(monkeypatch, mock_request, mock_db, 
 @pytest.mark.asyncio
 async def test_admin_delete_user_email_auth_disabled(monkeypatch, mock_request, mock_db, allow_permission):
     monkeypatch.setattr(settings, "email_auth_enabled", False)
-    response = await admin_delete_user("a%40example.com", mock_request, db=mock_db, user={"email": "admin@example.com", "db": mock_db})
+    response = await admin_delete_user("a%40example.com", mock_request, db=mock_db, user={"email": "admin@apollosai.dev", "db": mock_db})
     assert response.status_code == 403
 
 
@@ -7452,7 +7452,7 @@ async def test_admin_delete_user_last_admin_block(monkeypatch, mock_request, moc
     auth_service.is_last_active_admin = AsyncMock(return_value=True)
     monkeypatch.setattr("mcpgateway.admin.EmailAuthService", lambda db: auth_service)
 
-    response = await admin_delete_user("a%40example.com", mock_request, db=mock_db, user={"email": "admin@example.com", "db": mock_db})
+    response = await admin_delete_user("a%40example.com", mock_request, db=mock_db, user={"email": "admin@apollosai.dev", "db": mock_db})
     assert response.status_code == 400
     assert "last remaining admin" in response.body.decode()
 
@@ -7465,7 +7465,7 @@ async def test_admin_delete_user_success(monkeypatch, mock_request, mock_db, all
     auth_service.delete_user = AsyncMock(return_value=None)
     monkeypatch.setattr("mcpgateway.admin.EmailAuthService", lambda db: auth_service)
 
-    response = await admin_delete_user("a%40example.com", mock_request, db=mock_db, user={"email": "admin@example.com", "db": mock_db})
+    response = await admin_delete_user("a%40example.com", mock_request, db=mock_db, user={"email": "admin@apollosai.dev", "db": mock_db})
     assert response.status_code == 200
 
 
@@ -7477,7 +7477,7 @@ async def test_admin_delete_user_exception(monkeypatch, mock_request, mock_db, a
     auth_service.delete_user = AsyncMock(side_effect=RuntimeError("boom"))
     monkeypatch.setattr("mcpgateway.admin.EmailAuthService", lambda db: auth_service)
 
-    response = await admin_delete_user("a%40example.com", mock_request, db=mock_db, user={"email": "admin@example.com", "db": mock_db})
+    response = await admin_delete_user("a%40example.com", mock_request, db=mock_db, user={"email": "admin@apollosai.dev", "db": mock_db})
     assert response.status_code == 400
     assert "error deleting user" in response.body.decode().lower()
 
@@ -7492,14 +7492,14 @@ async def test_admin_force_password_change_success(monkeypatch, mock_request, mo
     auth_service.count_active_admin_users = AsyncMock(return_value=1)
     monkeypatch.setattr("mcpgateway.admin.EmailAuthService", lambda db: auth_service)
 
-    response = await admin_force_password_change("a%40example.com", mock_request, db=mock_db, user={"email": "admin@example.com", "db": mock_db})
+    response = await admin_force_password_change("a%40example.com", mock_request, db=mock_db, user={"email": "admin@apollosai.dev", "db": mock_db})
     assert isinstance(response, HTMLResponse)
 
 
 @pytest.mark.asyncio
 async def test_admin_force_password_change_email_auth_disabled(monkeypatch, mock_request, mock_db, allow_permission):
     monkeypatch.setattr(settings, "email_auth_enabled", False)
-    response = await admin_force_password_change("a%40example.com", mock_request, db=mock_db, user={"email": "admin@example.com", "db": mock_db})
+    response = await admin_force_password_change("a%40example.com", mock_request, db=mock_db, user={"email": "admin@apollosai.dev", "db": mock_db})
     assert response.status_code == 403
 
 
@@ -7510,7 +7510,7 @@ async def test_admin_force_password_change_user_not_found(monkeypatch, mock_requ
     auth_service.get_user_by_email = AsyncMock(return_value=None)
     monkeypatch.setattr("mcpgateway.admin.EmailAuthService", lambda db: auth_service)
 
-    response = await admin_force_password_change("a%40example.com", mock_request, db=mock_db, user={"email": "admin@example.com", "db": mock_db})
+    response = await admin_force_password_change("a%40example.com", mock_request, db=mock_db, user={"email": "admin@apollosai.dev", "db": mock_db})
     assert response.status_code == 404
 
 
@@ -7521,7 +7521,7 @@ async def test_admin_force_password_change_exception(monkeypatch, mock_request, 
     auth_service.get_user_by_email = AsyncMock(side_effect=RuntimeError("boom"))
     monkeypatch.setattr("mcpgateway.admin.EmailAuthService", lambda db: auth_service)
 
-    response = await admin_force_password_change("a%40example.com", mock_request, db=mock_db, user={"email": "admin@example.com", "db": mock_db})
+    response = await admin_force_password_change("a%40example.com", mock_request, db=mock_db, user={"email": "admin@apollosai.dev", "db": mock_db})
     assert response.status_code == 400
     assert "error forcing password change" in response.body.decode().lower()
 
@@ -7836,7 +7836,7 @@ async def test_get_overview_partial_error_returns_html(monkeypatch, mock_request
 
 @pytest.mark.asyncio
 async def test_get_configuration_settings_masks_sensitive(mock_db, allow_permission):
-    result = await get_configuration_settings(_db=mock_db, _user={"email": "admin@example.com", "db": mock_db})
+    result = await get_configuration_settings(_db=mock_db, _user={"email": "admin@apollosai.dev", "db": mock_db})
     assert "Basic Settings" in result["groups"]
     assert result["groups"]["Authentication & Security"]["basic_auth_password"] == settings.masked_auth_value
 
@@ -7845,14 +7845,14 @@ async def test_get_configuration_settings_masks_sensitive(mock_db, allow_permiss
 async def test_get_configuration_settings_masks_sensitive_plain_string(monkeypatch, mock_db, allow_permission):
     """Cover masking branch for non-SecretStr sensitive values."""
     monkeypatch.setattr(settings, "basic_auth_password", "plain-text")
-    result = await get_configuration_settings(_db=mock_db, _user={"email": "admin@example.com", "db": mock_db})
+    result = await get_configuration_settings(_db=mock_db, _user={"email": "admin@apollosai.dev", "db": mock_db})
     assert result["groups"]["Authentication & Security"]["basic_auth_password"] == settings.masked_auth_value
 
 
 @pytest.mark.asyncio
 async def test_get_configuration_settings_does_not_mask_empty_sensitive_values(monkeypatch, mock_db, allow_permission):
     monkeypatch.setattr(settings, "basic_auth_password", "")
-    result = await get_configuration_settings(_db=mock_db, _user={"email": "admin@example.com", "db": mock_db})
+    result = await get_configuration_settings(_db=mock_db, _user={"email": "admin@apollosai.dev", "db": mock_db})
     assert result["groups"]["Authentication & Security"]["basic_auth_password"] == ""
 
 
@@ -9675,7 +9675,7 @@ class TestAdminAdditionalCoverage:
         mock_settings.log_folder = str(log_dir)
         mock_settings.log_rotation_enabled = True
 
-        result = await admin_get_log_file(filename=None, user={"email": "admin@example.com", "db": mock_db})
+        result = await admin_get_log_file(filename=None, user={"email": "admin@apollosai.dev", "db": mock_db})
 
         assert result["total"] >= 2
         types = {entry["type"] for entry in result["files"]}
@@ -9698,7 +9698,7 @@ class TestAdminAdditionalCoverage:
         monkeypatch.setattr("mcpgateway.admin.Path.glob", _boom, raising=True)
 
         with pytest.raises(HTTPException) as excinfo:
-            await admin_get_log_file(filename=None, user={"email": "admin@example.com", "db": mock_db})
+            await admin_get_log_file(filename=None, user={"email": "admin@apollosai.dev", "db": mock_db})
         assert excinfo.value.status_code == 500
 
     @patch("mcpgateway.admin.settings")
@@ -9713,7 +9713,7 @@ class TestAdminAdditionalCoverage:
         mock_settings.log_folder = str(log_dir)
         mock_settings.log_rotation_enabled = False
 
-        result = await admin_get_log_file(filename=None, user={"email": "admin@example.com", "db": mock_db})
+        result = await admin_get_log_file(filename=None, user={"email": "admin@apollosai.dev", "db": mock_db})
         types = {entry["type"] for entry in result["files"]}
         assert "main" in types
         assert "storage" in types
@@ -9731,20 +9731,20 @@ class TestAdminAdditionalCoverage:
         mock_settings.log_folder = str(log_dir)
         mock_settings.log_rotation_enabled = False
 
-        response = await admin_get_log_file(filename="app.log", user={"email": "admin@example.com", "db": mock_db})
+        response = await admin_get_log_file(filename="app.log", user={"email": "admin@apollosai.dev", "db": mock_db})
         assert isinstance(response, Response)
         assert "app.log" in response.headers.get("content-disposition", "")
 
         with pytest.raises(HTTPException) as excinfo:
-            await admin_get_log_file(filename="../secret.log", user={"email": "admin@example.com", "db": mock_db})
+            await admin_get_log_file(filename="../secret.log", user={"email": "admin@apollosai.dev", "db": mock_db})
         assert excinfo.value.status_code == 400
 
         with pytest.raises(HTTPException) as excinfo:
-            await admin_get_log_file(filename="missing.log", user={"email": "admin@example.com", "db": mock_db})
+            await admin_get_log_file(filename="missing.log", user={"email": "admin@apollosai.dev", "db": mock_db})
         assert excinfo.value.status_code == 404
 
         with pytest.raises(HTTPException) as excinfo:
-            await admin_get_log_file(filename="random.txt", user={"email": "admin@example.com", "db": mock_db})
+            await admin_get_log_file(filename="random.txt", user={"email": "admin@apollosai.dev", "db": mock_db})
         assert excinfo.value.status_code == 403
 
     @patch("mcpgateway.admin.settings")
@@ -9760,7 +9760,7 @@ class TestAdminAdditionalCoverage:
 
         with patch("mcpgateway.admin.FileResponse", side_effect=FileNotFoundError("gone")):
             with pytest.raises(HTTPException) as excinfo:
-                await admin_get_log_file(filename="app.log", user={"email": "admin@example.com", "db": mock_db})
+                await admin_get_log_file(filename="app.log", user={"email": "admin@apollosai.dev", "db": mock_db})
         assert excinfo.value.status_code == 404
 
     @patch("mcpgateway.admin.settings")
@@ -9776,7 +9776,7 @@ class TestAdminAdditionalCoverage:
 
         with patch("mcpgateway.admin.FileResponse", side_effect=RuntimeError("boom")):
             with pytest.raises(HTTPException) as excinfo:
-                await admin_get_log_file(filename="app.log", user={"email": "admin@example.com", "db": mock_db})
+                await admin_get_log_file(filename="app.log", user={"email": "admin@apollosai.dev", "db": mock_db})
         assert excinfo.value.status_code == 500
 
     async def test_admin_export_logs_json_csv(self, mock_db, monkeypatch):
@@ -9992,7 +9992,7 @@ class TestAdminAdditionalCoverage:
     async def test_admin_get_user_edit_disabled_and_not_found(self, monkeypatch, mock_request, mock_db, allow_permission):
         """Cover disabled email auth and user-not-found branches."""
         monkeypatch.setattr(settings, "email_auth_enabled", False)
-        response = await admin_get_user_edit("a%40example.com", mock_request, db=mock_db, _user={"email": "admin@example.com", "db": mock_db})
+        response = await admin_get_user_edit("a%40example.com", mock_request, db=mock_db, _user={"email": "admin@apollosai.dev", "db": mock_db})
         assert response.status_code == 403
 
         monkeypatch.setattr(settings, "email_auth_enabled", True)
@@ -10000,7 +10000,7 @@ class TestAdminAdditionalCoverage:
         auth_service.get_user_by_email = AsyncMock(return_value=None)
         monkeypatch.setattr("mcpgateway.admin.EmailAuthService", lambda db: auth_service)
 
-        response = await admin_get_user_edit("missing%40example.com", mock_request, db=mock_db, _user={"email": "admin@example.com", "db": mock_db})
+        response = await admin_get_user_edit("missing%40example.com", mock_request, db=mock_db, _user={"email": "admin@apollosai.dev", "db": mock_db})
         assert response.status_code == 404
 
     async def test_admin_list_a2a_agents_enabled(self, monkeypatch, mock_db):
@@ -10955,7 +10955,7 @@ async def test_admin_get_user_edit_with_password_requirements(monkeypatch, mock_
     auth_service.get_user_by_email = AsyncMock(return_value=SimpleNamespace(email="a@example.com", full_name="A", is_admin=False))
     monkeypatch.setattr("mcpgateway.admin.EmailAuthService", lambda db: auth_service)
 
-    response = await admin_get_user_edit("a%40example.com", mock_request, db=mock_db, _user={"email": "admin@example.com", "db": mock_db})
+    response = await admin_get_user_edit("a%40example.com", mock_request, db=mock_db, _user={"email": "admin@apollosai.dev", "db": mock_db})
     assert isinstance(response, HTMLResponse)
     assert "Password Requirements" in response.body.decode()
 
@@ -10968,7 +10968,7 @@ async def test_admin_get_user_edit_has_error_display(monkeypatch, mock_request, 
     auth_service.get_user_by_email = AsyncMock(return_value=SimpleNamespace(email="a@example.com", full_name="A", is_admin=False))
     monkeypatch.setattr("mcpgateway.admin.EmailAuthService", lambda db: auth_service)
 
-    response = await admin_get_user_edit("a%40example.com", mock_request, db=mock_db, _user={"email": "admin@example.com", "db": mock_db})
+    response = await admin_get_user_edit("a%40example.com", mock_request, db=mock_db, _user={"email": "admin@apollosai.dev", "db": mock_db})
     assert isinstance(response, HTMLResponse)
     body = response.body.decode()
 
@@ -10992,7 +10992,7 @@ async def test_admin_update_user_errors_include_retarget_header(monkeypatch, moc
     auth_service.get_user_by_email = AsyncMock(side_effect=RuntimeError("Test error"))
     monkeypatch.setattr("mcpgateway.admin.EmailAuthService", lambda db: auth_service)
 
-    response = await admin_update_user("a%40example.com", request=request, db=mock_db, _user={"email": "admin@example.com", "db": mock_db})
+    response = await admin_update_user("a%40example.com", request=request, db=mock_db, _user={"email": "admin@apollosai.dev", "db": mock_db})
     assert response.status_code == 400
     assert response.headers.get("HX-Retarget") == "#edit-user-error", "Generic error should include HX-Retarget header"
 
@@ -11004,7 +11004,7 @@ async def test_admin_update_user_errors_include_retarget_header(monkeypatch, moc
     auth_service2.is_last_active_admin = AsyncMock(return_value=True)
     monkeypatch.setattr("mcpgateway.admin.EmailAuthService", lambda db: auth_service2)
 
-    response2 = await admin_update_user("a%40example.com", request=request2, db=mock_db, _user={"email": "admin@example.com", "db": mock_db})
+    response2 = await admin_update_user("a%40example.com", request=request2, db=mock_db, _user={"email": "admin@apollosai.dev", "db": mock_db})
     assert response2.status_code == 400
     assert "last remaining admin" in response2.body.decode()
     assert response2.headers.get("HX-Retarget") == "#edit-user-error", "Admin protection error should include HX-Retarget header"
@@ -11262,7 +11262,7 @@ async def test_get_observability_traces_with_filters(monkeypatch, mock_request, 
         name_search="trace",
         attribute_search="attr",
         tool_name="tool",
-        _user={"email": "admin@example.com", "db": mock_db},
+        _user={"email": "admin@apollosai.dev", "db": mock_db},
     )
 
     assert isinstance(response, HTMLResponse)
@@ -11285,7 +11285,7 @@ async def test_get_top_slow_endpoints(monkeypatch, mock_db):
     mock_db.query.return_value = _mock_top_query_result(row)
     monkeypatch.setattr("mcpgateway.admin.get_db", lambda: iter([mock_db]))
 
-    result = await get_top_slow_endpoints(request=MagicMock(), hours=1, limit=5, _user={"email": "admin@example.com", "db": mock_db})
+    result = await get_top_slow_endpoints(request=MagicMock(), hours=1, limit=5, _user={"email": "admin@apollosai.dev", "db": mock_db})
     assert result["endpoints"][0]["avg_duration_ms"] == 12.34
 
 
@@ -11295,7 +11295,7 @@ async def test_get_top_volume_endpoints(monkeypatch, mock_db):
     mock_db.query.return_value = _mock_top_query_result(row)
     monkeypatch.setattr("mcpgateway.admin.get_db", lambda: iter([mock_db]))
 
-    result = await get_top_volume_endpoints(request=MagicMock(), hours=1, limit=5, _user={"email": "admin@example.com", "db": mock_db})
+    result = await get_top_volume_endpoints(request=MagicMock(), hours=1, limit=5, _user={"email": "admin@apollosai.dev", "db": mock_db})
     assert result["endpoints"][0]["avg_duration_ms"] == 0
 
 
@@ -11305,7 +11305,7 @@ async def test_get_top_error_endpoints(monkeypatch, mock_db):
     mock_db.query.return_value = _mock_top_query_result(row)
     monkeypatch.setattr("mcpgateway.admin.get_db", lambda: iter([mock_db]))
 
-    result = await get_top_error_endpoints(request=MagicMock(), hours=1, limit=5, _user={"email": "admin@example.com", "db": mock_db})
+    result = await get_top_error_endpoints(request=MagicMock(), hours=1, limit=5, _user={"email": "admin@apollosai.dev", "db": mock_db})
     assert result["endpoints"][0]["error_rate"] == 50.0
 
 
@@ -11799,7 +11799,7 @@ async def test_admin_list_tags(monkeypatch, mock_db):
     tag_service.get_all_tags = AsyncMock(return_value=[tag])
     monkeypatch.setattr("mcpgateway.admin.TagService", lambda: tag_service)
 
-    result = await admin_list_tags(entity_types="tools,resources", include_entities=True, db=mock_db, user={"email": "admin@example.com", "db": mock_db})
+    result = await admin_list_tags(entity_types="tools,resources", include_entities=True, db=mock_db, user={"email": "admin@apollosai.dev", "db": mock_db})
     assert result[0]["name"] == "alpha"
     assert result[0]["entities"][0]["id"] == "tool-1"
 
@@ -11812,7 +11812,7 @@ async def test_admin_list_tags_exception_raises_http_500(monkeypatch, mock_db):
     monkeypatch.setattr("mcpgateway.admin.TagService", lambda: tag_service)
 
     with pytest.raises(HTTPException) as excinfo:
-        await admin_list_tags(entity_types=None, include_entities=False, db=mock_db, user={"email": "admin@example.com", "db": mock_db})
+        await admin_list_tags(entity_types=None, include_entities=False, db=mock_db, user={"email": "admin@apollosai.dev", "db": mock_db})
     assert excinfo.value.status_code == 500
 
 
@@ -11831,7 +11831,7 @@ async def test_get_gateways_section(monkeypatch, mock_db):
     gateway_service.list_gateways = AsyncMock(return_value=([gateway_a, gateway_b, GatewayModel()], None))
     monkeypatch.setattr("mcpgateway.admin.GatewayService", lambda: gateway_service)
 
-    response = await get_gateways_section(team_id="team-1", db=mock_db, user={"email": "admin@example.com", "db": mock_db})
+    response = await get_gateways_section(team_id="team-1", db=mock_db, user={"email": "admin@apollosai.dev", "db": mock_db})
     payload = response.body.decode()
     assert "gateways" in payload
 
@@ -11843,7 +11843,7 @@ async def test_get_gateways_section_exception_returns_500(monkeypatch, mock_db, 
     gateway_service.list_gateways = AsyncMock(side_effect=RuntimeError("boom"))
     monkeypatch.setattr("mcpgateway.admin.GatewayService", lambda: gateway_service)
 
-    response = await get_gateways_section(team_id="team-1", db=mock_db, user={"email": "admin@example.com", "db": mock_db})
+    response = await get_gateways_section(team_id="team-1", db=mock_db, user={"email": "admin@apollosai.dev", "db": mock_db})
     assert response.status_code == 500
     payload = json.loads(response.body)
     assert "boom" in payload["error"]
@@ -11853,7 +11853,7 @@ async def test_get_gateways_section_exception_returns_500(monkeypatch, mock_db, 
 async def test_get_performance_stats_paths(monkeypatch, mock_request, mock_db, allow_permission):
     monkeypatch.setattr(settings, "mcpgateway_performance_tracking", False)
     mock_request.headers = {"hx-request": "true"}
-    response = await get_performance_stats(mock_request, db=mock_db, _user={"email": "admin@example.com", "db": mock_db})
+    response = await get_performance_stats(mock_request, db=mock_db, _user={"email": "admin@apollosai.dev", "db": mock_db})
     assert isinstance(response, HTMLResponse)
 
     monkeypatch.setattr(settings, "mcpgateway_performance_tracking", True)
@@ -11871,11 +11871,11 @@ async def test_get_performance_stats_paths(monkeypatch, mock_request, mock_db, a
     monkeypatch.setattr("mcpgateway.admin.get_performance_service", lambda db: service)
 
     mock_request.headers = {"hx-request": "true"}
-    response = await get_performance_stats(mock_request, db=mock_db, _user={"email": "admin@example.com", "db": mock_db})
+    response = await get_performance_stats(mock_request, db=mock_db, _user={"email": "admin@apollosai.dev", "db": mock_db})
     assert isinstance(response, HTMLResponse)
 
     mock_request.headers = {}
-    response = await get_performance_stats(mock_request, db=mock_db, _user={"email": "admin@example.com", "db": mock_db})
+    response = await get_performance_stats(mock_request, db=mock_db, _user={"email": "admin@apollosai.dev", "db": mock_db})
     assert response.media_type == "application/json"
 
 
@@ -11885,7 +11885,7 @@ async def test_get_performance_stats_disabled_non_htmx_raises_404(monkeypatch, m
     monkeypatch.setattr(settings, "mcpgateway_performance_tracking", False)
     mock_request.headers = {}
     with pytest.raises(HTTPException) as excinfo:
-        await get_performance_stats(mock_request, db=mock_db, _user={"email": "admin@example.com", "db": mock_db})
+        await get_performance_stats(mock_request, db=mock_db, _user={"email": "admin@apollosai.dev", "db": mock_db})
     assert excinfo.value.status_code == 404
 
 
@@ -11900,7 +11900,7 @@ async def test_get_performance_stats_exception_raises_500(monkeypatch, mock_requ
 
     mock_request.headers = {}
     with pytest.raises(HTTPException) as excinfo:
-        await get_performance_stats(mock_request, db=mock_db, _user={"email": "admin@example.com", "db": mock_db})
+        await get_performance_stats(mock_request, db=mock_db, _user={"email": "admin@apollosai.dev", "db": mock_db})
     assert excinfo.value.status_code == 500
 
 
@@ -15667,7 +15667,7 @@ class TestTemplateButtonGating:
 
     def test_tools_shows_buttons_for_admin(self, jinja_env, tool_data):
         """Admin: HTML contains editTool onclick."""
-        html = self._render_tools_partial(jinja_env, tool_data, current_user_email="admin@example.com", is_admin=True)
+        html = self._render_tools_partial(jinja_env, tool_data, current_user_email="admin@apollosai.dev", is_admin=True)
         assert "editTool" in html
 
     def test_gateways_hides_buttons_for_non_owner(self, jinja_env):
@@ -16188,7 +16188,7 @@ class TestAdminTokensPartialHtml:
         # Mock TokenCatalogService with revoked token
         mock_revocation = MagicMock()
         mock_revocation.revoked_at = datetime.now(timezone.utc)
-        mock_revocation.revoked_by = "admin@example.com"
+        mock_revocation.revoked_by = "admin@apollosai.dev"
         mock_revocation.reason = "Security concern"
 
         mock_token_service = MagicMock()
@@ -16340,7 +16340,7 @@ class TestAdminTokensSearch:
         # Mock TokenCatalogService with revoked token
         mock_revocation = MagicMock()
         mock_revocation.revoked_at = datetime.now(timezone.utc)
-        mock_revocation.revoked_by = "admin@example.com"
+        mock_revocation.revoked_by = "admin@apollosai.dev"
         mock_revocation.reason = "Security concern"
 
         mock_token_service = MagicMock()
@@ -16942,7 +16942,7 @@ class TestAdminTokensPartialSearch:
 
         with patch("mcpgateway.admin.settings") as mock_settings:
             mock_settings.email_auth_enabled = False
-            response = await admin_mod.admin_unlock_user("user%40example.com", request, db=mock_db, user={"email": "admin@example.com"})
+            response = await admin_mod.admin_unlock_user("user%40example.com", request, db=mock_db, user={"email": "admin@apollosai.dev"})
             assert response.status_code == 403
 
         unlocked_user = SimpleNamespace(
@@ -16962,7 +16962,7 @@ class TestAdminTokensPartialSearch:
                 mock_service = mock_service_cls.return_value
                 mock_service.unlock_user_account = AsyncMock(return_value=unlocked_user)
                 mock_service.count_active_admin_users = AsyncMock(return_value=2)
-                response = await admin_mod.admin_unlock_user("user%40example.com", request, db=mock_db, user={"email": "admin@example.com"})
+                response = await admin_mod.admin_unlock_user("user%40example.com", request, db=mock_db, user={"email": "admin@apollosai.dev"})
                 assert response.status_code == 200
                 assert "user@example.com" in response.body.decode()
 
@@ -16970,12 +16970,12 @@ class TestAdminTokensPartialSearch:
             mock_settings.email_auth_enabled = True
             with patch("mcpgateway.admin.EmailAuthService") as mock_service_cls:
                 mock_service_cls.return_value.unlock_user_account = AsyncMock(side_effect=ValueError("missing user"))
-                response = await admin_mod.admin_unlock_user("user%40example.com", request, db=mock_db, user={"email": "admin@example.com"})
+                response = await admin_mod.admin_unlock_user("user%40example.com", request, db=mock_db, user={"email": "admin@apollosai.dev"})
                 assert response.status_code == 404
 
         with patch("mcpgateway.admin.settings") as mock_settings:
             mock_settings.email_auth_enabled = True
             with patch("mcpgateway.admin.EmailAuthService") as mock_service_cls:
                 mock_service_cls.return_value.unlock_user_account = AsyncMock(side_effect=RuntimeError("boom"))
-                response = await admin_mod.admin_unlock_user("user%40example.com", request, db=mock_db, user={"email": "admin@example.com"})
+                response = await admin_mod.admin_unlock_user("user%40example.com", request, db=mock_db, user={"email": "admin@apollosai.dev"})
                 assert response.status_code == 400

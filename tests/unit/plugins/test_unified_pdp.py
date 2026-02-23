@@ -53,7 +53,7 @@ from plugins.unified_pdp.adapter import PolicyEvaluationError, PolicyEngineUnava
 
 @pytest.fixture
 def subject_admin():
-    return Subject(email="admin@example.com", roles=["admin"], mfa_verified=True, clearance_level=3)
+    return Subject(email="admin@apollosai.dev", roles=["admin"], mfa_verified=True, clearance_level=3)
 
 
 @pytest.fixture
@@ -194,7 +194,7 @@ class TestOPAEngine:
 
     def test_build_input_structure(self, subject_admin, resource_tool, context_basic):
         inp = OPAEngineAdapter._build_input(subject_admin, "tools.invoke", resource_tool, context_basic)
-        assert inp["subject"]["email"] == "admin@example.com"
+        assert inp["subject"]["email"] == "admin@apollosai.dev"
         assert inp["action"] == "tools.invoke"
         assert inp["resource"]["type"] == "tool"
         assert inp["context"]["ip"] == "10.0.0.1"
@@ -237,7 +237,7 @@ class TestCedarEngine:
         # Should have: 1 Role entity + 1 User entity
         assert len(entities) == 2
         user_entity = next(e for e in entities if e["identifier"]["type"] == "User")
-        assert user_entity["identifier"]["id"] == "admin@example.com"
+        assert user_entity["identifier"]["id"] == "admin@apollosai.dev"
         assert {"type": "Role", "id": "admin"} in user_entity["parents"]
 
     @pytest.mark.asyncio

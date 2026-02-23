@@ -27,9 +27,9 @@ The mcp-cli supports **stdio** connections out-of-the-box through the bundled **
 * **JWT or Basic Auth credentials** for Gateway access
 * **LLM Provider API keys** (optional, for chat mode):
 
-  * OpenAI: `OPENAI_API_KEY` environment variable
-  * Anthropic: `ANTHROPIC_API_KEY` environment variable
-  * Ollama: Local Ollama installation with function-calling capable models
+    * OpenAI: `OPENAI_API_KEY` environment variable
+    * Anthropic: `ANTHROPIC_API_KEY` environment variable
+    * Ollama: Local Ollama installation with function-calling capable models
 
 ---
 
@@ -129,13 +129,13 @@ Create a `server_config.json` file to define your MCP Context Forge Gateway conn
 
 ```bash
 # From your mcp-context-forge directory
-python3 -m mcpgateway.utils.create_jwt_token -u admin@example.com --exp 10080 --secret my-test-key
+python3 -m mcpgateway.utils.create_jwt_token -u admin@apollosai.dev --exp 10080 --secret my-test-key
 ```
 
 > **⚠️ Important Notes**
-> - Use the **full path** to your virtual environment's Python to avoid import errors
-> - Make sure your MCP Context Forge Gateway is running on the correct port (default: 4444)
-> - The wrapper requires `MCP_SERVER_URL` environment variable
+> * Use the **full path** to your virtual environment's Python to avoid import errors
+> * Make sure your MCP Context Forge Gateway is running on the correct port (default: 4444)
+> * The wrapper requires `MCP_SERVER_URL` environment variable
 
 ---
 
@@ -491,13 +491,13 @@ docker run -d --name mcpgateway \
   -e JWT_SECRET_KEY=my-secret-key \
   -e BASIC_AUTH_USER=admin \
   -e BASIC_AUTH_PASSWORD=changeme \
-  -e PLATFORM_ADMIN_EMAIL=admin@example.com \
+  -e PLATFORM_ADMIN_EMAIL=admin@apollosai.dev \
   -e PLATFORM_ADMIN_PASSWORD=changeme \
   -e PLATFORM_ADMIN_FULL_NAME="Platform Administrator" \
   ghcr.io/ibm/mcp-context-forge:1.0.0-RC-1
 
 # Generate token
-export MCPGATEWAY_BEARER_TOKEN=$(docker exec mcpgateway python3 -m mcpgateway.utils.create_jwt_token --username admin@example.com --exp 10080 --secret my-secret-key)
+export MCPGATEWAY_BEARER_TOKEN=$(docker exec mcpgateway python3 -m mcpgateway.utils.create_jwt_token --username admin@apollosai.dev --exp 10080 --secret my-secret-key)
 
 # Test connection
 curl -H "Authorization: Bearer $MCPGATEWAY_BEARER_TOKEN" http://localhost:4444/tools
@@ -510,25 +510,25 @@ curl -H "Authorization: Bearer $MCPGATEWAY_BEARER_TOKEN" http://localhost:4444/t
 Your MCP Context Forge Gateway provides these tool categories:
 
 ### 🗂️ Filesystem Tools
-- **Downloads & Documents:** Read, write, edit, search files
-- **Directory Operations:** List, create, move files and directories
-- **File Management:** Get file info, create directory trees
+* **Downloads & Documents:** Read, write, edit, search files
+* **Directory Operations:** List, create, move files and directories
+* **File Management:** Get file info, create directory trees
 
 ### 🐙 GitHub Integration
-- **Issue Management:** Create, update, list, search issues
-- **Pull Requests:** Create, review, merge, comment on PRs
-- **Repository Operations:** Fork, create, manage repositories
-- **Notifications:** List, manage, dismiss notifications
-- **Code Analysis:** Search code, get commits, manage branches
+* **Issue Management:** Create, update, list, search issues
+* **Pull Requests:** Create, review, merge, comment on PRs
+* **Repository Operations:** Fork, create, manage repositories
+* **Notifications:** List, manage, dismiss notifications
+* **Code Analysis:** Search code, get commits, manage branches
 
 ### 🧠 Memory Server
-- **Memory Storage:** Store and retrieve contextual memories
-- **Bucket Management:** Organize memories in buckets
-- **Memory Querying:** Search and filter stored memories
+* **Memory Storage:** Store and retrieve contextual memories
+* **Bucket Management:** Organize memories in buckets
+* **Memory Querying:** Search and filter stored memories
 
 ### ⏰ Time Operations
-- **System Time:** Get current time in any timezone
-- **Time Conversion:** Convert between different timezones
+* **System Time:** Get current time in any timezone
+* **Time Conversion:** Convert between different timezones
 
 ### 📊 Features Comparison
 
@@ -558,12 +558,12 @@ Your MCP Context Forge Gateway provides these tool categories:
 
 ## 🎯 Quick Start Checklist
 
-- [ ] Install mcp-cli: `pip install -e ".[cli,dev]"`
-- [ ] Install MCP Context Forge Gateway
-- [ ] Start gateway: `make serve` (runs on localhost:4444)
-- [ ] Create `server_config.json` with correct Python path
-- [ ] Generate JWT token for authentication
-- [ ] Test connection: `mcp-cli ping --server mcpgateway-wrapper`
-- [ ] Install Ollama and pull a compatible model (recommended)
-- [ ] Start chat: `mcp-cli chat --server mcpgateway-wrapper --provider ollama --model mistral-nemo:latest`
-- [ ] Try asking: "What tools are available?" or "What issues have been assigned to me?"
+* [ ] Install mcp-cli: `pip install -e ".[cli,dev]"`
+* [ ] Install MCP Context Forge Gateway
+* [ ] Start gateway: `make serve` (runs on localhost:4444)
+* [ ] Create `server_config.json` with correct Python path
+* [ ] Generate JWT token for authentication
+* [ ] Test connection: `mcp-cli ping --server mcpgateway-wrapper`
+* [ ] Install Ollama and pull a compatible model (recommended)
+* [ ] Start chat: `mcp-cli chat --server mcpgateway-wrapper --provider ollama --model mistral-nemo:latest`
+* [ ] Try asking: "What tools are available?" or "What issues have been assigned to me?"
