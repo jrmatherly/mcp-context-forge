@@ -54,20 +54,20 @@ jobs:
       # 0️⃣  Checkout source
       # -------------------------------------------------------------
       - name: ⬇️ Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6.0.2
 
       # -------------------------------------------------------------
       # 1️⃣  Optional setup - runtimes for specific languages
       # -------------------------------------------------------------
       - name: 🐍 Setup Python
         if: matrix.language == 'python'
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v6.2.0
         with:
           python-version: "3.x"
 
       - name: 🟢 Setup Node.js
         if: matrix.language == 'javascript-typescript'
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v6.2.0
         with:
           node-version: "20"
 
@@ -75,7 +75,7 @@ jobs:
       # 2️⃣  Initialize CodeQL
       # -------------------------------------------------------------
       - name: 🛠️ Initialize CodeQL
-        uses: github/codeql-action/init@v3
+        uses: github/codeql-action/init@v4.32.4
         with:
           languages: ${{ matrix.language }}
           dependency-caching: true
@@ -95,7 +95,7 @@ jobs:
       # 4️⃣  Perform CodeQL analysis
       # -------------------------------------------------------------
       - name: 🔬 Perform CodeQL analysis
-        uses: github/codeql-action/analyze@v3
+        uses: github/codeql-action/analyze@v4.32.4
         with:
           category: "/language:${{ matrix.language }}"
           upload: false

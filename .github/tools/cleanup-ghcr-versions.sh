@@ -2,13 +2,13 @@
 #───────────────────────────────────────────────────────────────────────────────
 #  Script : cleanup.sh
 #  Author : Mihai Criveti
-#  Purpose: Prune old or unused GHCR container versions for IBM's MCP Context Forge
+#  Purpose: Prune old or unused GHCR container versions for MCP Context Forge
 #  Copyright 2025
 #  SPDX-License-Identifier: Apache-2.0
 #
 #  Description:
 #    This script safely manages container versions in GitHub Container Registry
-#    (ghcr.io) under the IBM organization, specifically targeting the
+#    (ghcr.io) under the jrmatherly user account, specifically targeting the
 #    `mcp-context-forge` package. It supports interactive and non-interactive
 #    deletion modes to help you keep the container registry clean.
 #
@@ -90,7 +90,7 @@ fi
 ##############################################################################
 # 2. CONFIG
 ##############################################################################
-ORG="ibm"
+ORG="jrmatherly"
 PKG="mcp-context-forge"
 KEEP_TAGS=( "0.1.0" "v0.1.0" "0.1.1" "v0.1.1" "0.2.0" "v0.2.0" "0.3.0" "v0.3.0" "0.4.0" "v0.4.0" "0.5.0" "v0.5.0" "0.6.0" "v0.6.0" "0.7.0" "v0.7.0" "0.8.0" "v0.8.0" "latest" )
 PER_PAGE=100
@@ -121,7 +121,7 @@ while IFS= read -r row; do
     delete_ids+=("$id")
   fi
 done < <(gh api -H "Accept: application/vnd.github+json" \
-            "/orgs/${ORG}/packages/container/${PKG}/versions?per_page=${PER_PAGE}" \
+            "/users/${ORG}/packages/container/${PKG}/versions?per_page=${PER_PAGE}" \
             --paginate | \
          jq -cr --arg re "$KEEP_REGEX" '
            .[] |
@@ -152,7 +152,7 @@ else
   echo "🗑️  Deleting ${#delete_ids[@]} versions..."
   for id in "${delete_ids[@]}"; do
     if gh api -X DELETE -H "Accept: application/vnd.github+json" \
-              "/orgs/${ORG}/packages/container/${PKG}/versions/${id}" >/dev/null 2>&1; then
+              "/users/${ORG}/packages/container/${PKG}/versions/${id}" >/dev/null 2>&1; then
       echo "✅  Deleted version ID: $id"
     else
       echo "❌  Failed to delete version ID: $id"

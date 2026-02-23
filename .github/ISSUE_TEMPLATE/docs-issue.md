@@ -23,7 +23,7 @@ What's wrong or missing?
 Please link to the affected page, file, or section (if possible):
 
 > Example: `docs/docs/using/agents/crewai.md` or `./README.md`
-> or https://ibm.github.io/mcp-context-forge/overview/features/
+> or https://github.com/jrmatherly/mcp-context-forge/docs/
 
 ---
 

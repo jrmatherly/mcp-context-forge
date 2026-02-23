@@ -39,7 +39,7 @@ license-files = ["LICENSE"]
 
 # Maintainers
 maintainers = [
-    {name = "Mihai Criveti", email = "redacted@ibm.com"}
+    {name = "Jason Matherly", email = "jason@matherly.net"}
 ]
 
 # ----------------------------------------------------------------

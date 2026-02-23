@@ -44,7 +44,7 @@ jobs:
       # 0️⃣  Checkout
       # -----------------------------------------------------------
       - name: ⬇️  Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6.0.2
         with:
           fetch-depth: 0  # diff-cover needs full history to compare branches
 
@@ -52,7 +52,7 @@ jobs:
       # 1️⃣  Set-up Python
       # -----------------------------------------------------------
       - name: 🐍  Setup Python ${{ matrix.python }}
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v6.2.0
         with:
           python-version: ${{ matrix.python }}
           cache: pip
@@ -61,7 +61,7 @@ jobs:
       # 2  Install uv
       # -----------------------------------------------------------
       - name: ⚡ Install uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@v7.3.0
         with:
           version: "0.9.2"
           python-version: ${{ matrix.python }}
@@ -125,13 +125,13 @@ jobs:
     #       --- keep disabled unless you need them ---
     # -----------------------------------------------------------
     # - name: 📤  Upload coverage.xml
-    #   uses: actions/upload-artifact@v4.6.2
+    #   uses: actions/upload-artifact@v6.0.0
     #   with:
     #     name: coverage-xml-${{ matrix.python }}
     #     path: coverage.xml
     #
     # - name: 📤  Upload HTML coverage
-    #   uses: actions/upload-artifact@v4.6.2
+    #   uses: actions/upload-artifact@v6.0.0
     #   with:
     #     name: htmlcov-${{ matrix.python }}
     #     path: htmlcov/

@@ -73,7 +73,7 @@ PROJECT_ROOT: Path = Path(__file__).parent.parent.parent.resolve()
 INCLUDE_DIRS: List[str] = ["mcpgateway", "tests"]
 EXCLUDE_DIRS: Set[str] = {".git", ".venv", "venv", "__pycache__", "build", "dist", ".idea", ".vscode", "node_modules", ".tox", ".pytest_cache", ".mypy_cache", ".ruff_cache"}
 COPYRIGHT_YEAR: int = datetime.now().year
-AUTHORS: str = "Mihai Criveti"
+AUTHORS: str = "Jason Matherly"
 LICENSE: str = "Apache-2.0"
 
 # Constants for header validation

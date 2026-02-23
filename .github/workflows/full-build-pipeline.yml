@@ -46,7 +46,7 @@ jobs:
       # 0️⃣  Checkout
       # -------------------------------------------------------------
       - name: ⬇️  Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6.0.2
         with:
           fetch-depth: 1
 
@@ -54,7 +54,7 @@ jobs:
       # 1️⃣  Set-up Python
       # -------------------------------------------------------------
       - name: 🐍  Setup Python 3.11
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v6.2.0
         with:
           python-version: '3.11'
           cache: pip
@@ -63,7 +63,7 @@ jobs:
       # 2️⃣  Install uv
       # -------------------------------------------------------------
       - name: ⚡ Install uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@v7.3.0
         with:
           version: "0.9.2"
           python-version: '3.11'

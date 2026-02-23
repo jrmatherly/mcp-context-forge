@@ -28,7 +28,7 @@ jobs:
       # 0️⃣  Checkout
       # -----------------------------------------------------------
       - name: ⬇️  Checkout source
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6.0.2
         with:
           fetch-depth: 1
 
@@ -36,7 +36,7 @@ jobs:
       # 1️⃣  Node.js Setup
       # -----------------------------------------------------------
       - name: 📦  Set up Node.js
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v6.2.0
         with:
           node-version: '20'
           cache: npm

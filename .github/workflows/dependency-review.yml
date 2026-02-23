@@ -50,14 +50,14 @@ jobs:
       # 0️⃣  Check out the repository
       # -----------------------------------------------------------
       - name: ⬇️  Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6.0.2
 
       # -----------------------------------------------------------
       # 1️⃣  Dependency & License gate
       # -----------------------------------------------------------
       - name: 🔍  Dependency Review
         id: dep-scan
-        uses: actions/dependency-review-action@v4
+        uses: actions/dependency-review-action@v4.8.3
         with:
           # ───────── Vulnerability policy ─────────
           fail-on-severity: moderate # MODERATE, HIGH, CRITICAL ⇒ ❌

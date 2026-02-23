@@ -85,7 +85,7 @@ flowchart TD
 
 ### 🔗 MCP Standards Check
 
-- [ ] Change adheres to current [MCP specifications](https://developer.ibm.com/tutorials/awb-handle-remote-tool-calling-model-context-protocol/)
+- [ ] Change adheres to current [MCP specifications](https://modelcontextprotocol.io/specification)
 - [ ] No breaking changes to existing MCP-compliant integrations
 - [ ] If deviations exist, please describe them below:
 
