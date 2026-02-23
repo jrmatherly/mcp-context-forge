@@ -7213,7 +7213,7 @@ async def test_admin_get_user_edit_hides_admin_checkbox_when_editing_self(monkey
     monkeypatch.setattr("mcpgateway.admin.EmailAuthService", lambda db: auth_service)
 
     # User editing themselves (same email)
-    response = await admin_get_user_edit("admin%40example.com", mock_request, db=mock_db, _user={"email": "admin@apollosai.dev", "db": mock_db})
+    response = await admin_get_user_edit("admin%40apollosai.dev", mock_request, db=mock_db, _user={"email": "admin@apollosai.dev", "db": mock_db})
     assert isinstance(response, HTMLResponse)
     body = response.body.decode()
     assert "Edit User" in body
@@ -7248,7 +7248,7 @@ async def test_admin_get_user_edit_case_insensitive_self_check(monkeypatch, mock
     monkeypatch.setattr("mcpgateway.admin.EmailAuthService", lambda db: auth_service)
 
     # User with different case should still be recognized as self
-    response = await admin_get_user_edit("admin%40example.com", mock_request, db=mock_db, _user={"email": "admin@apollosai.dev", "db": mock_db})
+    response = await admin_get_user_edit("admin%40apollosai.dev", mock_request, db=mock_db, _user={"email": "admin@apollosai.dev", "db": mock_db})
     assert isinstance(response, HTMLResponse)
     body = response.body.decode()
     # Administrator checkbox should NOT be present (case-insensitive match)
@@ -7269,7 +7269,7 @@ async def test_admin_update_user_self_demotion_blocked(monkeypatch, mock_db, all
     monkeypatch.setattr("mcpgateway.admin.EmailAuthService", lambda db: auth_service)
 
     # Self-edit should succeed with admin status preserved
-    response = await admin_update_user("admin%40example.com", request=request, db=mock_db, _user={"email": "admin@apollosai.dev", "db": mock_db})
+    response = await admin_update_user("admin%40apollosai.dev", request=request, db=mock_db, _user={"email": "admin@apollosai.dev", "db": mock_db})
     assert response.status_code == 200
     # Verify update_user was called with is_admin=True (preserved from DB)
     auth_service.update_user.assert_called_once()
@@ -7290,7 +7290,7 @@ async def test_admin_update_user_self_demotion_case_insensitive(monkeypatch, moc
     monkeypatch.setattr("mcpgateway.admin.EmailAuthService", lambda db: auth_service)
 
     # Self-edit with different case should still preserve admin status
-    response = await admin_update_user("admin%40example.com", request=request, db=mock_db, _user={"email": "admin@apollosai.dev", "db": mock_db})
+    response = await admin_update_user("admin%40apollosai.dev", request=request, db=mock_db, _user={"email": "admin@apollosai.dev", "db": mock_db})
     assert response.status_code == 200
     auth_service.update_user.assert_called_once()
     call_kwargs = auth_service.update_user.call_args[1]
@@ -7331,7 +7331,7 @@ async def test_admin_update_user_self_can_update_other_fields(monkeypatch, mock_
     monkeypatch.setattr("mcpgateway.admin.EmailAuthService", lambda db: auth_service)
 
     # User updating their own name; admin status preserved from DB
-    response = await admin_update_user("admin%40example.com", request=request, db=mock_db, _user={"email": "admin@apollosai.dev", "db": mock_db})
+    response = await admin_update_user("admin%40apollosai.dev", request=request, db=mock_db, _user={"email": "admin@apollosai.dev", "db": mock_db})
     assert response.status_code == 200
     assert response.headers.get("HX-Trigger") is not None
     # Verify admin status was preserved
@@ -7376,7 +7376,7 @@ async def test_admin_activate_user_exception(monkeypatch, mock_request, mock_db,
 @pytest.mark.asyncio
 async def test_admin_deactivate_user_self_block(monkeypatch, mock_request, mock_db, allow_permission):
     monkeypatch.setattr(settings, "email_auth_enabled", True)
-    response = await admin_deactivate_user("admin%40example.com", mock_request, db=mock_db, user={"email": "admin@apollosai.dev", "db": mock_db})
+    response = await admin_deactivate_user("admin%40apollosai.dev", mock_request, db=mock_db, user={"email": "admin@apollosai.dev", "db": mock_db})
     assert response.status_code == 400
     assert "Cannot deactivate your own account" in response.body.decode()
 
@@ -7433,7 +7433,7 @@ async def test_admin_deactivate_user_exception(monkeypatch, mock_request, mock_d
 @pytest.mark.asyncio
 async def test_admin_delete_user_self_block(monkeypatch, mock_request, mock_db, allow_permission):
     monkeypatch.setattr(settings, "email_auth_enabled", True)
-    response = await admin_delete_user("admin%40example.com", mock_request, db=mock_db, user={"email": "admin@apollosai.dev", "db": mock_db})
+    response = await admin_delete_user("admin%40apollosai.dev", mock_request, db=mock_db, user={"email": "admin@apollosai.dev", "db": mock_db})
     assert response.status_code == 400
     assert "Cannot delete your own account" in response.body.decode()
 
