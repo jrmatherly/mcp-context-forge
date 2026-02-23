@@ -47,7 +47,7 @@ This release delivers **enterprise security hardening**, **comprehensive RBAC im
 > **Migration**: If you use Basic auth for API access, either:
 > 1. **(Recommended)** Migrate to JWT tokens: `export MCPGATEWAY_BEARER_TOKEN=$(python -m mcpgateway.utils.create_jwt_token ...)`
 > 2. Set `API_ALLOW_BASIC_AUTH=true` to restore previous behavior
-
+>
 > **Note**: Gateways without configured `auth_value` will send unauthenticated requests to remote servers. Configure per-gateway authentication for servers that require it.
 
 ##### Cookie Authentication Rejected for API Requests
@@ -2480,9 +2480,9 @@ This release represents a true community effort with contributions from develope
 ### Security Improvements
 
 > This release adds enhanced validation rules in the Pydantic data models to help prevent XSS injection when data from untrusted MCP servers is displayed in downstream UIs. You should still ensure any downstream agents and applications perform data sanitization coming from untrusted MCP servers (apply defense in depth).
-
+>
 > Data validation has been strengthened across all API endpoints (/admin and main), with additional input and output validation in the UI to improve overall security.
-
+>
 > The Admin UI continues to follow security best practices with localhost-only access by default and feature flag controls - now set to disabled by default, as shown in `.env.example` file (`MCPGATEWAY_UI_ENABLED=false` and `MCPGATEWAY_ADMIN_API_ENABLED=false`).
 
 - **Comprehensive Input Validation Framework** (#339, #340):
