@@ -57,7 +57,7 @@
 }
 
 /* Mobile sidebar overlay */
-@media (width <=1023px) {
+@media (width <= 1023px) {
     .sidebar-nav {
         position: fixed;
         top: 0;
@@ -73,16 +73,14 @@
     display: none;
 }
 
-/* stylelint-disable-next-line selector-class-pattern -- third-party library class */
-.code-example+.CodeMirror {
+.code-example + .CodeMirror {
     border-radius: 0.5rem;
     font-size: 0.8125rem;
     line-height: 1.5;
     position: relative;
 }
 
-/* stylelint-disable-next-line selector-class-pattern -- third-party library class */
-.code-example+.CodeMirror.cm-s-monokai {
+.code-example + .CodeMirror.cm-s-monokai {
     background: #272822;
 }
 
@@ -303,7 +301,6 @@
     animation: message-slide-in 0.3s ease-out;
 }
 
-
 @keyframes message-slide-in {
     from {
         opacity: 0;
@@ -481,7 +478,7 @@
     border-radius: 0.5rem;
 }
 
-.markdown-body>*:first-child {
+.markdown-body > *:first-child {
     margin-top: 0 !important;
 }
 
@@ -563,7 +560,7 @@
 
 .streaming-indicator::before,
 .streaming-indicator::after {
-    content: '';
+    content: "";
     width: 6px;
     height: 6px;
     border-radius: 50%;
@@ -609,7 +606,9 @@
     max-height: 120px;
     min-height: 48px;
     overflow-y: auto;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
 #chat-input:focus {
@@ -646,7 +645,7 @@
 }
 
 /* Responsive Design */
-@media (width <=1024px) {
+@media (width <= 1024px) {
     #llm-chat-panel .flex.gap-6 {
         flex-direction: column;
         height: auto;
@@ -720,7 +719,6 @@
 .user-bubble {
     padding: 6px 12px !important;
 }
-
 
 .assistant-bubble {
     padding: 6px 12px !important;
@@ -952,7 +950,10 @@
     overflow-y: auto;
     padding: 0.75rem;
     background: rgb(255 255 255 / 30%);
-    transition: max-height 0.3s ease, padding 0.3s ease, opacity 0.2s ease;
+    transition:
+        max-height 0.3s ease,
+        padding 0.3s ease,
+        opacity 0.2s ease;
     opacity: 1;
 }
 
@@ -1064,17 +1065,17 @@
 }
 
 /* When thinking exists, add subtle separator */
-.thinking-container+.final-answer-content {
+.thinking-container + .final-answer-content {
     padding-top: 0.75rem;
     border-top: 1px solid rgb(229 231 235 / 30%);
 }
 
-.dark .thinking-container+.final-answer-content {
+.dark .thinking-container + .final-answer-content {
     border-top-color: rgb(55 65 81 / 30%);
 }
 
 /* Responsive adjustments */
-@media (width <=640px) {
+@media (width <= 640px) {
     .thinking-container {
         margin-bottom: 0.5rem;
     }
@@ -1110,7 +1111,6 @@
 .group:hover svg {
     transform: scale(1.1);
 }
-
 
 /* ============================================
    RESPONSIVE TABS
@@ -1152,7 +1152,7 @@ nav[class*="-mb-px"]::-webkit-scrollbar-thumb:hover {
 }
 
 /* Responsive: stack tabs on very small screens */
-@media (width <=640px) {
+@media (width <= 640px) {
     nav[class*="-mb-px"] {
         flex-direction: column;
         align-items: flex-start;
@@ -1173,7 +1173,7 @@ nav[class*="-mb-px"]::-webkit-scrollbar-thumb:hover {
 }
 
 /* Medium screens: keep horizontal but with better spacing */
-@media (width >=641px) and (width <=1024px) {
+@media (width >= 641px) and (width <= 1024px) {
     .tab-link {
         padding-left: 0.5rem;
         padding-right: 0.5rem;

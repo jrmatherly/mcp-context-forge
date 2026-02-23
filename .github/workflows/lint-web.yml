@@ -34,16 +34,6 @@ jobs:
               npm install --no-save --legacy-peer-deps htmlhint
               npx htmlhint "mcpgateway/templates/*.html"
 
-          - id: stylelint
-            cmd: |
-              npm install --no-save --legacy-peer-deps stylelint stylelint-config-standard @stylistic/stylelint-config stylelint-order
-              npx stylelint "mcpgateway/static/*.css"
-
-          - id: eslint
-            cmd: |
-              npm install --no-save eslint neostandard eslint-config-prettier eslint-plugin-prettier prettier
-              npx eslint "mcpgateway/static/*.js"
-
           # -------------------------------------------------------
           # 🔒 Security Scanners
           # -------------------------------------------------------
@@ -106,6 +96,25 @@ jobs:
       # -----------------------------------------------------------
       - name: 🔍  Run ${{ matrix.id }}
         run: ${{ matrix.cmd }}
+
+  # -------------------------------------------------------
+  # 🧹 Biome – unified JS/CSS linter & formatter
+  # -------------------------------------------------------
+  biome:
+    name: biome
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v6.0.2
+        with:
+          fetch-depth: 1
+
+      - name: Set up Biome
+        uses: biomejs/setup-biome@v2
+
+      - name: Run Biome check
+        run: biome check mcpgateway/static/ tests/js/
 
   # -------------------------------------------------------
   # 🐍 Python-based JS Security Scanner (separate job)

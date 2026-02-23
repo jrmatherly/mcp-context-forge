@@ -3753,28 +3753,40 @@ tomllint:                         ## 📑 TOML validation (tomlcheck)
 # =============================================================================
 # help: 🕸️  WEBPAGE LINTERS & STATIC ANALYSIS (HTML/CSS/JS lint + security scans + formatting)
 # help: nodejsscan           - Run nodejsscan for JS security vulnerabilities
-# help: lint-web             - Run HTMLHint, Stylelint, ESLint, Retire.js, nodejsscan and npm audit
-# help: eslint               - Run ESLint for JavaScript standard style and prettifying
+# help: lint-web             - Run Biome, HTMLHint, Retire.js, nodejsscan and npm audit
+# help: biome-lint           - Lint JS and CSS files with Biome
+# help: biome-format         - Format JS and CSS files with Biome
+# help: biome-check          - Run Biome lint + format check
+# help: biome-fix            - Apply safe Biome fixes (lint + format)
 # help: jshint               - Run JSHint for additional JavaScript analysis
 # help: jscpd                - Detect copy-pasted code in JS/HTML/CSS files
 # help: markuplint           - Modern HTML linting with markuplint
-# help: format-web           - Format HTML, CSS & JS files with Prettier
-.PHONY: nodejsscan eslint lint-web jshint jscpd markuplint format-web
+# help: format-web           - Format JS and CSS files with Biome
+.PHONY: nodejsscan biome-lint biome-format biome-check biome-fix lint-web jshint jscpd markuplint format-web
 
 nodejsscan:
 	@echo "🔒 Running nodejsscan for JavaScript security vulnerabilities..."
 	@uvx nodejsscan --directory ./mcpgateway/static --directory ./mcpgateway/templates || true
 
-eslint:
-	@echo "🔍 Linting JS files..."
-	@npm install --no-save
-	@find mcpgateway/static -name "*.js" -print0 | { xargs -0 npx eslint || true; }
+biome-lint:
+	@echo "🔍 Linting JS and CSS files with Biome..."
+	@npx @biomejs/biome lint mcpgateway/static/ tests/js/
 
-lint-web: eslint nodejsscan
+biome-format:
+	@echo "🎨 Formatting JS and CSS files with Biome..."
+	@npx @biomejs/biome format --write mcpgateway/static/ tests/js/
+
+biome-check:
+	@echo "🔍 Checking JS and CSS with Biome (lint + format)..."
+	@npx @biomejs/biome check mcpgateway/static/ tests/js/
+
+biome-fix:
+	@echo "🔧 Fixing JS and CSS with Biome (safe fixes)..."
+	@npx @biomejs/biome check --write mcpgateway/static/ tests/js/
+
+lint-web: biome-lint nodejsscan
 	@echo "🔍 Linting HTML files..."
 	@find mcpgateway/templates -name "*.html" -exec npx htmlhint {} + 2>/dev/null || true
-	@echo "🔍 Linting CSS files..."
-	@find mcpgateway/static -name "*.css" -exec npx stylelint {} + 2>/dev/null || true
 	@echo "🔒 Scanning for known JS/CSS library vulnerabilities with retire.js..."
 	@cd mcpgateway/static && npx retire . 2>/dev/null || true
 	@if [ -f package.json ]; then \
@@ -3802,11 +3814,7 @@ markuplint:
 	@echo "🔍 Running markuplint for modern HTML validation..."
 	@npx --yes markuplint mcpgateway/templates/* || true
 
-format-web:
-	@echo "🎨 Formatting HTML, CSS & JS with Prettier..."
-	@npx --yes prettier --write "mcpgateway/templates/**/*.html" \
-	                 "mcpgateway/static/**/*.css" \
-	                 "mcpgateway/static/**/*.js"
+format-web: biome-format
 
 # =============================================================================
 # 🧪 JAVASCRIPT UNIT TESTING (Vitest)

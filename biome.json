@@ -1,0 +1,97 @@
+{
+    "$schema": "https://biomejs.dev/schemas/2.4.4/schema.json",
+    "vcs": {
+        "enabled": true,
+        "clientKind": "git",
+        "useIgnoreFile": true
+    },
+    "files": {
+        "includes": [
+            "mcpgateway/static/**/*.js",
+            "mcpgateway/static/**/*.css",
+            "tests/js/**/*.js"
+        ],
+        "maxSize": 1572864
+    },
+    "formatter": {
+        "enabled": true,
+        "indentStyle": "space",
+        "indentWidth": 2,
+        "lineWidth": 120,
+        "lineEnding": "lf"
+    },
+    "javascript": {
+        "formatter": {
+            "semicolons": "always",
+            "quoteStyle": "double",
+            "trailingCommas": "all",
+            "arrowParentheses": "always",
+            "bracketSpacing": true
+        },
+        "globals": [
+            "Alpine",
+            "htmx",
+            "bootstrap",
+            "Chart",
+            "ace",
+            "showToast",
+            "showConfirmDialog",
+            "fetchWithAuth"
+        ]
+    },
+    "css": {
+        "formatter": {
+            "enabled": true,
+            "indentStyle": "space",
+            "indentWidth": 4,
+            "lineWidth": 120
+        },
+        "linter": {
+            "enabled": true
+        }
+    },
+    "linter": {
+        "enabled": true,
+        "rules": {
+            "recommended": true,
+            "style": {
+                "useBlockStatements": "error",
+                "useConst": "error",
+                "useTemplate": "off",
+                "useNodejsImportProtocol": "off",
+                "useExponentiationOperator": "off"
+            },
+            "suspicious": {
+                "noDoubleEquals": "error",
+                "noVar": "error",
+                "noAssignInExpressions": "warn",
+                "useIterableCallbackReturn": "off"
+            },
+            "correctness": {
+                "noUnusedVariables": "warn",
+                "noUnusedFunctionParameters": "off",
+                "noUnusedImports": "off"
+            },
+            "complexity": {
+                "noImportantStyles": "off",
+                "useOptionalChain": "off",
+                "useArrowFunction": "off"
+            },
+            "security": {
+                "noGlobalEval": "error"
+            }
+        }
+    },
+    "overrides": [
+        {
+            "includes": ["tests/**"],
+            "linter": {
+                "rules": {
+                    "security": {
+                        "noGlobalEval": "off"
+                    }
+                }
+            }
+        }
+    ]
+}

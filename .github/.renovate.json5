@@ -39,15 +39,9 @@
       "enabled": false
     },
     {
-      "description": "🚫  ESLint 10 blocked — neostandard + eslint-plugin-import lack support (see .scratchpad/major-dependency-upgrade-analysis.md)",
-      "matchPackageNames": ["eslint"],
-      "matchUpdateTypes": ["major"],
-      "enabled": false
-    },
-    {
-      "description": "📦  Stylelint ecosystem must upgrade atomically (interdependent peerDeps)",
-      "matchPackageNames": ["stylelint", "stylelint-config-standard", "@stylistic/stylelint-config"],
-      "groupName": "stylelint ecosystem"
+      "description": "📦  Biome — single linter+formatter replacing ESLint, Stylelint, Prettier",
+      "matchPackageNames": ["@biomejs/biome"],
+      "groupName": "biome"
     }
   ],
 
