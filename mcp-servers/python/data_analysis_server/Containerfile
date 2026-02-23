@@ -91,6 +91,7 @@ COPY config.yaml /app/
 # ----------------------------------------------------------------------------
 # Create runtime script for MCP server
 # ----------------------------------------------------------------------------
+# hadolint ignore=SC2016
 RUN printf '%s\n' \
     '#!/bin/bash' \
     'set -euo pipefail' \

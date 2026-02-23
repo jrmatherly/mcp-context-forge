@@ -2,7 +2,7 @@
 FROM python:3.12-slim
 
 # Install Docker CLI (for container management inside devcontainer)
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     docker.io \
     curl \
     git \
@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /workspace
 
 # Install pip upgrade and pdm (Python package manager used in Makefile)
-RUN python3 -m pip install --upgrade pip setuptools pdm uv
+RUN python3 -m pip install --no-cache-dir --upgrade pip setuptools pdm uv
 
 # Note: Project files will be mounted by devcontainer, so no need to copy them during build
 # Dependencies will be installed via postCreateCommand.sh using make install-dev

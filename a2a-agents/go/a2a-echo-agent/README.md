@@ -8,9 +8,9 @@ This agent is intended to be run via the repo's `docker-compose.yml` `testing` p
 
 - A2A **v0.3.x** Agent Card: `GET /.well-known/agent-card.json`
 - A2A **JSON-RPC** methods (HTTP `POST /`):
-  - `message/send`
-  - `tasks/get`
-  - `tasks/cancel`
+    - `message/send`
+    - `tasks/get`
+    - `tasks/cancel`
 
 The agent completes tasks immediately (echo response returned as a completed task).
 

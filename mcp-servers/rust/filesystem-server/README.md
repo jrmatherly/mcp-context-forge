@@ -87,7 +87,6 @@ docker run \
 ```
 Image size: ~10 MB (binary: 3.2 MB + Debian slim base)
 
-
 ## Make Targets
 
 ```bash
@@ -136,7 +135,6 @@ make coverage       # Coverage report (HTML)
 | tools/write.rs | 93.75% (45/48)  | 94.17% (323/343) | 92.74% (626/675) | - (0/0)    |
 | **Totals**     | 87.24% (212/243)| 90.99% (1646/1809)| 92.29% (2979/3228)| - (0/0)   |
 
-
 ## Architecture
 
 ```
@@ -164,7 +162,6 @@ Makefile           # Build & test automation
 - **Symlink blocking**: Traversal across symlinks blocked
 - **Atomic writes**: File modifications are atomic via temporary files
 - **Dry-run support**: `edit_file` with `dry_run=true` previews changes without modifying
-
 
 ## Binary Sizes
 

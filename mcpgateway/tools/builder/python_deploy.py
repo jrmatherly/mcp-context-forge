@@ -317,29 +317,30 @@ class MCPStackPython(CICDModule):
         config = load_config(config_file)
         deployment_type = config.deployment.type
 
+        resolved_dir: Path
         if output_dir is None:
             deploy_dir = get_deploy_dir()
             # Separate subdirectories for kubernetes and compose
-            output_dir = deploy_dir / "manifests" / deployment_type
+            resolved_dir = deploy_dir / "manifests" / deployment_type
         else:
-            output_dir = Path(output_dir)
+            resolved_dir = Path(output_dir)
 
-        output_dir.mkdir(parents=True, exist_ok=True)
+        resolved_dir.mkdir(parents=True, exist_ok=True)
 
         # Store output dir for later use
-        self._last_output_dir = output_dir
+        self._last_output_dir = resolved_dir
 
         # Generate plugin config.yaml for gateway (shared function)
-        generate_plugin_config(config, output_dir, verbose=self.verbose)
+        generate_plugin_config(config, resolved_dir, verbose=self.verbose)
 
         if deployment_type == "kubernetes":
-            generate_kubernetes_manifests(config, output_dir, verbose=self.verbose)
+            generate_kubernetes_manifests(config, resolved_dir, verbose=self.verbose)
         elif deployment_type == "compose":
-            generate_compose_manifests(config, output_dir, verbose=self.verbose)
+            generate_compose_manifests(config, resolved_dir, verbose=self.verbose)
         else:
             raise ValueError(f"Unsupported deployment type: {deployment_type}")
 
-        return output_dir
+        return resolved_dir
 
     # Private helper methods
 

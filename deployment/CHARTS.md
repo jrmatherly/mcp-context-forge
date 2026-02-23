@@ -1,13 +1,13 @@
 # Publishing the Helm chart for MCP Context-Forge
 
-## Lint & package:
+## Lint & package
 
 ```bash
 helm lint .
 helm package .   # → mcp-context-forge-chart-0.9.0.tgz
 ```
 
-## Log in to GHCR:
+## Log in to GHCR
 
 ```bash
 echo "${CR_PAT}" | \

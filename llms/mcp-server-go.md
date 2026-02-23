@@ -110,14 +110,14 @@ ENTRYPOINT ["/fast-time-lite"]
 
 **Run Locally**
 - Build and run over stdio:
-  - `make run`
+    - `make run`
 - Quick JSON-RPC check (stdin → stdout):
-  - `echo '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' | ./dist/fast-time-lite`
+    - `echo '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' | ./dist/fast-time-lite`
 
 **Scaffold With Cookiecutter**
 - Generate a new Go MCP server from the template:
-  - `mcp-servers/scaffold-go-server.sh fast_time_lite` (defaults to `mcp-servers/go/fast_time_lite`)
-  - Then: `cd mcp-servers/go/fast_time_lite && go mod tidy && make run`
+    - `mcp-servers/scaffold-go-server.sh fast_time_lite` (defaults to `mcp-servers/go/fast_time_lite`)
+    - Then: `cd mcp-servers/go/fast_time_lite && go mod tidy && make run`
 
 **Tips & Patterns**
 - Log to stderr to avoid protocol noise on stdio.

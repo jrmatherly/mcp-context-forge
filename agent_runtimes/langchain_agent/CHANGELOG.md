@@ -12,18 +12,18 @@
 
 #### Modern Development Tooling
 - **Comprehensive Makefile**: 25+ commands for complete development workflow
-  - `make install-dev` - Development setup with all tools
-  - `make dev` - Auto-reload development server
-  - `make test` - Full test suite with coverage
-  - `make lint` - Code quality checks (ruff, mypy, bandit)
-  - `make format` - Code formatting
-  - `make health ready tools` - Health checks
-  - `make docker-build docker-run` - Container support
+    - `make install-dev` - Development setup with all tools
+    - `make dev` - Auto-reload development server
+    - `make test` - Full test suite with coverage
+    - `make lint` - Code quality checks (ruff, mypy, bandit)
+    - `make format` - Code formatting
+    - `make health ready tools` - Health checks
+    - `make docker-build docker-run` - Container support
 - **pyproject.toml**: Modern Python packaging replacing requirements.txt
-  - Development dependencies (testing, linting, security)
-  - Optional dependency groups (test, lint)
-  - Proper metadata and classifiers
-  - Tool configurations (ruff, mypy, pytest, coverage)
+    - Development dependencies (testing, linting, security)
+    - Optional dependency groups (test, lint)
+    - Proper metadata and classifiers
+    - Tool configurations (ruff, mypy, pytest, coverage)
 
 #### Testing Framework
 - **Complete test structure**: Organized tests directory

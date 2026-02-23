@@ -1,7 +1,7 @@
 # Dockerfile for Python sandbox execution environment
 # This creates a minimal, secure Python environment for code execution
 
-FROM python:3.11-alpine AS base
+FROM python:3.12-alpine AS base
 
 # Install minimal Python packages for sandbox
 RUN apk add --no-cache \

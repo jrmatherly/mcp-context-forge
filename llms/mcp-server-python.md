@@ -255,11 +255,11 @@ Notes:
 
 **Run Locally**
 - Stdio mode (for local LLM clients or direct JSON-RPC piping):
-  - `make dev`
-  - `fastmcp run src/awesome_server/server_fastmcp.py:mcp`
+    - `make dev`
+    - `fastmcp run src/awesome_server/server_fastmcp.py:mcp`
 - HTTP mode:
-  - `make serve-http`
-  - Call with curl: `curl -s -X POST http://localhost:8000/mcp/ -H 'Content-Type: application/json' -d '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}'`
+    - `make serve-http`
+    - Call with curl: `curl -s -X POST http://localhost:8000/mcp/ -H 'Content-Type: application/json' -d '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}'`
 
 **Tips & Patterns**
 - Keep FastMCP objects (`FastMCP`, `@mcp.tool`, `@mcp.prompt`, `@mcp.resource`) in `server_fastmcp.py`; move heavy business logic into `tools.py` or subpackages.

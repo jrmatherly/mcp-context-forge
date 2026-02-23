@@ -58,7 +58,6 @@ agent_runtimes/langchain_agent/
 - OPENAI_API_KEY – required
 - MCPGATEWAY_BEARER_TOKEN – JWT for the gateway
 
-
 ## 🚀 Quick Start
 
 ### Prerequisites
