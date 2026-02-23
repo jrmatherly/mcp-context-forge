@@ -60,7 +60,7 @@ ENV RUST_LOG=info
 # Labels for container registry
 LABEL org.opencontainers.image.title="fast-test-server"
 LABEL org.opencontainers.image.description="Ultra-fast MCP server in Rust for performance testing"
-LABEL org.opencontainers.image.source="https://github.com/IBM/mcp-context-forge"
+LABEL org.opencontainers.image.source="https://github.com/jrmatherly/mcp-context-forge"
 LABEL org.opencontainers.image.vendor="IBM"
 LABEL org.opencontainers.image.licenses="Apache-2.0"
 

@@ -8,7 +8,7 @@ import (
     "testing"
     "time"
 
-    "github.com/IBM/mcp-context-forge/mcp-servers/go/system-monitor-server/pkg/types"
+    "github.com/jrmatherly/mcp-context-forge/mcp-servers/go/system-monitor-server/pkg/types"
 )
 
 func TestNewLogMonitor(t *testing.T) {

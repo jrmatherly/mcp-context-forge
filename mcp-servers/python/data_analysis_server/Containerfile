@@ -42,12 +42,12 @@ ARG PYTHON_VERSION
 RUN set -euo pipefail \
     && dnf upgrade -y \
     && dnf install -y \
-         python${PYTHON_VERSION} \
-         python${PYTHON_VERSION}-devel \
-         gcc \
-         gcc-c++ \
-         binutils \
-         curl \
+    python${PYTHON_VERSION} \
+    python${PYTHON_VERSION}-devel \
+    gcc \
+    gcc-c++ \
+    binutils \
+    curl \
     && update-alternatives --install /usr/bin/python3 python3 /usr/bin/python${PYTHON_VERSION} 1 \
     && dnf clean all
 
@@ -75,8 +75,8 @@ RUN set -euo pipefail \
     && /app/.venv/bin/pip uninstall --yes pip setuptools wheel \
     && rm -rf /root/.cache /var/cache/dnf \
     && find /app/.venv -name "*.dist-info" -type d \
-        \( -name "pip-*" -o -name "setuptools-*" -o -name "wheel-*" \) \
-        -exec rm -rf {} + 2>/dev/null || true \
+    \( -name "pip-*" -o -name "setuptools-*" -o -name "wheel-*" \) \
+    -exec rm -rf {} + 2>/dev/null || true \
     && rm -rf /app/.venv/share/python-wheels \
     && rm -rf /app/*.egg-info /app/build /app/dist /app/.eggs
 
@@ -132,13 +132,13 @@ ARG PYTHON_VERSION=3.12
 # OCI image metadata
 # ----------------------------------------------------------------------------
 LABEL maintainer="MCP Context Forge" \
-      org.opencontainers.image.title="mcp/mcp-data-analysis-server" \
-      org.opencontainers.image.description="MCP Data Analysis Server: Comprehensive data analysis capabilities with pandas, numpy, scipy" \
-      org.opencontainers.image.licenses="Apache-2.0" \
-      org.opencontainers.image.version="0.1.0" \
-      org.opencontainers.image.source="https://github.com/contextforge/mcp-context-forge" \
-      org.opencontainers.image.documentation="https://github.com/contextforge/mcp-context-forge/mcp-servers/python/data-analysis-server" \
-      org.opencontainers.image.vendor="MCP Context Forge"
+    org.opencontainers.image.title="mcp/mcp-data-analysis-server" \
+    org.opencontainers.image.description="MCP Data Analysis Server: Comprehensive data analysis capabilities with pandas, numpy, scipy" \
+    org.opencontainers.image.licenses="Apache-2.0" \
+    org.opencontainers.image.version="0.1.0" \
+    org.opencontainers.image.source="https://github.com/contextforge/mcp-context-forge" \
+    org.opencontainers.image.documentation="https://github.com/contextforge/mcp-context-forge/mcp-servers/python/data-analysis-server" \
+    org.opencontainers.image.vendor="MCP Context Forge"
 
 # hadolint ignore=DL3041
 RUN microdnf install -y --nodocs --setopt=install_weak_deps=0 \
@@ -196,7 +196,7 @@ USER 1001
 # - Test that the server can import all modules and list tools
 # ----------------------------------------------------------------------------
 HEALTHCHECK --interval=60s --timeout=15s --start-period=120s --retries=3 \
-  CMD ["python3", "-c", "from data_analysis_server.server import main; print('MCP Data Analysis Server healthy: 7 tools available')"]
+    CMD ["python3", "-c", "from data_analysis_server.server import main; print('MCP Data Analysis Server healthy: 7 tools available')"]
 
 # ----------------------------------------------------------------------------
 # Entrypoint - Run the MCP Data Analysis Server

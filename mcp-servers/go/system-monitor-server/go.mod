@@ -1,4 +1,4 @@
-module github.com/IBM/mcp-context-forge/mcp-servers/go/system-monitor-server
+module github.com/jrmatherly/mcp-context-forge/mcp-servers/go/system-monitor-server
 
 go 1.24.0
 

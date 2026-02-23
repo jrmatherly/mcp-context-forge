@@ -13,16 +13,16 @@ ARG PYTHON_VERSION
 RUN set -euo pipefail \
     && dnf upgrade -y \
     && dnf install -y \
-        python${PYTHON_VERSION} \
-        python${PYTHON_VERSION}-devel \
-        binutils gcc gcc-c++ curl \
-        libreoffice-writer \
-        libreoffice-calc \
-        libreoffice-impress \
-        liberation-fonts-common \
-        liberation-sans-fonts \
-        liberation-serif-fonts \
-        liberation-mono-fonts \
+    python${PYTHON_VERSION} \
+    python${PYTHON_VERSION}-devel \
+    binutils gcc gcc-c++ curl \
+    libreoffice-writer \
+    libreoffice-calc \
+    libreoffice-impress \
+    liberation-fonts-common \
+    liberation-sans-fonts \
+    liberation-serif-fonts \
+    liberation-mono-fonts \
     && ln -sf /usr/bin/python${PYTHON_VERSION} /usr/bin/python3 \
     && dnf clean all
 

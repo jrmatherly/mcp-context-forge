@@ -5,7 +5,7 @@ import (
     "fmt"
     "time"
 
-    "github.com/IBM/mcp-context-forge/mcp-servers/go/system-monitor-server/pkg/types"
+    "github.com/jrmatherly/mcp-context-forge/mcp-servers/go/system-monitor-server/pkg/types"
     "github.com/shirou/gopsutil/v3/cpu"
     "github.com/shirou/gopsutil/v3/disk"
     "github.com/shirou/gopsutil/v3/load"

@@ -10,7 +10,7 @@ import (
     "strings"
     "time"
 
-    "github.com/IBM/mcp-context-forge/mcp-servers/go/system-monitor-server/pkg/types"
+    "github.com/jrmatherly/mcp-context-forge/mcp-servers/go/system-monitor-server/pkg/types"
 )
 
 // HealthChecker handles health checking of various services

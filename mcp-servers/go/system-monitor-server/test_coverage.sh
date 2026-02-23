@@ -93,9 +93,9 @@ go tool cover -html=coverage.out -o coverage/coverage.html
 # Post-process HTML to show only filenames in dropdown
 print_status "Post-processing HTML report to show only filenames..."
 # Replace full paths with just filenames in option tags
-sed -i.bak 's|github\.com/IBM/mcp-context-forge/mcp-servers/go/system-monitor-server/[^/]*/\([^/]*\)\.go|\1.go|g' coverage/coverage.html
+sed -i.bak 's|github\.com/jrmatherly/mcp-context-forge/mcp-servers/go/system-monitor-server/[^/]*/\([^/]*\)\.go|\1.go|g' coverage/coverage.html
 # Also handle the case where there might be multiple directory levels
-sed -i.bak2 's|github\.com/IBM/mcp-context-forge/mcp-servers/go/system-monitor-server/[^/]*/[^/]*/\([^/]*\)\.go|\1.go|g' coverage/coverage.html
+sed -i.bak2 's|github\.com/jrmatherly/mcp-context-forge/mcp-servers/go/system-monitor-server/[^/]*/[^/]*/\([^/]*\)\.go|\1.go|g' coverage/coverage.html
 rm -f coverage/coverage.html.bak coverage/coverage.html.bak2
 print_success "HTML coverage report generated: coverage/coverage.html"
 

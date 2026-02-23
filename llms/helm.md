@@ -47,7 +47,7 @@ Helm Charts: mcp-stack
 - Package & registry:
   - `make package` — package chart to `dist/` (with dependency update)
   - `make package-dev` — package without validation
-  - `make push` — push packaged chart to `oci://ghcr.io/ibm/mcp-context-forge`
+  - `make push` — push packaged chart to `oci://ghcr.io/jrmatherly/mcp-context-forge`
   - `make sign` — sign `dist/*.tgz` with `cosign` (if installed)
 - Docs & schema:
   - `make docs` — generate README via `helm-docs` (uses README.md.gotmpl if present)

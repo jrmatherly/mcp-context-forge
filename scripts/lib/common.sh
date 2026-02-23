@@ -205,7 +205,7 @@ ensure_docker_login() {
 
 # Clone ContextForge repository
 clone_repository() {
-    local repo_url="https://github.com/IBM/mcp-context-forge.git"
+    local repo_url="https://github.com/jrmatherly/mcp-context-forge.git"
     local target_dir="${1:-$HOME/mcp-context-forge}"
 
     if [[ -d "$target_dir" ]]; then

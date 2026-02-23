@@ -175,10 +175,10 @@ import (
     "strings"
     "time"
 
-    "github.com/IBM/mcp-context-forge/mcp-servers/go/system-monitor-server/internal/config"
-    "github.com/IBM/mcp-context-forge/mcp-servers/go/system-monitor-server/internal/metrics"
-    "github.com/IBM/mcp-context-forge/mcp-servers/go/system-monitor-server/internal/monitor"
-    "github.com/IBM/mcp-context-forge/mcp-servers/go/system-monitor-server/pkg/types"
+    "github.com/jrmatherly/mcp-context-forge/mcp-servers/go/system-monitor-server/internal/config"
+    "github.com/jrmatherly/mcp-context-forge/mcp-servers/go/system-monitor-server/internal/metrics"
+    "github.com/jrmatherly/mcp-context-forge/mcp-servers/go/system-monitor-server/internal/monitor"
+    "github.com/jrmatherly/mcp-context-forge/mcp-servers/go/system-monitor-server/pkg/types"
     "github.com/mark3labs/mcp-go/mcp"
     "github.com/mark3labs/mcp-go/server"
 )

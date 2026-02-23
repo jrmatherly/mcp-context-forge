@@ -100,10 +100,10 @@ all-providers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/IBM/mcp-context-forge"
-Documentation = "https://ibm.github.io/mcp-context-forge/"
-Repository = "https://github.com/IBM/mcp-context-forge"
-Issues = "https://github.com/IBM/mcp-context-forge/issues"
+Homepage = "https://github.com/jrmatherly/mcp-context-forge"
+Documentation = "https://github.com/jrmatherly/mcp-context-forge/docs/docs/"
+Repository = "https://github.com/jrmatherly/mcp-context-forge"
+Issues = "https://github.com/jrmatherly/mcp-context-forge/issues"
 
 [project.scripts]
 mcp-langchain-agent = "agent_runtimes.langchain_agent.start_agent:main"

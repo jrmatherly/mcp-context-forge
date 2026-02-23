@@ -13,14 +13,14 @@ ARG PYTHON_VERSION
 RUN set -euo pipefail \
     && dnf upgrade -y \
     && dnf install -y \
-        python${PYTHON_VERSION} \
-        python${PYTHON_VERSION}-devel \
-        binutils gcc gcc-c++ curl \
-        texlive-scheme-basic \
-        texlive-latex \
-        texlive-xetex \
-        texlive-luatex \
-        texlive-collection-fontsrecommended \
+    python${PYTHON_VERSION} \
+    python${PYTHON_VERSION}-devel \
+    binutils gcc gcc-c++ curl \
+    texlive-scheme-basic \
+    texlive-latex \
+    texlive-xetex \
+    texlive-luatex \
+    texlive-collection-fontsrecommended \
     && ln -sf /usr/bin/python${PYTHON_VERSION} /usr/bin/python3 \
     && dnf clean all
 

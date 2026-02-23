@@ -830,7 +830,7 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENS
   - [`gopkg.in/yaml.v3`](https://gopkg.in/yaml.v3): YAML configuration support
 
 **Project Resources:**
-- **Issues**: [GitHub Issues](https://github.com/IBM/mcp-context-forge/issues)
+- **Issues**: [GitHub Issues](https://github.com/jrmatherly/mcp-context-forge/issues)
 - **Documentation**: This README and inline code documentation
 - **Examples**: See `make example-*` commands
 
@@ -842,10 +842,10 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENS
 
 ---
 
-**Built with ❤️ by Avinash Sangle for the IBM MCP Context Forge project**
+**Built with ❤️ by Avinash Sangle for the MCP Context Forge project**
 
 **Connect with the Author:**
 - 🌐 Website: [https://avisangle.github.io/](https://avisangle.github.io/)
 - 💻 GitHub: [https://github.com/avisangle](https://github.com/avisangle)
 
-For more information about MCP servers and the Context Forge project, visit the [IBM MCP Context Forge repository](https://github.com/IBM/mcp-context-forge).
+For more information about MCP servers and the Context Forge project, visit the [MCP Context Forge repository](https://github.com/jrmatherly/mcp-context-forge).

@@ -19,7 +19,7 @@ help:
 # =============================================================================
 # 📦 PROJECT METADATA (variables, colours)
 # =============================================================================
-MODULE          := github.com/IBM/mcp-context-forge/mcp-servers/go/system-monitor-server
+MODULE          := github.com/jrmatherly/mcp-context-forge/mcp-servers/go/system-monitor-server
 BIN_NAME        := system-monitor-server
 VERSION         ?= $(shell git describe --tags --dirty --always 2>/dev/null || echo "v0.0.0-dev")
 

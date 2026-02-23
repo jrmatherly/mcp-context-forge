@@ -14,9 +14,9 @@ ARG PYTHON_VERSION
 RUN set -euo pipefail \
     && dnf upgrade -y \
     && dnf install -y \
-        python${PYTHON_VERSION} \
-        python${PYTHON_VERSION}-devel \
-        binutils gcc gcc-c++ curl \
+    python${PYTHON_VERSION} \
+    python${PYTHON_VERSION}-devel \
+    binutils gcc gcc-c++ curl \
     && update-alternatives --install /usr/bin/python3 python3 /usr/bin/python${PYTHON_VERSION} 1 \
     && dnf clean all
 

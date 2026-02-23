@@ -23,7 +23,7 @@
 ## Quick Start
 
 ```bash
-git clone git@github.com:IBM/mcp-context-forge.git
+git clone git@github.com:jrmatherly/mcp-context-forge.git
 cd mcp-context-forge/mcp-servers/go/system-monitor-server
 
 # Build & run over stdio
@@ -47,7 +47,7 @@ make run-dual
 **Requires Go 1.23+.**
 
 ```bash
-git clone git@github.com:IBM/mcp-context-forge.git
+git clone git@github.com:jrmatherly/mcp-context-forge.git
 cd mcp-context-forge/mcp-servers/go/system-monitor-server
 make install
 ```
@@ -271,5 +271,5 @@ Apache-2.0 License - see LICENSE file for details.
 
 ## Support
 
-- **Issues**: [GitHub Issues](https://github.com/IBM/mcp-context-forge/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/IBM/mcp-context-forge/discussions)
+- **Issues**: [GitHub Issues](https://github.com/jrmatherly/mcp-context-forge/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/jrmatherly/mcp-context-forge/discussions)
