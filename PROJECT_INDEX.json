@@ -1,0 +1,109 @@
+{
+  "project": {
+    "name": "mcp-context-forge",
+    "package": "mcp-contextforge-gateway",
+    "version": "1.0.0-RC-1",
+    "license": "Apache-2.0",
+    "python": ">=3.11,<3.14",
+    "description": "Production-grade MCP gateway, proxy, and registry for MCP servers and A2A agents"
+  },
+  "stats": {
+    "core_python_files": 231,
+    "test_files": 610,
+    "db_models": 60,
+    "alembic_migrations": 69,
+    "plugins": 46,
+    "routers": 19,
+    "services": 56,
+    "middleware": 15,
+    "transports": 6,
+    "caches": 9,
+    "utilities": 33,
+    "scripts": 27,
+    "makefile_targets": 100
+  },
+  "entry_points": {
+    "api_server": "mcpgateway/main.py",
+    "cli": "mcpgateway/cli.py",
+    "translate": "mcpgateway/translate.py",
+    "export_import": "mcpgateway/cli_export_import.py",
+    "bootstrap_db": "mcpgateway/bootstrap_db.py"
+  },
+  "key_files": {
+    "config": "mcpgateway/config.py",
+    "db_models": "mcpgateway/db.py",
+    "schemas": "mcpgateway/schemas.py",
+    "auth": "mcpgateway/auth.py",
+    "admin_ui": "mcpgateway/admin.py",
+    "observability": "mcpgateway/observability.py",
+    "pyproject": "pyproject.toml",
+    "makefile": "Makefile",
+    "env_template": ".env.example",
+    "plugin_config": "plugins/config.yaml",
+    "docker_compose": "docker-compose.yml"
+  },
+  "directories": {
+    "routers": "mcpgateway/routers/",
+    "services": "mcpgateway/services/",
+    "middleware": "mcpgateway/middleware/",
+    "transports": "mcpgateway/transports/",
+    "cache": "mcpgateway/cache/",
+    "plugins_framework": "mcpgateway/plugins/",
+    "plugins_impl": "plugins/",
+    "utils": "mcpgateway/utils/",
+    "templates": "mcpgateway/templates/",
+    "static": "mcpgateway/static/",
+    "migrations": "mcpgateway/alembic/versions/",
+    "tests": "tests/",
+    "helm": "charts/mcp-stack/",
+    "deployment": "deployment/",
+    "scripts": "scripts/",
+    "docs": "docs/"
+  },
+  "services_by_domain": {
+    "core_mcp": ["tool_service", "resource_service", "prompt_service", "server_service", "gateway_service"],
+    "auth_security": ["email_auth_service", "argon2_service", "encryption_service", "sso_service", "oauth_manager", "dcr_service", "role_service", "permission_service", "audit_trail_service", "security_logger", "token_catalog_service", "token_storage_service"],
+    "observability": ["logging_service", "structured_logger", "log_storage_service", "log_aggregator", "metrics", "metrics_buffer_service", "metrics_rollup_service", "metrics_query_service", "metrics_cleanup_service", "observability_service"],
+    "teams": ["team_management_service", "team_invitation_service", "personal_team_service", "email_notification_service"],
+    "llm": ["llm_provider_service", "llm_proxy_service"],
+    "infrastructure": ["catalog_service", "completion_service", "cancellation_service", "plugin_service", "a2a_service", "root_service", "mcp_session_pool"],
+    "data": ["export_service", "import_service", "tag_service", "grpc_service"]
+  },
+  "router_prefixes": ["/auth", "/cancellation", "/llmchat", "/api/logs", "/api/metrics", "/oauth", "/observability", "/rbac", "/reverse-proxy", "/auth/sso", "/tokens", "/toolops", "/.well-known"],
+  "transports": ["SSE", "WebSocket", "stdio", "StreamableHTTP", "RedisEventStore"],
+  "middleware_stack": ["AuthContext", "Compression", "CorrelationID", "DBQueryLogging", "HttpAuth", "Observability", "ProtocolVersion", "RBAC", "RequestLogging", "SecurityHeaders", "TokenScoping", "TokenUsage", "Validation"],
+  "key_dependencies": {
+    "fastapi": ">=0.129.0",
+    "sqlalchemy": ">=2.0.46",
+    "pydantic": ">=2.12.5",
+    "mcp": ">=1.26.0",
+    "httpx": ">=0.28.1",
+    "orjson": ">=3.11.7",
+    "pyjwt": ">=2.11.0",
+    "argon2-cffi": ">=25.1.0",
+    "alembic": ">=1.18.4",
+    "uvicorn": ">=0.41.0",
+    "gunicorn": ">=25.1.0",
+    "prometheus-client": ">=0.24.1"
+  },
+  "commands": {
+    "setup": "cp .env.example .env && make venv install-dev check-env",
+    "dev": "make dev",
+    "serve": "make serve",
+    "format": "make autoflake isort black pre-commit",
+    "lint": "make flake8 bandit interrogate pylint verify",
+    "test": "make test",
+    "test_unit": "pytest tests/unit/ -v",
+    "migrations_check": "cd mcpgateway && alembic heads",
+    "migrations_create": "cd mcpgateway && alembic revision --autogenerate -m 'description'",
+    "docker": "docker compose up"
+  },
+  "architecture": {
+    "patterns": ["service_layer", "plugin_hooks", "cursor_pagination", "idempotent_migrations", "two_layer_security"],
+    "auth_methods": ["JWT", "BasicAuth", "EmailAuth", "SSO_OIDC", "APITokens", "OAuth2"],
+    "builtin_roles": ["platform_admin", "team_admin", "developer", "viewer"],
+    "db_backends": ["SQLite", "PostgreSQL"],
+    "cache_backends": ["memory", "Redis"]
+  },
+  "generated": "2026-02-22"
+}
