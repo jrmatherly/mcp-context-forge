@@ -194,7 +194,8 @@ good-names=e,
 
 # Good variable names regexes, separated by a comma. If names match any regex,
 # they will always be accepted
-good-names-rgxs=
+# Allow underscore-prefixed module-level singletons (e.g., _audit_trail_service)
+good-names-rgxs=^_[a-z][a-z0-9_]*$
 
 # Include a hint for the correct naming format with invalid-name.
 include-naming-hint=no

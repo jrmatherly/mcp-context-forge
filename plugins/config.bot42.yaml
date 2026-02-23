@@ -318,7 +318,6 @@ plugins:
           [
               "resource_pre_fetch",
               "resource_post_fetch",
-              "prompt_post_fetch",
               "tool_post_invoke",
           ]
       tags: ["resource", "filter", "security"]
