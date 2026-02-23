@@ -33,7 +33,7 @@ The project maintainers use LGTM (Looks Good To Me) in comments on the code
 review to indicate acceptance. A change requires LGTMs from two of the
 maintainers of each component affected.
 
-For a list of the maintainers, see the [MAINTAINERS.md](MAINTAINERS.md) page.
+For a list of the maintainers, see the [GitHub contributors page](https://github.com/jrmatherly/mcp-context-forge/graphs/contributors).
 
 ## Legal
 
@@ -91,7 +91,7 @@ Before submitting changes, run the test suite as outlined in the [Bug-fix PR tem
 - **Linting**: Ruff, Pylint per `pyproject.toml`
 - **Naming**: `snake_case` functions, `PascalCase` classes, `UPPER_CASE` constants
 
-See [CLAUDE.md](CLAUDE.md#code-style--standards) for complete coding standards.
+See [CLAUDE.md](CLAUDE.md#coding-standards) for complete coding standards.
 
 ### Python File Headers
 

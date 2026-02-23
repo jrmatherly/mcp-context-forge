@@ -104,7 +104,7 @@ For a list of upcoming features, check out the [ContextForge Roadmap](https://gi
 - Real-time log viewer with filtering, search, and export capabilities
 - Auth: Basic, JWT, or custom schemes
 - Structured logs, health endpoints, metrics
-- 400+ tests, Makefile targets, live reload, pre-commit hooks
+- 800+ tests, Makefile targets, live reload, pre-commit hooks
 
 </details>
 
@@ -152,7 +152,7 @@ uvx --from mcp-contextforge-gateway mcpgateway --host 0.0.0.0 --port 4444
 <details>
 <summary><strong>📋 Prerequisites</strong></summary>
 
-- **Python ≥ 3.10** (3.11 recommended)
+- **Python ≥ 3.11**
 - **curl + jq** - only for the last smoke-test step
 
 </details>
@@ -632,7 +632,7 @@ For detailed setup, workflows, and GitHub Codespaces instructions, see **[Develo
 ## Installation
 
 ```bash
-make venv install          # create .venv + install deps
+make venv install-dev      # create .venv + install deps
 make serve                 # gunicorn on :4444
 ```
 
@@ -857,7 +857,7 @@ mcpgateway/          # Core FastAPI application
 ├── middleware/      # Cross-cutting concerns
 └── transports/      # SSE, WebSocket, stdio, streamable HTTP
 
-tests/               # Test suite (400+ tests)
+tests/               # Test suite (800+ tests)
 docs/docs/           # Full documentation (MkDocs)
 charts/              # Kubernetes/Helm charts
 plugins/             # Plugin framework and implementations
@@ -876,7 +876,7 @@ make lint            # Run all linters
 make coverage        # Generate coverage report
 ```
 
-Run `make` to see all 75+ available targets.
+Run `make` to see all 500+ available targets.
 
 For development workflows, see:
 - **[Developer Workstation Setup](https://github.com/jrmatherly/mcp-context-forge/docs/docs/development/developer-workstation/)**

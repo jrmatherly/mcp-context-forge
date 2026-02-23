@@ -24,9 +24,9 @@ mcpgateway/                 # Core FastAPI application
 ├── config.py               # Environment configuration
 ├── db.py                   # SQLAlchemy ORM models and session management
 ├── schemas.py              # Pydantic validation schemas
-├── services/               # Business logic layer (50+ services)
-├── routers/                # HTTP endpoint definitions (19 routers)
-├── middleware/             # Cross-cutting concerns (15 middleware)
+├── services/               # Business logic layer (55+ services)
+├── routers/                # HTTP endpoint definitions (20 routers)
+├── middleware/             # Cross-cutting concerns (17 middleware)
 ├── transports/             # Protocol implementations (SSE, WebSocket, stdio, streamable HTTP)
 ├── plugins/                # Plugin framework infrastructure
 └── alembic/                # Database migrations

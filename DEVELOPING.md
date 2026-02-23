@@ -38,7 +38,7 @@ make doctest test htmlcov flake8 pylint verify
 
 ### Prerequisites
 
-- **Python 3.11+** (3.10 minimum)
+- **Python 3.11+**
 - **uv** (recommended) or pip/virtualenv
 - **Make** for automation
 - **Docker/Podman** (optional, for container development)
@@ -100,7 +100,7 @@ mcp-context-forge/
 │   ├── main.py                # FastAPI application entry
 │   ├── cli.py                 # CLI commands
 │   ├── config.py              # Settings management
-│   ├── models.py              # SQLAlchemy models
+│   ├── db.py                  # SQLAlchemy models
 │   ├── schemas.py             # Pydantic schemas
 │   ├── admin.py               # Admin UI routes
 │   ├── auth.py                # Authentication logic
@@ -127,7 +127,7 @@ mcp-context-forge/
 │   ├── e2e/                   # End-to-end tests
 │   ├── playwright/            # UI tests
 │   └── conftest.py            # Pytest fixtures
-├── alembic/                   # Database migrations
+│   └── alembic/               # Database migrations
 ├── docs/                      # Documentation
 ├── plugins/                   # Plugin configurations
 └── mcp-servers/               # Example MCP servers
@@ -281,10 +281,10 @@ DATABASE_URL=sqlite:///./dev.db make dev           # SQLite
 DATABASE_URL=postgresql://localhost/mcp make dev   # PostgreSQL
 DATABASE_URL=mysql+pymysql://localhost/mcp make dev # MySQL
 
-# Database utilities
-python3 -m mcpgateway.cli db upgrade    # Apply migrations
-python3 -m mcpgateway.cli db reset      # Reset database
-python3 -m mcpgateway.cli db seed       # Seed test data
+# Database migrations (via Alembic)
+cd mcpgateway && alembic upgrade head    # Apply migrations
+cd mcpgateway && alembic downgrade -1    # Rollback one migration
+cd mcpgateway && alembic heads           # Show current head
 ```
 
 ## API Development
@@ -295,7 +295,7 @@ python3 -m mcpgateway.cli db seed       # Seed test data
 # mcpgateway/main.py or separate router file
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from mcpgateway.database import get_db
+from mcpgateway.db import get_db
 from mcpgateway.schemas import MySchema
 
 router = APIRouter(prefix="/api/v1")
@@ -328,25 +328,23 @@ app.include_router(router, tags=["my-feature"])
 
 ```python
 # mcpgateway/schemas.py
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 class MySchema(BaseModel):
     """Schema for my feature."""
 
+    model_config = ConfigDict(str_strip_whitespace=True, use_enum_values=True)
+
     name: str = Field(..., min_length=1, max_length=255)
     value: int = Field(..., gt=0, le=100)
 
-    @validator('name')
-    def validate_name(cls, v):
+    @field_validator('name')
+    @classmethod
+    def validate_name(cls, v: str) -> str:
         """Custom validation logic."""
         if not v.isalnum():
             raise ValueError('Name must be alphanumeric')
         return v
-
-    class Config:
-        """Pydantic config."""
-        str_strip_whitespace = True
-        use_enum_values = True
 ```
 
 ### Testing APIs
@@ -373,18 +371,15 @@ def test_my_endpoint(test_client: TestClient, auth_headers):
 
 ```yaml
 # plugins/my_plugin/plugin-manifest.yaml
-name: my_plugin
-version: 1.0.0
-description: Custom plugin for X functionality
-enabled: true
-hooks:
-  - type: pre_request
-    handler: my_plugin.hooks:pre_request_hook
-  - type: post_response
-    handler: my_plugin.hooks:post_response_hook
-config:
-  setting1: value1
-  setting2: value2
+description: "Custom plugin for X functionality"
+author: "Your Name"
+version: "1.0.0"
+available_hooks:
+  - "tool_pre_invoke"
+  - "tool_post_invoke"
+default_configs:
+  setting1: "value1"
+  setting2: "value2"
 ```
 
 ```python
@@ -546,7 +541,7 @@ docker logs -f mcpgateway        # Docker container
 
 ```bash
 # Enable OpenTelemetry tracing
-export OTEL_ENABLE_OBSERVABILITY=true
+export OBSERVABILITY_ENABLED=true
 export OTEL_TRACES_EXPORTER=console  # Or otlp, jaeger
 
 # Run with tracing
@@ -558,15 +553,9 @@ make dev
 ### Database Debugging
 
 ```bash
-# Enable SQL echo
-export DATABASE_ECHO=true
-
 # Query database directly
 sqlite3 mcp.db "SELECT * FROM tools LIMIT 10;"
 psql mcp -c "SELECT * FROM servers;"
-
-# Database profiling
-python3 -m mcpgateway.utils.db_profiler
 ```
 
 ## Performance Optimization
@@ -696,16 +685,17 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/):
 ### Multi-tenancy Development
 
 ```python
-# Implement tenant isolation
-from mcpgateway.auth import get_current_tenant
+# Implement team-based isolation
+from mcpgateway.auth import get_current_user
 
-@router.get("/tenant-data")
-async def get_tenant_data(
-    tenant = Depends(get_current_tenant),
+@router.get("/team-data")
+async def get_team_data(
+    current_user=Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    # Filter by tenant
-    return db.query(Model).filter(Model.tenant_id == tenant.id).all()
+    # Filter by user's teams
+    user_teams = current_user.get("teams", [])
+    return db.query(Model).filter(Model.team.in_(user_teams)).all()
 ```
 
 ### Custom Transport Implementation

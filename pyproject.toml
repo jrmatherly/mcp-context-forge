@@ -408,6 +408,7 @@ exclude = [
     "docs",
     "test",
     "mcp-servers/templates",
+    "plugin_templates",
 ]
 
 # 200 line length

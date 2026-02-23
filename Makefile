@@ -84,8 +84,7 @@ CONTAINER_MEMORY = 2048m
 CONTAINER_CPUS   = 2
 
 # Virtual-environment variables
-VENVS_DIR ?= $(HOME)/.venv
-VENV_DIR  ?= $(VENVS_DIR)/$(PROJECT_NAME)
+VENV_DIR  ?= .venv
 
 # -----------------------------------------------------------------------------
 # OS Specific
@@ -154,7 +153,6 @@ UV_BIN := $(shell type -p uv 2>/dev/null || echo "$(HOME)/.local/bin/uv")
 .PHONY: venv
 venv: uv
 	@rm -Rf "$(VENV_DIR)"
-	@test -d "$(VENVS_DIR)" || mkdir -p "$(VENVS_DIR)"
 	@$(UV_BIN) venv "$(VENV_DIR)"
 	@echo -e "✅  Virtual env created.\n💡  Enter it with:\n    . $(VENV_DIR)/bin/activate\n"
 
@@ -2847,20 +2845,6 @@ linting-workflow-reviewdog:          ## 🐶  reviewdog in local reporter mode
 		go install github.com/reviewdog/reviewdog/cmd/reviewdog@latest >/dev/null; \
 		go run github.com/rhysd/actionlint/cmd/actionlint@latest -shellcheck= -oneline | \
 			'$(LINT_GO_ROOT)/bin/reviewdog' -name=actionlint -efm='%f:%l:%c: %m' -reporter=local"
-
-linting-workflow-commitlint:         ## 📝  Conventional Commits linting
-	@echo "📝 commitlint $(COMMITLINT_FROM)..$(COMMITLINT_TO)..."
-	@command -v node >/dev/null 2>&1 || { echo "❌ node not found"; exit 1; }
-	@command -v npm >/dev/null 2>&1 || { echo "❌ npm not found"; exit 1; }
-	@mkdir -p "$(LINT_NODE_ROOT)/commitlint" "$(LINT_NODE_ROOT)/npm-cache"
-	@/bin/bash -c "set -euo pipefail; cd '$(LINT_NODE_ROOT)/commitlint'; \
-		if [ ! -f package.json ]; then npm init -y >/dev/null 2>&1; fi; \
-		npm_config_cache='$(LINT_NODE_ROOT)/npm-cache' npm install --silent @commitlint/cli @commitlint/config-conventional"
-	@NODE_PATH="$(LINT_NODE_ROOT)/commitlint/node_modules" \
-		node "$(LINT_NODE_ROOT)/commitlint/node_modules/@commitlint/cli/lib/cli.js" \
-		--extends @commitlint/config-conventional \
-		--from "$(COMMITLINT_FROM)" \
-		--to "$(COMMITLINT_TO)"
 
 linting-python-fixit:                ## 🧪  Fixit Python linting
 	@echo "🧪 fixit lint of $(LINT_FIXIT_TARGET)..."
