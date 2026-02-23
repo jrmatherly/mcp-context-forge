@@ -3,9 +3,9 @@
 ##################################
 resource "helm_release" "mcpgw" {
   name       = "mcpgateway"
-  repository = "oci://ghcr.io/jrmatherly/mcp-context-forge-chart/mcp-context-forge-chart"
-  chart      = "mcpgateway"
-  version    = "1.0.0rc1"
+  repository = "oci://ghcr.io/jrmatherly/mcp-context-forge"
+  chart      = "mcp-stack"
+  version    = "1.0.0-rc.1"
 
   values = [
     yamlencode({

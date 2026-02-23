@@ -1988,7 +1988,7 @@
                         "tag": {
                             "type": "string",
                             "description": "Image tag",
-                            "default": "0.9.0"
+                            "default": "1.0.0rc1"
                         },
                         "pullPolicy": {
                             "type": "string",

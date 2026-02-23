@@ -5,7 +5,7 @@ This folder spins up:
 1. A resource-group + VPC IKS cluster
 2. Databases-for-PostgreSQL & Databases-for-Redis
 3. Service-keys → Kubernetes Secrets
-4. The container `ghcr.io/jrmatherly/mcp-context-forge:v0.9.0` behind an Ingress URL
+4. The container `ghcr.io/jrmatherly/mcp-context-forge:v1.0.0rc1` behind an Ingress URL
 
 ## Prerequisites
 

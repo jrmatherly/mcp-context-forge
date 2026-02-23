@@ -262,8 +262,8 @@ When making changes:
 Update both `version` and `appVersion` in `Chart.yaml`:
 
 ```yaml
-version: 0.9.0          # Chart version
-appVersion: "0.9.0"     # Application version
+version: 1.0.0-rc.1     # Chart version (SemVer)
+appVersion: "1.0.0rc1"  # Application version (PEP 440)
 ```
 
 ### Release Checklist
