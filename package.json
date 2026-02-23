@@ -16,6 +16,9 @@
         "test:ui": "vitest --ui"
     },
     "overrides": {
-        "keyv": "5.1.0"
+        "keyv": "5.1.0",
+        "htmlhint": {
+            "glob": "^11.0.0"
+        }
     }
 }
