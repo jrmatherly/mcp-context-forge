@@ -264,9 +264,11 @@ RUN if [ "$ENABLE_PROFILING" = "true" ]; then \
 RUN ln -sf /usr/bin/python${PYTHON_VERSION} /usr/bin/python3
 
 # ----------------------------------------------------------------------------
-# Create non-root user
+# Create non-root user and strip setuid/setgid bits (CIS-DI-0008)
 # ----------------------------------------------------------------------------
-RUN useradd --uid 1001 --gid 0 --home-dir /app --shell /sbin/nologin --no-create-home --comment app app
+# hadolint ignore=DL3059
+RUN useradd --uid 1001 --gid 0 --home-dir /app --shell /sbin/nologin --no-create-home --comment app app \
+    && chmod u-s /usr/bin/newgrp /usr/bin/passwd /usr/bin/chage /usr/bin/gpasswd 2>/dev/null || true
 
 # ----------------------------------------------------------------------------
 # Copy the application from the builder stage

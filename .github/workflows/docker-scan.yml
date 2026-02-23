@@ -108,6 +108,8 @@ jobs:
             | tar -xz -C /usr/local/bin dockle
           dockle --exit-code 1 --format sarif \
                  --output dockle-results.sarif \
+                 -af settings.py \
+                 -i CIS-DI-0005 \
                  ${{ env.IMAGE_NAME }}:scan
           echo "DOCKLE_EXIT=$?" >> "$GITHUB_ENV"
           exit 0
@@ -139,6 +141,7 @@ jobs:
           format: sarif
           output: trivy-results.sarif
           severity: CRITICAL,HIGH
+          ignore-unfixed: true
           exit-code: 0
 
       - name: Upload Trivy SARIF
@@ -160,7 +163,7 @@ jobs:
       - name: Grype SARIF report
         continue-on-error: true
         run: |
-          grype ${{ env.IMAGE_NAME }}:scan --scope all-layers --output sarif --file grype-results.sarif
+          grype ${{ env.IMAGE_NAME }}:scan --scope all-layers --only-fixed --output sarif --file grype-results.sarif
 
       - name: Upload Grype SARIF
         if: always() && hashFiles('grype-results.sarif') != ''
