@@ -327,6 +327,7 @@ migration:
   command:
     waitForDb: "python3 /app/mcpgateway/utils/db_isready.py --max-tries 30 --interval 2 --timeout 5"
     migrate: "alembic upgrade head || echo '⚠️ Migration check failed'"
+```
 ---
 
 ## Uninstall
@@ -366,10 +367,10 @@ The chart supports persistent storage for both PostgreSQL and Redis using **dyna
 
 ### Key Features
 
-- **Dynamic Provisioning**: Uses your cluster's default StorageClass or a specified one
-- **Cloud Native**: Compatible with AWS EBS, GCP PD, Azure Disk, and more
-- **Backup Ready**: Supports annotations for backup tools like Velero
-- **Flexible**: Supports different storage classes per component
+* **Dynamic Provisioning**: Uses your cluster's default StorageClass or a specified one
+* **Cloud Native**: Compatible with AWS EBS, GCP PD, Azure Disk, and more
+* **Backup Ready**: Supports annotations for backup tools like Velero
+* **Flexible**: Supports different storage classes per component
 
 ### PostgreSQL Persistence
 
@@ -426,9 +427,9 @@ For environments without dynamic provisioning support (bare-metal clusters, edge
 
 #### Prerequisites
 
-- Kubernetes cluster without a dynamic provisioner
-- Direct access to cluster storage (hostPath, NFS, local volumes, etc.)
-- Understanding of PV/PVC binding mechanisms
+* Kubernetes cluster without a dynamic provisioner
+* Direct access to cluster storage (hostPath, NFS, local volumes, etc.)
+* Understanding of PV/PVC binding mechanisms
 
 #### Step-by-Step Guide
 
@@ -471,13 +472,13 @@ spec:
   #         values: ["node-1"]
 ```
 
-2. **Apply the PV**:
+1. **Apply the PV**:
 ```bash
 kubectl apply -f custom-postgres-pv.yaml
 kubectl get pv  # Verify PV is Available
 ```
 
-3. **Configure the Helm chart** to use your manual PV:
+1. **Configure the Helm chart** to use your manual PV:
 
 ```yaml
 postgres:
@@ -488,16 +489,16 @@ postgres:
     size: 5Gi              # Must be <= PV capacity (10Gi in example)
 ```
 
-4. **Install the chart**:
+1. **Install the chart**:
 ```bash
 helm install mcp-stack ./charts/mcp-stack -f my-values.yaml
 ```
 
 The PVC will automatically bind to your manually-created PV based on:
-- Matching `storageClassName` (both empty `""`)
-- Sufficient capacity (PV ≥ PVC)
-- Compatible access modes
-- PV status: Available
+* Matching `storageClassName` (both empty `""`)
+* Sufficient capacity (PV ≥ PVC)
+* Compatible access modes
+* PV status: Available
 
 #### Redis Manual PV Example
 
@@ -528,10 +529,10 @@ spec:
 
 #### Security Considerations
 
-- **hostPath volumes** bypass pod security policies - use only in trusted environments
-- **NFS volumes** should use `root_squash` and proper export permissions
-- **Local volumes** require node affinity - pod will only schedule on nodes with the volume
-- Always use `Retain` reclaim policy to prevent accidental data loss
+* **hostPath volumes** bypass pod security policies - use only in trusted environments
+* **NFS volumes** should use `root_squash` and proper export permissions
+* **Local volumes** require node affinity - pod will only schedule on nodes with the volume
+* Always use `Retain` reclaim policy to prevent accidental data loss
 
 #### Migration from Chart-Managed PVs
 
@@ -543,12 +544,12 @@ If upgrading from a previous version that used chart-managed hostPath PVs:
 kubectl delete pv mcp-stack-default-postgres-pv
 kubectl delete pv mcp-stack-default-redis-pv
 ```
-3. **Create new manual PVs** pointing to the same paths:
+1. **Create new manual PVs** pointing to the same paths:
 ```yaml
 hostPath:
   path: "/mnt/data/postgres"  # Same path as before
 ```
-4. **Upgrade the chart** - PVCs will bind to your new PVs
+1. **Upgrade the chart** - PVCs will bind to your new PVs
 
 ---
 
