@@ -1,0 +1,134 @@
+{
+  "project_name": "mcp-context-forge",
+  "version": "1.0.0rc1",
+  "license": "Apache-2.0",
+  "parts": [
+    {
+      "part_id": "gateway-core",
+      "display_name": "Gateway Core",
+      "path": "mcpgateway/",
+      "type": "backend",
+      "language": "Python 3.11+",
+      "framework": "FastAPI + Starlette",
+      "description": "Core ASGI gateway application with 19 routers, 53 services, 15 middleware, and 5 transport protocols",
+      "entry_points": [
+        "mcpgateway.main:app",
+        "mcpgateway.cli:main",
+        "mcpgateway.plugins.tools.cli:main",
+        "mcpgateway.tools.cli:main"
+      ],
+      "key_files": [
+        "mcpgateway/main.py",
+        "mcpgateway/config.py",
+        "mcpgateway/db.py",
+        "mcpgateway/schemas.py",
+        "mcpgateway/auth.py"
+      ],
+      "dependencies": ["python-plugins"],
+      "optional_dependencies": ["rust-plugins"]
+    },
+    {
+      "part_id": "python-plugins",
+      "display_name": "Python Plugins",
+      "path": "plugins/",
+      "type": "library",
+      "language": "Python",
+      "framework": "stevedore",
+      "description": "45+ security, transformation, and policy plugins loaded via stevedore entry points",
+      "key_files": [
+        "plugins/config.yaml",
+        "plugins/AGENTS.md"
+      ],
+      "categories": {
+        "security": 11,
+        "transformation": 9,
+        "policy": 8,
+        "infrastructure": 7,
+        "other": 5
+      }
+    },
+    {
+      "part_id": "rust-plugins",
+      "display_name": "Rust Plugins",
+      "path": "plugins_rust/",
+      "type": "library",
+      "language": "Rust (Edition 2024)",
+      "framework": "PyO3 0.28 + maturin",
+      "description": "High-performance security plugins compiled via PyO3 for Python integration",
+      "key_files": [
+        "plugins_rust/Cargo.toml",
+        "plugins_rust/src/lib.rs"
+      ],
+      "plugins": ["pii_filter", "secrets_detection", "encoded_exfil_detection"]
+    },
+    {
+      "part_id": "mcp-servers",
+      "display_name": "MCP Servers",
+      "path": "mcp-servers/",
+      "type": "backend",
+      "language": "Python, Go 1.24, Rust",
+      "description": "28 MCP server implementations across 3 languages plus scaffolding tools",
+      "server_counts": {
+        "python": 20,
+        "go": 6,
+        "rust": 2
+      },
+      "key_files": [
+        "mcp-servers/AGENTS.md",
+        "mcp-servers/scaffold-python-server.sh",
+        "mcp-servers/scaffold-go-server.sh"
+      ]
+    },
+    {
+      "part_id": "a2a-agents",
+      "display_name": "A2A Agents",
+      "path": "a2a-agents/",
+      "type": "backend",
+      "language": "Go 1.24",
+      "framework": "a2a-go SDK v0.3.7",
+      "description": "Agent-to-Agent protocol implementations",
+      "key_files": [
+        "a2a-agents/go/a2a-echo-agent/main.go"
+      ]
+    },
+    {
+      "part_id": "infrastructure",
+      "display_name": "Infrastructure",
+      "path": ["charts/", "deployment/"],
+      "type": "infra",
+      "language": "Helm, Terraform, YAML",
+      "description": "Kubernetes deployment via Helm charts, Terraform IaC, raw K8s manifests, and Ansible playbooks",
+      "key_files": [
+        "charts/mcp-stack/Chart.yaml",
+        "charts/mcp-stack/values.yaml",
+        "deployment/k8s/mcp-context-forge-deployment.yaml",
+        "deployment/terraform/ibm-cloud/"
+      ]
+    },
+    {
+      "part_id": "documentation",
+      "display_name": "Documentation",
+      "path": "docs/",
+      "type": "web",
+      "language": "Mintlify (MDX)",
+      "description": "Comprehensive documentation site with 100+ pages, 40+ ADRs, and deployment guides",
+      "key_files": [
+        "docs/mint.json",
+        "docs/docs/architecture/"
+      ]
+    },
+    {
+      "part_id": "agent-runtimes",
+      "display_name": "Agent Runtimes",
+      "path": "agent_runtimes/",
+      "type": "library",
+      "language": "Python",
+      "framework": "LangChain",
+      "description": "LangChain-based agent runtime with multi-provider support (OpenAI, Azure, Anthropic, Bedrock, Ollama)",
+      "key_files": [
+        "agent_runtimes/langchain_agent/pyproject.toml",
+        "agent_runtimes/langchain_agent/agent.py"
+      ]
+    }
+  ]
+}

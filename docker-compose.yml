@@ -940,7 +940,7 @@ services:
             - "--maxclients"
             - "10000"
         ports:
-            - "6379:6379" # expose only if you want host access
+            - "16379:6379" # expose only if you want host access
         networks: [mcpnet]
         deploy:
             resources:
@@ -1253,7 +1253,7 @@ services:
         restart: unless-stopped
         networks: [mcpnet]
         ports:
-            - "8888:8080" # Map host port 8888 to container port 8080
+            - "18888:8080" # Map host port 8888 to container port 8080
         # Use dual mode for both SSE (/sse) and Streamable HTTP (/http) endpoints
         command:
             [

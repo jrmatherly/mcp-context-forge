@@ -2,6 +2,9 @@
 
 Guidelines for AI coding assistants working with this repository.
 
+For comprehensive implementation rules, patterns, and gotchas optimized for AI agent consumption, see:
+- `_bmad-output/project-context.md` - **Critical rules AI agents must follow** (technology stack, coding patterns, anti-patterns, security rules, edge cases)
+
 For domain-specific guidance, see subdirectory AGENTS.md files:
 - `tests/AGENTS.md` - Testing conventions and workflows
 - `plugins/AGENTS.md` - Plugin framework and development
