@@ -35,6 +35,19 @@ Perfect for experimenting on your workstation or air-gapped environments.
 ---
 
 
+## MindsDB Team Provisioning
+
+A step-by-step guide for adding new teams to the **MindsDB + Context Forge + LibreChat** integration. Each team gets its own Knowledge Base, scoped Virtual Server, and dedicated agent with six-layer security enforcement. Covers:
+
+- Creating Knowledge Bases and ingesting documents
+- Provisioning team-scoped Virtual Servers with stable UUIDs
+- Configuring LibreChat MCP server entries and agents
+- End-to-end verification and rollback procedures
+
+👉 [View the guide](mindsdb-team-provisioning.md)
+
+---
+
 ## 📦 Additional Resources
 
 - [MCP Gateway GitHub](https://github.com/ibm/mcp-context-forge)

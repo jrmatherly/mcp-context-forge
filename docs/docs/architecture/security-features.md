@@ -134,6 +134,36 @@ For production deployments, always include JTI in issued tokens to enable proper
 - [ ] **Monitor activity.** Ship `token_usage_logs`, `email_auth_events`, audit trails, and structured logs to your SIEM/observability stack; alert on repeated failures or blocked requests.
 - [ ] **Automate security checks.** Integrate the security Make targets into CI/CD so images, dependencies, and IaC are scanned before deployment.
 
+## MindsDB Integration Security Model
+
+When MindsDB is deployed as a federated data gateway (`--profile mindsdb`), the integration uses a six-layer security model to protect Knowledge Base access across teams.
+
+### Hard Enforcement Layers
+
+These layers are server-side and cannot be bypassed by prompt injection:
+
+- **Layer 1: Team-Scoped Virtual Servers.** Each team gets a dedicated Virtual Server with `visibility: team` and `team_id`. The `TokenScopingMiddleware` enforces HTTP 403 for cross-team access at the middleware level, before the request reaches any handler.
+- **Layer 2: Agent Permissions.** LibreChat agents are configured with `mcpServerNames[]` controlling which MCP tools each agent can access. Agent visibility is restricted to the appropriate team members.
+- **Layer 3: `chatMenu: false`.** Team-scoped MCP servers are hidden from LibreChat's global dropdown, forcing users to access Knowledge Base tools only through their assigned agent.
+- **Layer 4: `sql_sanitizer` Plugin.** The plugin intercepts all tool invocations via the `TOOL_PRE_INVOKE` hook and blocks destructive SQL (DROP, INSERT, UPDATE, DELETE, ALTER, GRANT, REVOKE, TRUNCATE, CREATE) before the query reaches MindsDB.
+
+### Soft Enforcement Layers
+
+Defense-in-depth guidance that is effective under normal use but not a security boundary:
+
+- **Layer 5: Agent System Instructions.** Each agent's system prompt constrains it to query only its team's Knowledge Base (e.g., "ONLY query legal_kb").
+- **Layer 6: `serverInstructions`.** Per-MCP-server instructions injected into the agent context reinforce KB-specific SQL patterns.
+
+### Known Limitations
+
+- The `sql_sanitizer` uses regex word-boundary matching (`\b`) which matches inside SQL string literals. `SELECT * FROM kb WHERE content = 'How to create a policy'` triggers the `\bCREATE\b` pattern. A string-literal-aware enhancement using `sqlparse` is tracked in the [MindsDB enhancements roadmap](mindsdb-enhancements.md#2-string-literal-aware-sql-sanitizer).
+- Per-team KB access enforcement (preventing a legal agent from querying `hr_kb` via prompt injection) requires the planned [KB Access Guard plugin](mindsdb-enhancements.md#1-kb-access-guard-plugin).
+
+### Related Documentation
+
+- [MindsDB Team Provisioning](../tutorials/mindsdb-team-provisioning.md) — Repeatable process for adding new teams
+- [MindsDB Enhancements](mindsdb-enhancements.md) — Future hardening roadmap
+
 ## Planned & In-Progress Enhancements (🚧 Planned)
 
 The items below are active roadmap work or design explorations. Track status in `docs/docs/architecture/roadmap.md` and the linked GitHub issues.
