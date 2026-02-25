@@ -18,7 +18,7 @@ on:
       base_image:
         description: "Base release image used for upgrade checks"
         required: false
-        default: "ghcr.io/jrmatherly/mcp-context-forge:1.0.0-BETA-2"
+        default: "ghcr.io/jrmatherly/mcp-context-forge:latest"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -37,7 +37,7 @@ jobs:
     env:
       TARGET_IMAGE: mcpgateway/mcpgateway:upgrade-ci-${{ github.sha }}
       ARTIFACT_DIR: artifacts/upgrade-validation
-      BASE_IMAGE: ${{ github.event.inputs.base_image || 'ghcr.io/jrmatherly/mcp-context-forge:1.0.0-BETA-2' }}
+      BASE_IMAGE: ${{ github.event.inputs.base_image || format('ghcr.io/{0}:latest', github.repository) }}
 
     steps:
       - name: Checkout code
