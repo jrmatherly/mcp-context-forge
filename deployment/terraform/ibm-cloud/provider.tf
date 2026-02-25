@@ -7,4 +7,4 @@ provider "ibm" {
 # NOTE: The kubernetes & helm providers are *re-configured later*
 #       once the IKS cluster is up and the config is fetched.
 provider "kubernetes" {}
-provider "helm"       {}
+provider "helm" {}

@@ -5,3 +5,5 @@ metadata:
 data:
   APP_NAME:  "MCP Context-Forge"
   LOG_LEVEL: "INFO"
+  AUTH_REQUIRED: "{{ auth_required | string | lower }}"
+  PLUGINS_ENABLED: "{{ plugins_enabled | string | lower }}"

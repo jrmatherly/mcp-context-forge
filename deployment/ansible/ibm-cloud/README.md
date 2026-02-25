@@ -4,13 +4,15 @@ This folder spins up:
 
 1. A resource-group + VPC IKS cluster
 2. Databases-for-PostgreSQL & Databases-for-Redis
-3. Service-keys → Kubernetes Secrets
-4. The container `ghcr.io/jrmatherly/mcp-context-forge:v1.0.0rc1` behind an Ingress URL
+3. Service-keys -> Kubernetes Secrets
+4. The MCP Context Forge gateway behind an Ingress URL
+
+Image and chart version are configured in `group_vars/all.yml`.
 
 ## Prerequisites
 
 * **IBM Cloud CLI** authenticated (`ibmcloud login ...`)
-* Ansible ≥ 2.12 with the Galaxy collections in `requirements.yml`
+* Ansible >= 2.12 with the Galaxy collections in `requirements.yml`
 * `helm`, `kubectl`, and `ibmcloud ks` binaries in `$PATH`
 
 ## One-liner

@@ -13,20 +13,30 @@ resource "random_password" "jwt" {
   special = false
 }
 
-resource "kubernetes_secret" "mcpgw" {
-  metadata { name = "mcpgateway-secrets" }
-  type     = "Opaque"
+# Basic auth password
+resource "random_password" "basic_auth" {
+  length  = 24
+  special = true
+}
+
+# Database connection secret (consumed by Helm chart's external postgres config)
+resource "kubernetes_secret" "mcpgw_db" {
+  metadata { name = "mcpgateway-db" }
+  type = "Opaque"
   data = {
-    DATABASE_URL = base64encode(local.pg_conn.postgres["composed"][0])
-    REDIS_URL    = base64encode(local.redis_conn.rediss["composed"][0])
-    JWT_SECRET   = base64encode(random_password.jwt.result)
+    host     = local.pg_conn.postgres["hosts"][0]["hostname"]
+    port     = tostring(local.pg_conn.postgres["hosts"][0]["port"])
+    dbname   = local.pg_conn.postgres["database"]
+    user     = local.pg_conn.postgres["authentication"]["username"]
+    password = local.pg_conn.postgres["authentication"]["password"]
   }
 }
 
-resource "kubernetes_config_map" "mcpgw_env" {
-  metadata { name = "mcpgateway-env" }
+# Redis connection secret
+resource "kubernetes_secret" "mcpgw_redis" {
+  metadata { name = "mcpgateway-redis" }
+  type = "Opaque"
   data = {
-    APP_NAME  = "MCP Gateway"
-    LOG_LEVEL = "INFO"
+    REDIS_URL = local.redis_conn.rediss["composed"][0]
   }
 }

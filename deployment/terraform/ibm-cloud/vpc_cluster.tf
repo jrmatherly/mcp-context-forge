@@ -4,7 +4,7 @@
 resource "ibm_container_vpc_cluster" "iks" {
   name            = "${var.prefix}-iks"
   kube_version    = "1.29"
-  flavor          = "bx2.4x16"     # 4 vCPU / 16 GiB
+  flavor          = "bx2.4x16" # 4 vCPU / 16 GiB
   worker_count    = var.k8s_workers
   entitlement     = "cloud_pak"
   wait_till_ready = true

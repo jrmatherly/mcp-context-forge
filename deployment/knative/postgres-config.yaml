@@ -7,9 +7,12 @@ metadata:
     app: postgres
 data:
   # PostgreSQL connection settings
-  # IMPORTANT: Change these values for your deployment
+  # IMPORTANT: Change these values for your deployment.
+  # The Knative service now uses DATABASE_URL from a Secret instead of
+  # individual vars. This ConfigMap is retained for backward compatibility.
   POSTGRES_HOST: postgresql
   POSTGRES_PORT: "5432"
   POSTGRES_DB: mcp
   POSTGRES_USER: postgres
+  # WARNING: Move this to a Kubernetes Secret in production
   POSTGRES_PASSWORD: changeme

@@ -1,3 +1,12 @@
+# Prerequisite: Create a Secret named "mcpgateway-secrets" with keys:
+#   DATABASE_URL, REDIS_URL, JWT_SECRET_KEY, BASIC_AUTH_USER, BASIC_AUTH_PASSWORD
+# Example:
+#   kubectl -n mcp-gateway create secret generic mcpgateway-secrets \
+#     --from-literal=DATABASE_URL='postgresql+psycopg://...' \
+#     --from-literal=REDIS_URL='redis://...' \
+#     --from-literal=JWT_SECRET_KEY='...' \
+#     --from-literal=BASIC_AUTH_USER='admin' \
+#     --from-literal=BASIC_AUTH_PASSWORD='...'
 apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
@@ -32,7 +41,7 @@ spec:
       containerConcurrency: 100
       containers:
       - name: gateway
-        image: ghcr.io/jrmatherly/mcp-context-forge:latest
+        image: ghcr.io/jrmatherly/mcp-context-forge:v1.0.0rc1
         ports:
         - containerPort: 4444
           protocol: TCP
@@ -41,42 +50,54 @@ spec:
           value: "0.0.0.0"
         - name: PORT
           value: "4444"
-        - name: POSTGRES_HOST
+        # Database connection (prefer DATABASE_URL over individual vars)
+        - name: DATABASE_URL
           valueFrom:
-            configMapKeyRef:
-              name: postgres-config
-              key: POSTGRES_HOST
+            secretKeyRef:
+              name: mcpgateway-secrets
+              key: DATABASE_URL
               optional: true
-        - name: POSTGRES_PORT
+        - name: REDIS_URL
           valueFrom:
-            configMapKeyRef:
-              name: postgres-config
-              key: POSTGRES_PORT
+            secretKeyRef:
+              name: mcpgateway-secrets
+              key: REDIS_URL
               optional: true
-        - name: POSTGRES_DB
+        # Auth
+        - name: JWT_SECRET_KEY
           valueFrom:
-            configMapKeyRef:
-              name: postgres-config
-              key: POSTGRES_DB
+            secretKeyRef:
+              name: mcpgateway-secrets
+              key: JWT_SECRET_KEY
               optional: true
-        - name: POSTGRES_USER
+        - name: BASIC_AUTH_USER
           valueFrom:
-            configMapKeyRef:
-              name: postgres-config
-              key: POSTGRES_USER
+            secretKeyRef:
+              name: mcpgateway-secrets
+              key: BASIC_AUTH_USER
               optional: true
-        - name: POSTGRES_PASSWORD
+        - name: BASIC_AUTH_PASSWORD
           valueFrom:
-            configMapKeyRef:
-              name: postgres-config
-              key: POSTGRES_PASSWORD
+            secretKeyRef:
+              name: mcpgateway-secrets
+              key: BASIC_AUTH_PASSWORD
               optional: true
-        - name: GUNICORN_CMD_ARGS
-          value: --bind=0.0.0.0:4444
+        - name: AUTH_REQUIRED
+          value: "true"
+        # Features
+        - name: PLUGINS_ENABLED
+          value: "true"
         - name: MCPGATEWAY_UI_ENABLED
           value: "true"
         - name: MCPGATEWAY_ADMIN_API_ENABLED
           value: "true"
+        - name: MCPGATEWAY_A2A_ENABLED
+          value: "false"
+        # Logging
+        - name: LOG_LEVEL
+          value: "INFO"
+        - name: STRUCTURED_LOGGING_DATABASE_ENABLED
+          value: "false"
         envFrom:
         - configMapRef:
             name: mcpgateway-env

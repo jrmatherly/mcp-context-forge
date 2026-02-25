@@ -5,35 +5,57 @@ resource "helm_release" "mcpgw" {
   name       = "mcpgateway"
   repository = "oci://ghcr.io/jrmatherly/mcp-context-forge"
   chart      = "mcp-stack"
-  version    = "1.0.0-rc.1"
+  version    = var.chart_version
 
   values = [
     yamlencode({
-      image = {
-        repository = var.gateway_image
-        tag        = "latest"
-        pullPolicy = "IfNotPresent"
+      mcpContextForge = {
+        image = {
+          repository = var.gateway_image_repository
+          tag        = var.gateway_image_tag
+          pullPolicy = "IfNotPresent"
+        }
+        replicaCount = var.gateway_replicas
+
+        pluginConfig = {
+          enabled = var.plugins_enabled
+        }
+
+        ingress = {
+          enabled   = true
+          className = "public-iks-k8s-nginx"
+          host      = "gateway.${var.prefix}.apps.${var.region}.containers.appdomain.cloud"
+          path      = "/"
+          tls = {
+            enabled = true
+          }
+        }
+
+        secret = {
+          JWT_SECRET_KEY      = random_password.jwt.result
+          BASIC_AUTH_USER     = "admin"
+          BASIC_AUTH_PASSWORD = random_password.basic_auth.result
+        }
+
+        config = {
+          AUTH_REQUIRED   = tostring(var.auth_required)
+          PLUGINS_ENABLED = tostring(var.plugins_enabled)
+          LOG_LEVEL       = "INFO"
+        }
       }
-      replicaCount = var.gateway_replicas
-      envFrom = [
-        { secretRef   = { name = kubernetes_secret.mcpgw.metadata[0].name } },
-        { configMapRef = { name = kubernetes_config_map.mcpgw_env.metadata[0].name } }
-      ]
-      service = { type = "ClusterIP", port = 80 }
-      ingress = {
-        enabled   = true
-        className = "public-iks-k8s-nginx"
-        hosts     = [
-          {
-            host  = "gateway.${var.prefix}.apps.${var.region}.containers.appdomain.cloud"
-            paths = ["/"]
-          }
-        ]
-        tls = [
-          {
-            hosts = ["gateway.${var.prefix}.apps.${var.region}.containers.appdomain.cloud"]
-          }
-        ]
+
+      postgres = {
+        external = {
+          enabled        = true
+          existingSecret = kubernetes_secret.mcpgw_db.metadata[0].name
+        }
+      }
+
+      redis = {
+        external = {
+          enabled        = true
+          existingSecret = kubernetes_secret.mcpgw_redis.metadata[0].name
+        }
       }
     })
   ]
