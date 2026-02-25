@@ -1,11 +1,40 @@
 #!/bin/sh
-# Nginx TLS Entrypoint Script
-# Handles optional HTTP->HTTPS redirect based on environment variable
+# Nginx Entrypoint Script
+# Handles optional HTTP->HTTPS redirect and graceful TLS degradation
 
 set -e
 
 NGINX_CONF="/etc/nginx/nginx.conf"
 NGINX_CONF_ORIG="/etc/nginx/nginx.conf.orig"
+
+# ── Guard: strip HTTPS server block if TLS certs are missing ──────────────
+# Nginx validates ALL server blocks on startup — an ssl_certificate directive
+# pointing to a non-existent file causes an immediate crash. When certs aren't
+# mounted (e.g., running the plain nginx service without --profile tls), we
+# comment out the entire HTTPS server block so nginx starts cleanly on port 80.
+if grep -q "ssl_certificate" "$NGINX_CONF" 2>/dev/null; then
+    CERT_PATH=$(grep -m1 'ssl_certificate[^_]' "$NGINX_CONF" | sed 's/.*ssl_certificate[[:space:]]*//;s/;.*//' | tr -d ' ')
+    if [ -n "$CERT_PATH" ] && [ ! -f "$CERT_PATH" ]; then
+        echo "⚠️  TLS certificate not found at ${CERT_PATH} — disabling HTTPS server block"
+        cp "$NGINX_CONF" /tmp/nginx.conf
+        # Comment out the HTTPS server block using brace-depth tracking.
+        # Starts at the "HTTPS Server" comment, tracks { depth to find the
+        # matching server-block close, then stops — leaving the http{} closing
+        # brace intact.
+        awk '
+            /HTTPS Server - TLS Enabled/ { commenting=1 }
+            commenting && /{/ { depth++ }
+            commenting && /}/ {
+                depth--
+                if (depth == 0) { print "# " $0; commenting=0; next }
+            }
+            commenting { print "# " $0; next }
+            { print }
+        ' /tmp/nginx.conf > /tmp/nginx-patched.conf
+        cp /tmp/nginx-patched.conf "$NGINX_CONF" 2>/dev/null || NGINX_CONF="/tmp/nginx-patched.conf"
+        echo "✅ HTTPS server block disabled — nginx will serve HTTP only on port 80"
+    fi
+fi
 
 # If NGINX_FORCE_HTTPS is set to "true", enable the redirect block
 if [ "$NGINX_FORCE_HTTPS" = "true" ]; then

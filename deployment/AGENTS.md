@@ -126,6 +126,17 @@ SSL_KEYFILE=certs/server.key
 - [Kubernetes Deployment](docs/docs/deployment/kubernetes.md)
 - [Cloud Deployments](docs/docs/deployment/) - AWS, Azure, GCP, Fly.io guides
 
+## Shared Nginx (Cross-Stack Production)
+
+In production, LibreChat's nginx reverse proxy handles both stacks:
+- `shared-proxy` external Docker network connects LibreChat's nginx to MCF's gateway
+- Subdomain routing: `${LIBRECHAT_DOMAIN}` → LibreChat, `${MCF_DOMAIN}` → MCF gateway
+- MCF config uses `resolver 127.0.0.11` + variable-based `proxy_pass` for runtime DNS (no startup dependency)
+- nginx:1-alpine's built-in envsubst processes `templates/*.conf.template` → `conf.d/*.conf`
+- Stock `default.conf` suppressed via `/dev/null` mount
+- Design doc: `.scratchpad/plans/shared-nginx-consolidation.md`
+- MCF's standalone nginx: `docker compose --profile standalone up` (local dev only)
+
 ## Key Files
 
 - `Makefile` (root) - Container build/run commands

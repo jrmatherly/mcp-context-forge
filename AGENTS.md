@@ -119,6 +119,16 @@ Optional MindsDB deployment via `docker compose --profile mindsdb`:
 - See `docs/docs/architecture/mindsdb-enhancements.md` for future hardening roadmap
 - See `docs/docs/tutorials/mindsdb-team-provisioning.md` for adding new teams
 
+## Shared Nginx (Production Deployment)
+
+- In production, LibreChat's nginx owns ports 80/443 and routes to both apps via subdomain
+- MCP Context Forge's gateway joins the `shared-proxy` Docker network for cross-stack routing
+- MCF's standalone nginx is behind `profiles: ["standalone"]` — only for local dev
+- Design doc: `.scratchpad/plans/shared-nginx-consolidation.md`
+- LibreChat nginx configs: `~/dev/ai-stack/LibreChat/nginx/` (`nginx.conf`, `librechat.conf.template`, `mcf-gateway.conf.template`)
+- Prerequisite: `docker network create shared-proxy` (run once before starting either stack)
+- Required LibreChat `.env` vars: `LIBRECHAT_DOMAIN`, `MCF_DOMAIN`
+
 ## Helm Chart Notes
 
 - `values.schema.json` has `additionalProperties: false` — new top-level values sections require a matching schema entry or `helm lint` fails

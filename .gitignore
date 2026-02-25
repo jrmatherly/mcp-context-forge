@@ -364,3 +364,5 @@ tests/jmeter/results/*/
 
 # Scratchpad (local notes, reviews, plans)
 .scratchpad/
+
+*.zip

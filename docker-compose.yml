@@ -13,7 +13,8 @@
 ###############################################################################
 #  DOCKER COMPOSE PROFILES
 #
-#  Default (no profile):  Gateway + Postgres + Redis + Nginx (HTTP only)
+#  Default (no profile):  Gateway + Postgres + Redis (no nginx — use LibreChat's shared nginx)
+#  --profile standalone:  Adds standalone Nginx on :8080 (local dev without LibreChat)
 #  --profile sso:         Adds Keycloak + testing + inspector (full dev SSO stack, via docker-compose.sso.yml)
 #  --profile monitoring:  Adds Prometheus, Grafana, Loki, exporters
 #  --profile testing:     Adds Locust (web UI), A2A echo agent, fast_test_server + auto-registration
@@ -42,6 +43,8 @@
 networks:
     mcpnet: # Single user-defined bridge network keeps traffic private
         driver: bridge
+    shared-proxy: # Shared network for cross-stack nginx routing (LibreChat ↔ MCF)
+        external: true
 
 volumes: # Named volumes survive podman-compose down/up
     # pgdata:             # Legacy (postgres <18)
@@ -62,8 +65,12 @@ volumes: # Named volumes survive podman-compose down/up
 services:
     # ──────────────────────────────────────────────────────────────────────
     # Nginx Caching Proxy - High-performance reverse proxy with CDN-like caching
+    # For standalone dev only. In production, LibreChat's nginx handles routing
+    # for both stacks via shared-proxy network. See:
+    #   .scratchpad/plans/shared-nginx-consolidation.md
     # ──────────────────────────────────────────────────────────────────────
     nginx:
+        profiles: ["standalone"]
         build:
             context: ./infra/nginx
             dockerfile: Dockerfile
@@ -116,10 +123,11 @@ services:
             context: .
             dockerfile: Containerfile.lite # Same one the Makefile builds
         restart: unless-stopped
-        # NOTE: When using replicas > 1, access via nginx:8080 instead of direct port 4444
-        # ports:
-        #   - "4444:4444"               # Disabled for multi-replica mode
-        networks: [mcpnet]
+        # Port 4444 exposed for direct access and shared-proxy nginx routing
+        # When using replicas > 1, use --profile standalone for nginx on :8080 instead
+        ports:
+            - "4444:4444"
+        networks: [mcpnet, shared-proxy]
 
         # ──────────────────────────────────────────────────────────────────────
         # Environment - pick ONE database URL line, comment the rest
