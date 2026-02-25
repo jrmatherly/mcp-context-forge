@@ -87,6 +87,10 @@
   {{- if .Values.redisCommander.enabled }}
   - Redis UI       : {{ .Values.redisCommander.image.repository }}:{{ .Values.redisCommander.image.tag }}
   {{- end }}
+  {{- if .Values.mindsdb.enabled }}
+  - MindsDB        : {{ .Values.mindsdb.image.repository }}:{{ .Values.mindsdb.image.tag }}
+    {{- if .Values.mindsdb.persistence.enabled }} ({{ .Values.mindsdb.persistence.size }} storage){{ end }}
+  {{- end }}
 
 🔧 **Configuration**
   {{- if .Values.mcpContextForge.hpa.enabled }}
@@ -219,6 +223,27 @@
   - Internal URL : http://{{ $redisSvc }}-commander.{{ $ns }}.svc.cluster.local:8081
   - Port-forward : `kubectl -n {{ $ns }} port-forward svc/{{ $fullName }}-redis-commander 8081:8081`
   - Local Access: http://localhost:8081 (after port-forward)
+{{- end }}
+
+{{- /* ════════════  MindsDB  ════════════ */}}
+{{- if .Values.mindsdb.enabled }}
+{{- $mindsdbSvc := printf "%s-mindsdb" $fullName }}
+🧠 **MindsDB (Knowledge Base Gateway)**
+  - HTTP API     : http://{{ $mindsdbSvc }}.{{ $ns }}.svc.cluster.local:{{ .Values.mindsdb.service.httpPort }}
+  - MySQL        : {{ $mindsdbSvc }}.{{ $ns }}.svc.cluster.local:{{ .Values.mindsdb.service.mysqlPort }}
+  - MCP SSE      : http://{{ $mindsdbSvc }}.{{ $ns }}.svc.cluster.local:{{ .Values.mindsdb.service.httpPort }}/mcp/sse
+  - Username     : {{ .Values.mindsdb.credentials.username }}
+  - Port-forward : `kubectl -n {{ $ns }} port-forward svc/{{ $mindsdbSvc }} 47334:{{ .Values.mindsdb.service.httpPort }}`
+  - Local Access : http://localhost:47334 (after port-forward)
+
+  To register MindsDB with the gateway:
+  ```bash
+  curl -s -X POST \
+       -H "Authorization: Bearer $GW_TOKEN" \
+       -H "Content-Type: application/json" \
+       -d '{"name":"mindsdb","url":"http://{{ $mindsdbSvc }}.{{ $ns }}.svc.cluster.local:{{ .Values.mindsdb.service.httpPort }}/mcp/sse"}' \
+       http://localhost:4444/gateways
+  ```
 {{- end }}
 
 {{- /* ════════════  Cluster Information  ════════════ */}}

@@ -1547,6 +1547,90 @@ minio:
             memory: 256Mi
 
 ########################################################################
+# MINDSDB - Federated data gateway with Knowledge Bases
+# Provides MCP tools (query, list_databases) via SSE at /mcp/sse.
+# Register as a Context Forge gateway, then create team-scoped
+# Virtual Servers. See: docs/tutorials/mindsdb-team-provisioning.md
+########################################################################
+mindsdb:
+    enabled: false # Set to true to deploy MindsDB (optional)
+
+    image:
+        repository: mindsdb/mindsdb
+        tag: "latest" # Pin a specific tag in production
+        pullPolicy: IfNotPresent
+
+    # Credentials for MindsDB admin user
+    # It's recommended to use existingSecret in production
+    existingSecret: ""
+    credentials:
+        username: admin
+        password: changeme # CHANGE IN PRODUCTION!
+
+    # MindsDB runtime configuration
+    config:
+        apis: "http,mysql" # Enabled API interfaces
+        httpAuthType: "token" # Auth type: token (recommended) or session
+
+    service:
+        type: ClusterIP
+        httpPort: 47334 # HTTP API and Web UI
+        mysqlPort: 47335 # MySQL protocol interface
+
+    # PersistentVolumeClaim for Knowledge Base data
+    persistence:
+        enabled: true
+        storageClassName: "" # Use default StorageClass
+        accessModes: [ReadWriteOnce]
+        size: 10Gi
+        annotations: {}
+
+    # Resource limits & requests
+    # MindsDB is memory-intensive when loading embedding models and KBs.
+    resources:
+        limits:
+            cpu: 2000m
+            memory: 4Gi
+        requests:
+            cpu: 500m
+            memory: 1Gi
+
+    # Health probes — MindsDB exposes /api/status for health checks.
+    # Note: docker-compose checks both /api/status AND /mcp/status.
+    # Consider changing readiness path to /mcp/status to verify the MCP
+    # SSE endpoint is ready before the gateway registers it.
+    probes:
+        readiness:
+            type: http
+            path: /api/status
+            port: 47334
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 3
+
+        liveness:
+            type: http
+            path: /api/status
+            port: 47334
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            timeoutSeconds: 10
+            successThreshold: 1
+            failureThreshold: 5
+
+        startup:
+            type: http
+            path: /api/status
+            port: 47334
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 18 # 18 * 10s = 180s max startup
+
+########################################################################
 # MCP-FAST-TIME-SERVER - optional high-performance time server for MCP (go)
 # Provides a fast implementation including SSE and Streamable HTTP
 ########################################################################

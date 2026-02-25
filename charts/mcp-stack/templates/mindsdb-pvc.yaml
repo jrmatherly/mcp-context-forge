@@ -1,0 +1,22 @@
+{{- if and .Values.mindsdb.enabled .Values.mindsdb.persistence.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "mcp-stack.fullname" . }}-mindsdb-pvc
+  labels:
+    {{- include "mcp-stack.labels" . | nindent 4 }}
+    app: {{ include "mcp-stack.fullname" . }}-mindsdb
+    app.kubernetes.io/component: mindsdb
+  {{- if .Values.mindsdb.persistence.annotations }}
+  annotations:
+    {{- toYaml .Values.mindsdb.persistence.annotations | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if .Values.mindsdb.persistence.storageClassName }}
+  storageClassName: {{ .Values.mindsdb.persistence.storageClassName }}
+  {{- end }}
+  accessModes: {{- toYaml .Values.mindsdb.persistence.accessModes | nindent 4 }}
+  resources:
+    requests:
+      storage: {{ .Values.mindsdb.persistence.size }}
+{{- end }}

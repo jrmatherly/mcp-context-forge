@@ -1,0 +1,22 @@
+{{- if .Values.mindsdb.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "mcp-stack.fullname" . }}-mindsdb
+  labels:
+    {{- include "mcp-stack.labels" . | nindent 4 }}
+    app.kubernetes.io/component: mindsdb
+spec:
+  type: {{ .Values.mindsdb.service.type }}
+  ports:
+    - name: http
+      port: {{ .Values.mindsdb.service.httpPort }}
+      targetPort: http
+      protocol: TCP
+    - name: mysql
+      port: {{ .Values.mindsdb.service.mysqlPort }}
+      targetPort: mysql
+      protocol: TCP
+  selector:
+    app: {{ include "mcp-stack.fullname" . }}-mindsdb
+{{- end }}

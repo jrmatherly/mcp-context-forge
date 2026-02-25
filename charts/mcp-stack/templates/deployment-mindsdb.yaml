@@ -1,0 +1,84 @@
+{{- if .Values.mindsdb.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "mcp-stack.fullname" . }}-mindsdb
+  labels:
+    {{- include "mcp-stack.labels" . | nindent 4 }}
+    app: {{ include "mcp-stack.fullname" . }}-mindsdb
+    app.kubernetes.io/component: mindsdb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "mcp-stack.fullname" . }}-mindsdb
+  template:
+    metadata:
+      labels:
+        {{- include "mcp-stack.labels" . | nindent 8 }}
+        app: {{ include "mcp-stack.fullname" . }}-mindsdb
+        app.kubernetes.io/component: mindsdb
+    spec:
+      {{- if .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        {{- range .Values.global.imagePullSecrets }}
+        - name: {{ . }}
+        {{- end }}
+      {{- end }}
+      {{- if or .Values.serviceAccount.create .Values.serviceAccount.name }}
+      serviceAccountName: {{ include "mcp-stack.serviceAccountName" . }}
+      {{- end }}
+      containers:
+        - name: mindsdb
+          image: "{{ .Values.mindsdb.image.repository }}:{{ .Values.mindsdb.image.tag }}"
+          imagePullPolicy: {{ .Values.mindsdb.image.pullPolicy }}
+
+          ports:
+            - name: http
+              containerPort: 47334
+              protocol: TCP
+            - name: mysql
+              containerPort: 47335
+              protocol: TCP
+
+          env:
+            - name: MINDSDB_APIS
+              value: {{ .Values.mindsdb.config.apis | quote }}
+            - name: MINDSDB_HTTP_AUTH_TYPE
+              value: {{ .Values.mindsdb.config.httpAuthType | quote }}
+
+          envFrom:
+            - secretRef:
+                name: {{ .Values.mindsdb.existingSecret | default (printf "%s-mindsdb" (include "mcp-stack.fullname" .)) }}
+
+          {{- with .Values.mindsdb.probes.readiness }}
+          readinessProbe:
+{{- include "helpers.renderProbe" (dict "probe" . "root" $) | nindent 12 }}
+          {{- end }}
+
+          {{- with .Values.mindsdb.probes.liveness }}
+          livenessProbe:
+{{- include "helpers.renderProbe" (dict "probe" . "root" $) | nindent 12 }}
+          {{- end }}
+
+          {{- with .Values.mindsdb.probes.startup }}
+          startupProbe:
+{{- include "helpers.renderProbe" (dict "probe" . "root" $) | nindent 12 }}
+          {{- end }}
+
+          volumeMounts:
+            - name: mindsdb-storage
+              mountPath: /root/mdb_storage
+
+          resources:
+{{- toYaml .Values.mindsdb.resources | nindent 12 }}
+
+      volumes:
+        - name: mindsdb-storage
+          {{- if .Values.mindsdb.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ include "mcp-stack.fullname" . }}-mindsdb-pvc
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+{{- end }}

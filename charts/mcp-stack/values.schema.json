@@ -1960,6 +1960,78 @@
                 }
             }
         },
+        "mindsdb": {
+            "type": "object",
+            "description": "MindsDB federated data gateway with Knowledge Bases. Provides MCP tools via SSE.",
+            "properties": {
+                "enabled": {
+                    "type": "boolean",
+                    "description": "Enable to deploy MindsDB.",
+                    "default": false
+                },
+                "image": {
+                    "type": "object",
+                    "properties": {
+                        "repository": { "type": "string" },
+                        "tag": { "type": "string" },
+                        "pullPolicy": { "type": "string" }
+                    }
+                },
+                "existingSecret": {
+                    "type": "string",
+                    "description": "Name of an existing secret for MindsDB credentials."
+                },
+                "credentials": {
+                    "type": "object",
+                    "properties": {
+                        "username": { "type": "string" },
+                        "password": { "type": "string" }
+                    }
+                },
+                "config": {
+                    "type": "object",
+                    "description": "MindsDB runtime configuration.",
+                    "properties": {
+                        "apis": { "type": "string", "description": "Enabled API interfaces (comma-separated)." },
+                        "httpAuthType": { "type": "string", "description": "Auth type: token or session." }
+                    }
+                },
+                "service": {
+                    "type": "object",
+                    "properties": {
+                        "type": { "type": "string" },
+                        "httpPort": { "type": "integer" },
+                        "mysqlPort": { "type": "integer" }
+                    }
+                },
+                "persistence": {
+                    "type": "object",
+                    "properties": {
+                        "enabled": { "type": "boolean" },
+                        "storageClassName": { "type": "string" },
+                        "accessModes": {
+                            "type": "array",
+                            "items": { "type": "string" }
+                        },
+                        "size": { "type": "string" },
+                        "annotations": { "type": "object" }
+                    }
+                },
+                "resources": {
+                    "$ref": "#/$defs/resources",
+                    "description": "CPU/Memory resource requests/limits."
+                },
+                "probes": {
+                    "type": "object",
+                    "description": "Health probe configuration.",
+                    "properties": {
+                        "readiness": { "$ref": "#/$defs/probe" },
+                        "liveness": { "$ref": "#/$defs/probe" },
+                        "startup": { "$ref": "#/$defs/probe" }
+                    }
+                }
+            }
+        },
         "mcpFastTimeServer": {
             "type": "object",
             "description": "MCP Fast Time Server configuration",
