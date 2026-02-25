@@ -123,10 +123,11 @@ services:
             context: .
             dockerfile: Containerfile.lite # Same one the Makefile builds
         restart: unless-stopped
-        # Port 4444 exposed for direct access and shared-proxy nginx routing
-        # When using replicas > 1, use --profile standalone for nginx on :8080 instead
-        ports:
-            - "4444:4444"
+        # No host port binding — with replicas > 1, port conflicts would occur.
+        # Access via: shared-proxy nginx (production) or --profile standalone nginx on :8080 (dev)
+        # For single-replica direct access: uncomment the port below and set replicas: 1
+        # ports:
+        #     - "4444:4444"
         networks: [mcpnet, shared-proxy]
 
         # ──────────────────────────────────────────────────────────────────────
@@ -1026,14 +1027,13 @@ services:
     nginx_exporter:
         image: nginx/nginx-prometheus-exporter:latest
         restart: unless-stopped
-        networks: [mcpnet]
+        networks: [mcpnet, shared-proxy]
         ports:
             - "9113:9113" # http://localhost:9113/metrics
         command:
+            # In production, scrapes LibreChat's nginx via shared-proxy network.
+            # For standalone dev, use --profile standalone and this resolves to MCF's nginx.
             - "-nginx.scrape-uri=http://nginx:80/nginx_status"
-        depends_on:
-            nginx:
-                condition: service_healthy
         profiles: ["monitoring"]
 
     # ──────────────────────────────────────────────────────────────────────
@@ -1901,7 +1901,7 @@ services:
     ###############################################################################
     # Locust - Containerized load testing with web UI (master + optional workers)
     # Web UI: http://localhost:8089
-    # Target: http://nginx:80 (internal network)
+    # Target: http://gateway:4444 (direct, no nginx proxy)
     ###############################################################################
     locust:
         image: locustio/locust:latest
@@ -1920,8 +1920,6 @@ services:
         depends_on:
             gateway:
                 condition: service_healthy
-            nginx:
-                condition: service_healthy
             locust_token:
                 condition: service_completed_successfully
         entrypoint: ["/bin/sh", "-c"]
@@ -1933,7 +1931,7 @@ services:
                 MODE="$${LOCUST_MODE:-master}"
                 if [ "$$MODE" = "headless" ]; then
                   exec locust -f /mnt/locust/locustfile.py \
-                    --host=http://nginx:80 \
+                    --host=http://gateway:4444 \
                     --users="$${LOCUST_USERS:-100}" \
                     --spawn-rate="$${LOCUST_SPAWN_RATE:-10}" \
                     --run-time="$${LOCUST_RUN_TIME:-5m}" \
@@ -1944,7 +1942,7 @@ services:
                 fi
 
                 exec locust -f /mnt/locust/locustfile.py \
-                  --host=http://nginx:80 \
+                  --host=http://gateway:4444 \
                   --web-host=0.0.0.0 --web-port=8089 \
                   --master --expect-workers="$${LOCUST_EXPECT_WORKERS:-1}" \
                   --class-picker
@@ -1986,7 +1984,7 @@ services:
                 while [ ! -s /tokens/gateway.jwt ]; do echo "Waiting for gateway JWT..."; sleep 0.5; done
                 export MCPGATEWAY_BEARER_TOKEN="$$(cat /tokens/gateway.jwt)"
                 exec locust -f /mnt/locust/locustfile.py \
-                  --host=http://nginx:80 \
+                  --host=http://gateway:4444 \
                   --worker --master-host=locust
         environment:
             - HOME=/tmp
