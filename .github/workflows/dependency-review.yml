@@ -36,6 +36,10 @@ on:
 # -----------------------------------------------------------------
 # Minimal permissions - principle of least privilege
 # -----------------------------------------------------------------
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read # for actions/checkout
   security-events: write # upload SARIF results

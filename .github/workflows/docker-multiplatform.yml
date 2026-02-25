@@ -41,6 +41,10 @@ on:
     - cron: "17 18 * * 2"  # Weekly rebuild (Tuesday 18:17 UTC) for CVE patches
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 permissions:
   contents: read
   packages: write
