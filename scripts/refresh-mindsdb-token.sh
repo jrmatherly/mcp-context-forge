@@ -13,17 +13,39 @@
 # Usage:
 #   ./scripts/refresh-mindsdb-token.sh
 #
-# Required env vars: MINDSDB_PASSWORD, CONTEXT_FORGE_ADMIN_TOKEN
+# Required env vars: MINDSDB_PASSWORD, MCPGATEWAY_BEARER_TOKEN
 # Optional env vars: MINDSDB_HOST, MINDSDB_HTTP_PORT, MINDSDB_USERNAME,
-#                    CONTEXT_FORGE_HOST
+#                    MCPGATEWAY_URL
 set -euo pipefail
+
+# Source .env if present (already-exported env vars take precedence)
+if [ -f .env ]; then
+  while IFS= read -r line || [ -n "$line" ]; do
+    # Skip comments and blank lines
+    [[ "$line" =~ ^[[:space:]]*# ]] && continue
+    [[ -z "${line// /}" ]] && continue
+    # Strip optional 'export ' prefix
+    line="${line#export }"
+    key="${line%%=*}"
+    key="${key// /}"
+    [ -z "$key" ] && continue
+    # Only set if not already in the environment
+    if [ -z "${!key+x}" ]; then
+      val="${line#*=}"
+      # Strip surrounding quotes (single or double)
+      val="${val%\"}" && val="${val#\"}"
+      val="${val%\'}" && val="${val#\'}"
+      export "$key=$val"
+    fi
+  done < .env
+fi
 
 MINDSDB_HOST="${MINDSDB_HOST:-localhost}"
 MINDSDB_PORT="${MINDSDB_HTTP_PORT:-47334}"
 MINDSDB_USER="${MINDSDB_USERNAME:-admin}"
-MINDSDB_PASS="${MINDSDB_PASSWORD:?MINDSDB_PASSWORD is required}"
-CONTEXT_FORGE_HOST="${CONTEXT_FORGE_HOST:-localhost:8000}"
-CONTEXT_FORGE_ADMIN_TOKEN="${CONTEXT_FORGE_ADMIN_TOKEN:?CONTEXT_FORGE_ADMIN_TOKEN is required}"
+MINDSDB_PASS="${MINDSDB_PASSWORD:?MINDSDB_PASSWORD is required — set in .env or export before running}"
+MCPGATEWAY_URL="${MCPGATEWAY_URL:-http://localhost:${PORT:-4444}}"
+MCPGATEWAY_BEARER_TOKEN="${MCPGATEWAY_BEARER_TOKEN:?MCPGATEWAY_BEARER_TOKEN is required — set in .env or export before running}"
 
 # Step 1: Get new token from MindsDB
 # Credentials are piped via stdin to avoid exposure in ps/process lists.
@@ -56,14 +78,14 @@ fi
 # Step 3: Propagate new token to Context Forge gateway record.
 # Context Forge reads auth tokens from DB on each proxied request (not cached
 # in memory), so this PUT takes effect immediately for all subsequent upstream calls.
-GATEWAY_ID=$(curl -sf "http://${CONTEXT_FORGE_HOST}/gateways" \
-  -H "Authorization: Bearer ${CONTEXT_FORGE_ADMIN_TOKEN}" | \
+GATEWAY_ID=$(curl -sf "${MCPGATEWAY_URL}/gateways" \
+  -H "Authorization: Bearer ${MCPGATEWAY_BEARER_TOKEN}" | \
   jq -r '.[] | select(.name == "mindsdb") | .id')
 
 if [ -n "${GATEWAY_ID}" ] && [ "${GATEWAY_ID}" != "null" ]; then
-  curl -sf -X PUT "http://${CONTEXT_FORGE_HOST}/gateways/${GATEWAY_ID}" \
+  curl -sf -X PUT "${MCPGATEWAY_URL}/gateways/${GATEWAY_ID}" \
     -H "Content-Type: application/json" \
-    -H "Authorization: Bearer ${CONTEXT_FORGE_ADMIN_TOKEN}" \
+    -H "Authorization: Bearer ${MCPGATEWAY_BEARER_TOKEN}" \
     -d '{"auth_token": "'"${TOKEN}"'"}'
   echo "Context Forge gateway ${GATEWAY_ID} updated with new token"
 else

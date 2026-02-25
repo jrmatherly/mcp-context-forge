@@ -11,13 +11,13 @@ Before provisioning a new team, ensure:
 - MindsDB container is running and healthy (`docker compose --profile mindsdb ps`)
 - Context Forge is running and accessible
 - LibreChat is configured with the existing MindsDB integration
-- You have admin tokens for both MindsDB (`MINDSDB_AUTH_TOKEN`) and Context Forge (`CONTEXT_FORGE_ADMIN_TOKEN`)
+- You have admin tokens for both MindsDB (`MINDSDB_AUTH_TOKEN`) and Context Forge (`MCPGATEWAY_BEARER_TOKEN`)
 - The federated `query` tool ID is known (from initial gateway registration)
 
 ```bash
 # Get the query tool ID if not already known
 QUERY_TOOL_ID=$(curl -s http://context-forge:8000/tools \
-  -H "Authorization: Bearer ${CONTEXT_FORGE_ADMIN_TOKEN}" | \
+  -H "Authorization: Bearer ${MCPGATEWAY_BEARER_TOKEN}" | \
   jq -r '.[] | select(.federation_source == "mindsdb" and .name == "query") | .id')
 echo "Query tool ID: ${QUERY_TOOL_ID}"
 ```
@@ -96,7 +96,7 @@ TEAM_UUID="00000000-0000-0000-0000-$(printf '%012x' "$(echo -n '<team>' | od -A 
 # Create the Virtual Server
 curl -X POST http://context-forge:8000/servers \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer ${CONTEXT_FORGE_ADMIN_TOKEN}" \
+  -H "Authorization: Bearer ${MCPGATEWAY_BEARER_TOKEN}" \
   -d '{
     "id": "'${TEAM_UUID}'",
     "name": "<team>-team-data",
@@ -122,7 +122,7 @@ curl -X POST http://context-forge:8000/servers \
 ```bash
 # Confirm the server exists
 curl -s http://context-forge:8000/servers/${TEAM_UUID} \
-  -H "Authorization: Bearer ${CONTEXT_FORGE_ADMIN_TOKEN}" | jq '.name'
+  -H "Authorization: Bearer ${MCPGATEWAY_BEARER_TOKEN}" | jq '.name'
 ```
 
 ---
@@ -224,7 +224,7 @@ To remove a team's MindsDB integration:
 3. **Delete the Virtual Server** in Context Forge:
    ```bash
    curl -X DELETE http://context-forge:8000/servers/<TEAM_UUID> \
-     -H "Authorization: Bearer ${CONTEXT_FORGE_ADMIN_TOKEN}"
+     -H "Authorization: Bearer ${MCPGATEWAY_BEARER_TOKEN}"
    ```
 4. **Drop the Knowledge Base** in MindsDB:
    ```sql

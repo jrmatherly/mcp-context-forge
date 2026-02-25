@@ -338,7 +338,7 @@ Mount TLS certificates into MindsDB via `config.json`:
 # Register MindsDB A2A endpoint (when A2A support is stable)
 curl -X POST http://context-forge:8000/a2a/agents \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer ${CONTEXT_FORGE_ADMIN_TOKEN}" \
+  -H "Authorization: Bearer ${MCPGATEWAY_BEARER_TOKEN}" \
   -d '{
     "name": "mindsdb-agent",
     "url": "http://mindsdb:47334/a2a/",
