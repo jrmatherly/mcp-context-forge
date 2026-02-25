@@ -1038,7 +1038,7 @@ services:
         restart: unless-stopped
         networks: [mcpnet]
         ports:
-            - "8085:8080" # http://localhost:8085/metrics
+            - "18085:8080" # http://localhost:8085/metrics
         privileged: true
         volumes:
             - /:/rootfs:ro
@@ -2135,7 +2135,7 @@ services:
             - MINDSDB_APIS=http,mysql
             - MINDSDB_HTTP_AUTH_TYPE=token
             - MINDSDB_USERNAME=${MINDSDB_USERNAME:-admin}
-            - MINDSDB_PASSWORD=${MINDSDB_PASSWORD}  # Required: set in .env before starting
+            - MINDSDB_PASSWORD=${MINDSDB_PASSWORD} # Required: set in .env before starting
         ports:
             - "${MINDSDB_HTTP_PORT:-47334}:47334"
             - "${MINDSDB_MYSQL_PORT:-47335}:47335"
@@ -2145,7 +2145,11 @@ services:
             - ./mindsdb_data:/root/mdb_storage
         networks: [mcpnet]
         healthcheck:
-            test: ["CMD-SHELL", "curl -sf http://localhost:47334/api/status && curl -sf http://localhost:47334/mcp/status"]
+            test:
+                [
+                    "CMD-SHELL",
+                    "curl -sf http://localhost:47334/api/status && curl -sf http://localhost:47334/mcp/status",
+                ]
             interval: 30s
             timeout: 10s
             retries: 5
