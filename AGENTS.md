@@ -119,6 +119,13 @@ Optional MindsDB deployment via `docker compose --profile mindsdb`:
 - See `docs/docs/architecture/mindsdb-enhancements.md` for future hardening roadmap
 - See `docs/docs/tutorials/mindsdb-team-provisioning.md` for adding new teams
 
+## Helm Chart Notes
+
+- `values.schema.json` has `additionalProperties: false` — new top-level values sections require a matching schema entry or `helm lint` fails
+- Validate with all optional combos: `helm template test charts/mcp-stack/ --set pgbouncer.enabled=true`, `--set mindsdb.enabled=true`
+- `docker-compose.yml` uses high-load defaults (8 CPU / 8 GB); Helm `values.yaml` uses conservative defaults (200m CPU / 1Gi) — drift is documented inline
+- `deployment/k8s/` raw manifests are **deprecated** — use `charts/mcp-stack/` Helm chart for all Kubernetes deployments
+
 ## Key Environment Variables
 
 ```bash

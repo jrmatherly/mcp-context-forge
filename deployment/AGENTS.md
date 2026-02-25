@@ -49,13 +49,9 @@ cd charts/mcp-stack
 make install
 ```
 
-### Using Raw Manifests
+### Raw Manifests (Deprecated)
 
-The `k8s/` directory contains raw Kubernetes manifests:
-
-```bash
-kubectl apply -f deployment/k8s/
-```
+The `k8s/` directory contains **deprecated** raw Kubernetes manifests. Use the Helm chart instead. See `deployment/k8s/README.md` for details.
 
 ## Knative Serverless
 
@@ -64,10 +60,15 @@ The `knative/` directory contains Knative Service definitions for serverless dep
 ## Terraform
 
 The `terraform/` directory contains infrastructure-as-code for cloud providers.
+- Uses `yamlencode` to pass Helm values matching chart's `values.yaml` structure
+- Separate secrets per service (`mcpgw_db`, `mcpgw_redis`) with keys matching chart's external DB/Redis pattern
+- Run `terraform fmt` after edits — auto-formats HCL files
 
 ## Ansible
 
 The `ansible/` directory contains playbooks for traditional server deployment.
+- `group_vars/all.yml` defines variables consumed by Jinja2 templates in `roles/k8s/templates/`
+- Image split: `gateway_image` (repository) + `gateway_image_tag` (tag) — templates must concatenate both
 
 ## Local Infrastructure
 

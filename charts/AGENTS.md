@@ -182,10 +182,28 @@ kubectl describe pod <pod> -n <namespace>
 kubectl describe ingress <ingress> -n <namespace>
 ```
 
+## Schema Validation
+
+- `values.schema.json` uses `additionalProperties: false` at the top level — any new top-level values section (e.g. `mindsdb:`) **must** have a matching schema entry or `helm lint` will fail
+- Optional components use `enabled: false` default with all templates gated by `{{- if .Values.<component>.enabled }}`
+- Shared schema definitions: `#/$defs/probe`, `#/$defs/resources` — reuse these for new components
+- After schema changes, validate with: `helm lint charts/mcp-stack/ --strict`
+
+## Validation Commands
+
+```bash
+# Full validation matrix (test all optional component combos)
+helm lint charts/mcp-stack/ --strict
+helm template test charts/mcp-stack/ --debug > /dev/null
+helm template test charts/mcp-stack/ --set pgbouncer.enabled=true --debug > /dev/null
+helm template test charts/mcp-stack/ --set mindsdb.enabled=true --debug > /dev/null
+helm install test charts/mcp-stack/ --dry-run --debug > /dev/null
+```
+
 ## Key Files
 
 - `Chart.yaml` - Chart metadata, versions, dependencies
 - `values.yaml` - All configurable values with defaults
-- `values.schema.json` - JSON Schema for values validation
+- `values.schema.json` - JSON Schema for values validation (`additionalProperties: false`)
 - `templates/_helpers.tpl` - Reusable template functions
 - `Makefile` - Developer automation commands
