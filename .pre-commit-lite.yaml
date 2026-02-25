@@ -18,7 +18,7 @@
 # report issues (linters). Modified files will need to be staged again.
 # -----------------------------------------------------------------------------
 
-exclude: '(^|/)(\.pre-commit-.*\.yaml|normalize_special_characters\.py|test_input_validation\.py|ai_artifacts_normalizer\.py)$|(^|/)mcp-servers/templates/|(^|/)plugin_templates/|(^|/)tests/load/|.*\.(jinja|j2)$'  # ignore these files, all templates, load tests, and jinja files
+exclude: '(^|/)(\.pre-commit-.*\.yaml|normalize_special_characters\.py|test_input_validation\.py|ai_artifacts_normalizer\.py)$|(^|/)mcp-servers/templates/|(^|/)plugin_templates/|(^|/)tests/load/|.*\.(jinja|j2)$|(^|/)(_bmad/|_bmad-output/|\.claude/|\.serena/|\.agent/|\.agents/|\.rovodev/|\.scratchpad/|\.windsurf/)'  # ignore these files, all templates, load tests, jinja files, and AI/agent config directories
 
 default_language_version:
   python: python3.12
@@ -106,7 +106,7 @@ repos:
       - id: forbid-placeholder-citations
         name: ❌ Forbid Placeholder Citations
         description: Prevents placeholder citations like (Author, 2023) from being committed.
-        entry: '\([A-Z][a-z]+,?\s+\d{4}\)'
+        entry: '\([A-Z][a-z]+,\s+\d{4}\)'
         language: pygrep
         types: [text]
         exclude: ^\.pre-commit-config\.yaml$

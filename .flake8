@@ -37,7 +37,16 @@ exclude =
     reports,
     scripts,
     tmp,
-    todo
+    todo,
+    _bmad,
+    _bmad-output,
+    .agent,
+    .agents,
+    .claude,
+    .rovodev,
+    .scratchpad,
+    .serena,
+    .windsurf
 extend-ignore =
     E203,
     W503

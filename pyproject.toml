@@ -409,6 +409,15 @@ exclude = [
     "test",
     "mcp-servers/templates",
     "plugin_templates",
+    "_bmad",
+    "_bmad-output",
+    ".agent",
+    ".agents",
+    ".claude",
+    ".rovodev",
+    ".scratchpad",
+    ".serena",
+    ".windsurf",
 ]
 
 # 200 line length
