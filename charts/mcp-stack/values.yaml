@@ -33,9 +33,113 @@ serviceAccount:
 mcpContextForge:
     # --- Specific plugin file ----#
     pluginConfig:
-        enabled: false
+        # Enable to mount the plugin config as a ConfigMap volume.
+        # The full plugin pipeline (25+ plugins across 7 tiers) is in plugins/config.yaml.
+        # Below is a security-focused subset suitable for production defaults.
+        enabled: true
         plugins: |
-            # plugin file
+            # Security-essential plugin configuration for Kubernetes deployments.
+            # For the full pipeline (rate limiting, code safety, telemetry, etc.),
+            # copy plugins/config.yaml from the repository and provide it as a
+            # custom values file: helm install ... -f my-plugins.yaml
+
+            plugin_dirs:
+                - "plugins/native"
+                - "plugins/custom"
+                - "/etc/mcpgateway/plugins"
+
+            plugin_settings:
+                parallel_execution_within_band: true
+                plugin_timeout: 120
+                fail_on_plugin_error: false
+                enable_plugin_api: true
+                plugin_health_check_interval: 120
+                include_user_info: false
+
+            plugins:
+                # SQL Sanitizer — block dangerous SQL patterns (security boundary)
+                - name: "SQLSanitizer"
+                  kind: "plugins.sql_sanitizer.sql_sanitizer.SQLSanitizerPlugin"
+                  description: "Detects risky SQL and optionally strips comments or blocks"
+                  version: "0.1.0"
+                  author: "ContextForge"
+                  hooks: ["prompt_pre_fetch", "tool_pre_invoke"]
+                  tags: ["security", "sql", "validation"]
+                  mode: "enforce"
+                  priority: 45
+                  conditions: []
+                  config:
+                      fields: ["sql", "query", "statement"]
+                      blocked_statements:
+                          [
+                              "\\bDROP\\b",
+                              "\\bTRUNCATE\\b",
+                              "\\bALTER\\b",
+                              "\\bGRANT\\b",
+                              "\\bREVOKE\\b",
+                              "\\bINSERT\\b",
+                              "\\bUPDATE\\b",
+                              "\\bDELETE\\b",
+                              "\\bCREATE\\b",
+                          ]
+                      block_delete_without_where: true
+                      block_update_without_where: true
+                      strip_comments: true
+                      require_parameterization: false
+                      block_on_violation: true
+
+                # PII Filter — detect and mask personally identifiable information
+                - name: "PIIFilterPlugin"
+                  kind: "plugins.pii_filter.pii_filter.PIIFilterPlugin"
+                  description: "Detects and masks Personally Identifiable Information"
+                  version: "0.1.0"
+                  author: "Mihai Criveti"
+                  hooks: ["prompt_pre_fetch", "prompt_post_fetch", "tool_pre_invoke", "tool_post_invoke"]
+                  tags: ["security", "pii", "compliance"]
+                  mode: "enforce"
+                  priority: 50
+                  conditions: []
+                  config:
+                      detect_ssn: true
+                      detect_credit_card: true
+                      detect_email: true
+                      detect_phone: true
+                      detect_ip_address: false
+                      detect_aws_keys: true
+                      detect_api_keys: true
+                      default_mask_strategy: "partial"
+                      redaction_text: "[PII_REDACTED]"
+                      block_on_detection: false
+                      log_detections: true
+                      include_detection_details: true
+                      # whitelist_patterns: Omitted — operators should add
+                      # environment-specific safe patterns via custom values.
+
+                # Secrets Detection — catch leaked credentials
+                - name: "SecretsDetection"
+                  kind: "plugins.secrets_detection.secrets_detection.SecretsDetectionPlugin"
+                  description: "Detects keys/tokens/secrets in inputs/outputs"
+                  version: "0.1.0"
+                  author: "ContextForge"
+                  hooks: ["prompt_pre_fetch", "tool_post_invoke", "resource_post_fetch"]
+                  tags: ["security", "secrets", "dlp"]
+                  mode: "enforce"
+                  priority: 51
+                  conditions: []
+                  config:
+                      enabled:
+                          aws_access_key_id: true
+                          aws_secret_access_key: true
+                          google_api_key: true
+                          slack_token: true
+                          private_key_block: true
+                          jwt_like: true
+                          hex_secret_32: true
+                          base64_24: true
+                      redact: true
+                      redaction_text: "***REDACTED***"
+                      block_on_detection: true
+                      min_findings_to_block: 1
 
     replicaCount: 2 # horizontal scaling for the gateway
 
@@ -196,10 +300,13 @@ mcpContextForge:
         # ─ Connection pooling ─
         # With PgBouncer enabled: smaller pools (PgBouncer handles connection multiplexing)
         # Without PgBouncer: increase to DB_POOL_SIZE=50, DB_MAX_OVERFLOW=100
+        # NOTE: docker-compose uses DB_POOL_SIZE=20, DB_MAX_OVERFLOW=10, DB_POOL_RECYCLE=60
+        # for high-load testing (8 CPU, 8GB). These conservative defaults suit smaller K8s
+        # resource allocations (200m CPU, 1Gi). Scale with your resource limits.
         DB_POOL_SIZE: "15" # size of SQLAlchemy connection pool
         DB_MAX_OVERFLOW: "30" # extra connections allowed beyond pool size
         DB_POOL_TIMEOUT: "30" # seconds to wait for a connection
-        DB_POOL_RECYCLE: "3600" # recycle connections after N seconds
+        DB_POOL_RECYCLE: "3600" # recycle connections after N seconds (docker-compose: 60 for PgBouncer)
         DB_SQLITE_BUSY_TIMEOUT: "5000" # SQLite lock wait timeout in ms (1000-60000)
 
         # ─ Cache behaviour ─
@@ -219,6 +326,7 @@ mcpContextForge:
         DB_MAX_BACKOFF_SECONDS: "30" # Max backoff cap in seconds (jitter ±25% applied after)
 
         # ─ Redis connection pool (performance-tuned) ─
+        # NOTE: docker-compose uses REDIS_MAX_CONNECTIONS=100 for high-load testing.
         REDIS_MAX_CONNECTIONS: "50" # Pool size per worker
         REDIS_SOCKET_TIMEOUT: "2.0" # Read/write timeout (seconds)
         REDIS_SOCKET_CONNECT_TIMEOUT: "2.0" # Connection timeout (seconds)
@@ -233,7 +341,7 @@ mcpContextForge:
 
         # ─ Auth Cache (reduces DB queries per auth from 3-4 to 0-1) ─
         AUTH_CACHE_ENABLED: "true" # Enable auth data caching (user, team, revocation)
-        AUTH_CACHE_USER_TTL: "60" # User data cache TTL (seconds)
+        AUTH_CACHE_USER_TTL: "60" # User data cache TTL (seconds) (docker-compose: 300 for high-load)
         AUTH_CACHE_REVOCATION_TTL: "30" # Token revocation cache TTL (seconds, security-critical)
         AUTH_CACHE_TEAM_TTL: "60" # Team membership cache TTL (seconds)
         AUTH_CACHE_ROLE_TTL: "60" # User role in team cache TTL (seconds)
@@ -243,7 +351,7 @@ mcpContextForge:
 
         # ─ Registry Cache (reduces DB queries for list endpoints) ─
         REGISTRY_CACHE_ENABLED: "true" # Enable registry list caching
-        REGISTRY_CACHE_TOOLS_TTL: "20" # Tools list cache TTL (seconds)
+        REGISTRY_CACHE_TOOLS_TTL: "20" # Tools list cache TTL (seconds) (docker-compose: 300 for high-load)
         REGISTRY_CACHE_PROMPTS_TTL: "15" # Prompts list cache TTL (seconds)
         REGISTRY_CACHE_RESOURCES_TTL: "15" # Resources list cache TTL (seconds)
         REGISTRY_CACHE_AGENTS_TTL: "20" # A2A agents list cache TTL (seconds)
@@ -284,7 +392,7 @@ mcpContextForge:
         MCPGATEWAY_BULK_IMPORT_RATE_LIMIT: "10" # requests per minute for bulk import
 
         # ─ A2A (Agent-to-Agent) Features ─
-        MCPGATEWAY_A2A_ENABLED: "true" # enable A2A agent features
+        MCPGATEWAY_A2A_ENABLED: "true" # enable A2A agent features (docker-compose: false by default)
         MCPGATEWAY_A2A_MAX_AGENTS: "100" # maximum number of A2A agents allowed
         MCPGATEWAY_A2A_DEFAULT_TIMEOUT: "30" # default timeout for A2A HTTP requests
         MCPGATEWAY_A2A_MAX_RETRIES: "3" # maximum retry attempts for A2A calls
@@ -481,7 +589,9 @@ mcpContextForge:
         # ─ MCP Session Pool ─
         # Session pooling reduces per-request overhead from ~20ms to ~1-2ms (10-20x improvement)
         # Sessions are isolated per user/tenant via identity hashing
-        # Disabled by default for safety; enable explicitly in production after testing
+        # Disabled by default for safety; enable explicitly in production after testing.
+        # NOTE: docker-compose uses ENABLED=true, MAX_PER_KEY=200 for high-load testing.
+        # Scale pool sizes with resource limits and expected concurrent MCP connections.
         MCP_SESSION_POOL_ENABLED: "false" # enable session pooling
         MCP_SESSION_POOL_MAX_PER_KEY: "10" # max sessions per (URL, identity, transport)
         MCP_SESSION_POOL_TTL: "300.0" # session TTL in seconds
@@ -545,6 +655,7 @@ mcpContextForge:
         # ─ HTTPX Client Connection Pool ─
         # Shared HTTP client for all outbound requests (federation, health checks,
         # A2A, SSO, catalog). Provides ~20x better performance than per-request clients.
+        # NOTE: docker-compose uses MAX_CONNECTIONS=500, KEEPALIVE=300 for high-load testing.
         HTTPX_MAX_CONNECTIONS: "200" # total connections in pool (10-1000)
         HTTPX_MAX_KEEPALIVE_CONNECTIONS: "100" # keepalive connections (1-500)
         HTTPX_KEEPALIVE_EXPIRY: "30.0" # idle connection expiry in seconds (5.0-300.0)
@@ -569,7 +680,7 @@ mcpContextForge:
         WELL_KNOWN_CACHE_MAX_AGE: "3600" # cache control for well-known files (seconds)
 
         # ─ Plugin Configuration ─
-        PLUGINS_ENABLED: "false" # enable the plugin framework
+        PLUGINS_ENABLED: "true" # enable the plugin framework (recommended for production)
         PLUGIN_CONFIG_FILE: "plugins/config.yaml" # path to main plugin configuration file
         PLUGINS_CLIENT_MTLS_CA_BUNDLE: "" # default CA bundle for external plugins (optional)
         PLUGINS_CLIENT_MTLS_CERTFILE: "" # gateway client certificate for plugin mTLS
@@ -808,6 +919,7 @@ mcpContextForge:
         REQUIRE_TOKEN_EXPIRATION: "true" # require all JWT tokens to have expiration claims
         REQUIRE_JTI: "true" # require JTI (JWT ID) claim for revocation support
         REQUIRE_USER_IN_DB: "false" # require all users to exist in database (disables platform admin bootstrap)
+        PUBLIC_REGISTRATION_ENABLED: "false" # allow unauthenticated user self-registration (disable in production)
         AUTH_ENCRYPTION_SECRET: my-test-salt # passphrase to derive AES key for secure storage
 
         # ─ Email-Based Authentication ─
@@ -1171,6 +1283,9 @@ pgbouncer:
         port: 6432 # PgBouncer listens on 6432
 
     # Pool configuration
+    # NOTE: docker-compose uses maxClientConn=5000, defaultPoolSize=600,
+    # maxDbConnections=700 for high-load testing (3 replicas, 24 workers each).
+    # Scale pool sizes proportionally with gateway replicas and worker counts.
     pool:
         mode: transaction # transaction (recommended), session, or statement
         maxClientConn: 3000 # Max connections from application
