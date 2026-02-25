@@ -26,10 +26,12 @@ CONTEXT_FORGE_HOST="${CONTEXT_FORGE_HOST:-localhost:8000}"
 CONTEXT_FORGE_ADMIN_TOKEN="${CONTEXT_FORGE_ADMIN_TOKEN:?CONTEXT_FORGE_ADMIN_TOKEN is required}"
 
 # Step 1: Get new token from MindsDB
+# Credentials are piped via stdin to avoid exposure in ps/process lists.
 echo "Requesting token from MindsDB at ${MINDSDB_HOST}:${MINDSDB_PORT}..."
-TOKEN=$(curl -sf -X POST \
+TOKEN=$(printf '{"username":"%s","password":"%s"}' "${MINDSDB_USER}" "${MINDSDB_PASS}" | \
+  curl -sf -X POST \
   -H "Content-Type: application/json" \
-  -d "{\"username\":\"${MINDSDB_USER}\",\"password\":\"${MINDSDB_PASS}\"}" \
+  --data-binary @- \
   "http://${MINDSDB_HOST}:${MINDSDB_PORT}/api/login" | jq -r '.token // .session')
 
 if [ -z "${TOKEN}" ] || [ "${TOKEN}" = "null" ]; then
