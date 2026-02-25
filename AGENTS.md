@@ -125,6 +125,7 @@ Optional MindsDB deployment via `docker compose --profile mindsdb`:
 - Validate with all optional combos: `helm template test charts/mcp-stack/ --set pgbouncer.enabled=true`, `--set mindsdb.enabled=true`
 - `docker-compose.yml` uses high-load defaults (8 CPU / 8 GB); Helm `values.yaml` uses conservative defaults (200m CPU / 1Gi) — drift is documented inline
 - `deployment/k8s/` raw manifests are **deprecated** — use `charts/mcp-stack/` Helm chart for all Kubernetes deployments
+- MindsDB image runs as root (UID 0, no USER in Dockerfile) — `securityContext.runAsNonRoot` must be `false`, `readOnlyRootFilesystem` must be `false`
 
 ## Key Environment Variables
 

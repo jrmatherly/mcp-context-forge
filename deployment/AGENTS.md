@@ -56,6 +56,8 @@ The `k8s/` directory contains **deprecated** raw Kubernetes manifests. Use the H
 ## Knative Serverless
 
 The `knative/` directory contains Knative Service definitions for serverless deployment.
+- All credentials use `mcpgateway-secrets` Secret (not ConfigMaps) — `postgres-config.yaml` was removed
+- See `KNATIVE_SCALE_TO_ZERO.md` for deployment steps and Secret creation instructions
 
 ## Terraform
 

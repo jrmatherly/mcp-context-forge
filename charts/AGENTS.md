@@ -200,6 +200,11 @@ helm template test charts/mcp-stack/ --set mindsdb.enabled=true --debug > /dev/n
 helm install test charts/mcp-stack/ --dry-run --debug > /dev/null
 ```
 
+## CI Workflow Maintenance
+
+- `azure/setup-helm` version must be aligned across `helm-lint.yml`, `helm-publish.yml`, and `linting-full.yml`
+- Always pin to exact patch version (e.g., `v4.3.1`), never floating tags like `v4`
+
 ## Key Files
 
 - `Chart.yaml` - Chart metadata, versions, dependencies
