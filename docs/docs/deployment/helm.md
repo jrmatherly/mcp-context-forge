@@ -2,11 +2,12 @@
 
 This guide walks you through installing, upgrading, and removing the full **MCP Gateway Stack** using Helm. The stack includes:
 
-* 🧠 MCP Context Forge (the gateway)
-* 🗄 PostgreSQL database
-* ⚡ Redis cache
-* 🧑💻 PgAdmin UI (optional)
-* 🧰 Redis Commander UI (optional)
+* MCP Context Forge (the gateway) with security plugins
+* PostgreSQL database with optional PgBouncer connection pooling
+* Redis cache
+* MindsDB Knowledge Base gateway (optional)
+* PgAdmin UI (optional)
+* Redis Commander UI (optional)
 
 Everything is deployable via Helm on any Kubernetes cluster (Minikube, kind, EKS, AKS, GKE, OpenShift, etc.).
 
@@ -25,11 +26,13 @@ flowchart TD
 
     subgraph Application Layer
         mcp[MCP Context Forge]
+        mindsdb[MindsDB<br/>optional]
         pgadmin[PgAdmin UI<br/>optional]
         rediscommander[Redis Commander UI<br/>optional]
     end
 
     subgraph Data Layer
+        pgbouncer[PgBouncer<br/>optional]
         postgres[(PostgreSQL)]
         redis[(Redis)]
     end
@@ -38,8 +41,11 @@ flowchart TD
     ingress --> pgadmin
     ingress --> rediscommander
 
-    mcp --> postgres
+    mcp --> pgbouncer
     mcp --> redis
+    mcp --> mindsdb
+    pgbouncer --> postgres
+    mcp -.->|direct if no pgbouncer| postgres
 
     pgadmin --> postgres
     rediscommander --> redis
@@ -572,18 +578,186 @@ flowchart TD
     | `mcpContextForge.ingress.enabled`            | `true`      | Enables ingress resource creation                |
     | `mcpContextForge.ingress.host`               | `gateway.local` | Hostname used in Ingress (change in production) |
     | `mcpContextForge.service.type`               | `ClusterIP` | Use `LoadBalancer` if running in cloud           |
-    | `mcpContextForge.envFrom`                    | `[]`        | Allows mounting Secrets/ConfigMaps as env vars   |
+    | `mcpContextForge.pluginConfig.enabled`       | `true`      | Mounts security plugin pipeline as ConfigMap     |
     | `postgres.credentials.user`                  | `admin`     | Default DB username (use secret in prod)         |
     | `postgres.credentials.password`              | `test123`   | Default DB password (avoid hardcoding)           |
     | `postgres.persistence.enabled`               | `true`      | Enables persistent volume claim for PostgreSQL   |
-    | `postgres.persistence.size`                  | `10Gi`      | Size of the PostgreSQL volume                    |
+    | `postgres.persistence.size`                  | `5Gi`       | Size of the PostgreSQL volume                    |
+    | `pgbouncer.enabled`                          | `false`     | Enable PgBouncer connection pooling              |
+    | `mindsdb.enabled`                            | `false`     | Enable MindsDB Knowledge Base gateway            |
     | `pgadmin.enabled`                            | `false`     | Enable PgAdmin for DB UI                         |
     | `redisCommander.enabled`                     | `false`     | Enable Redis Commander for Redis UI              |
-    | `rbac.create`                                | `true`      | Automatically create Role/RoleBinding            |
 
     📝 For all possible options, see the full [`values.yaml`](https://github.com/IBM/mcp-context-forge/blob/main/charts/mcp-stack/values.yaml) file in the chart repository.
 
 See full annotations in `values.yaml`.
+
+---
+
+## Security Plugins
+
+The Helm chart includes a security-focused plugin subset enabled by default. These plugins form a defense-in-depth layer:
+
+| Plugin | Purpose |
+|--------|---------|
+| SQLSanitizer | Blocks dangerous SQL patterns (DROP, TRUNCATE, INSERT, etc.) |
+| PIIFilterPlugin | Detects and masks personally identifiable information |
+| SecretsDetection | Catches leaked credentials (AWS keys, JWT tokens, API keys) |
+
+To use the full plugin pipeline (25+ plugins including rate limiting, code safety, and telemetry), copy `plugins/config.yaml` from the repository and provide it as a custom values file:
+
+```yaml
+mcpContextForge:
+  pluginConfig:
+    enabled: true
+    plugins: |
+      # Paste full content from plugins/config.yaml
+```
+
+To disable plugins entirely:
+
+```yaml
+mcpContextForge:
+  pluginConfig:
+    enabled: false
+  config:
+    PLUGINS_ENABLED: "false"
+```
+
+---
+
+## MindsDB Integration
+
+MindsDB provides federated Knowledge Base access with MCP tools. It is disabled by default.
+
+```yaml
+mindsdb:
+  enabled: true
+  credentials:
+    username: admin
+    password: "strong-password-here"  # Use existingSecret in production
+  persistence:
+    size: 20Gi  # Size depends on Knowledge Base data volume
+  resources:
+    limits:
+      memory: 8Gi  # Increase for large embedding models
+```
+
+After deployment, register MindsDB as a gateway:
+
+```bash
+curl -X POST http://localhost:4444/gateways \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"mindsdb","url":"http://<release>-mcp-stack-mindsdb:47334/mcp/sse"}'
+```
+
+See the [MindsDB Team Provisioning](../tutorials/mindsdb-team-provisioning.md) tutorial for creating team-scoped Knowledge Bases and agents.
+
+---
+
+## Production Hardening Checklist
+
+???+ warning "Production Hardening"
+
+    Review these items before deploying to production.
+
+    === "Resource Sizing"
+
+        Scale resource requests/limits based on your workload:
+
+        ```yaml
+        mcpContextForge:
+          resources:
+            requests:
+              cpu: 500m      # 2000m+ for high-traffic
+              memory: 512Mi  # 2Gi+ for large tool registries
+            limits:
+              cpu: 2000m
+              memory: 4Gi
+          hpa:
+            enabled: true
+            minReplicas: 2
+            maxReplicas: 10
+            targetCPUUtilizationPercentage: 70
+        ```
+
+        The Helm defaults are conservative. Docker Compose uses higher values
+        (4 CPU, 8GB RAM) for high-load testing — scale proportionally.
+
+    === "PgBouncer Connection Pooling"
+
+        Enable PgBouncer for production PostgreSQL deployments:
+
+        ```yaml
+        pgbouncer:
+          enabled: true
+          defaultPoolSize: 120    # Helm default (docker-compose uses 600)
+          maxClientConn: 3000     # Helm default (docker-compose uses 5000)
+          maxDbConnections: 200   # Helm default (docker-compose uses 700)
+        ```
+
+        PgBouncer prevents connection exhaustion under high concurrency.
+
+    === "Secrets Management"
+
+        Never commit secrets to `values.yaml`. Use external secrets:
+
+        ```bash
+        # Create secrets externally
+        kubectl create secret generic gateway-secrets \
+          --from-literal=JWT_SECRET_KEY="$(openssl rand -hex 32)" \
+          --from-literal=BASIC_AUTH_PASSWORD="$(openssl rand -base64 24)" \
+          -n mcp-private
+
+        # Reference in values.yaml
+        # mcpContextForge.secret.existingSecret: gateway-secrets
+        ```
+
+    === "Database Credentials"
+
+        Use `existingSecret` for PostgreSQL credentials:
+
+        ```yaml
+        postgres:
+          existingSecret: "my-pg-credentials"
+          # Or use external managed database:
+          external:
+            enabled: true
+            existingSecret: "cloud-db-credentials"
+        ```
+
+    === "Plugin Framework"
+
+        Keep security plugins enabled in production:
+
+        ```yaml
+        mcpContextForge:
+          pluginConfig:
+            enabled: true  # Required for security boundary
+          config:
+            PLUGINS_ENABLED: "true"
+        ```
+
+        Disabling plugins removes SQL injection protection, PII filtering,
+        and credential leak detection.
+
+    === "Configuration Drift Notes"
+
+        The Helm chart defaults differ intentionally from Docker Compose.
+        Docker Compose is tuned for high-load local testing (8 CPU, 8 GB),
+        while Helm provides conservative defaults for smaller K8s allocations.
+
+        Key differences (Helm / Docker Compose):
+
+        | Setting | Helm | Docker Compose | Notes |
+        |---------|------|---------------|-------|
+        | DB_POOL_SIZE | 15 | 20 | Scale with replica count |
+        | REDIS_MAX_CONNECTIONS | 50 | 100 | Per-pod connection cap |
+        | PgBouncer defaultPoolSize | 120 | 600 | Scale with DB resources |
+        | HTTPX_MAX_CONNECTIONS | 200 | 500 | Outbound connection cap |
+
+        See inline comments in `values.yaml` for the full drift table.
 
 ---
 

@@ -5,8 +5,8 @@ This guide shows how to operate the **MCP Gateway Stack** with a *Git-Ops* workf
 > 🌳 Git source of truth:
 > `https://github.com/IBM/mcp-context-forge`
 >
-> * **App manifests:** `deployment/k8s/` (Kustomize-ready)
-> * **Helm chart (optional):** `charts/mcp-stack`
+> * **Helm chart (recommended):** `charts/mcp-stack`
+> * **Raw manifests (deprecated):** `deployment/k8s/` — see `deployment/k8s/README.md`
 
 ---
 
@@ -76,7 +76,7 @@ Open the web UI → [https://localhost:8083](https://localhost:8083) (credential
 
 ## 🚀 Step 3 - Bootstrap the Application
 
-Create an Argo CD *Application* that tracks the **`deployment/k8s/`** folder from the main branch:
+Create an Argo CD *Application* that deploys the **Helm chart** from the repository:
 
 ```bash
 APP=mcp-gateway
@@ -84,11 +84,25 @@ REPO=https://github.com/IBM/mcp-context-forge.git
 
 argocd app create "$APP" \
   --repo "$REPO" \
-  --path deployment/k8s \
+  --path charts/mcp-stack \
   --dest-server https://kubernetes.default.svc \
-  --dest-namespace default \
+  --dest-namespace mcp-private \
   --sync-policy automated \
-  --revision main
+  --revision main \
+  --helm-set mcpContextForge.ingress.enabled=true \
+  --helm-set mcpContextForge.ingress.host=gateway.local
+```
+
+Or use the OCI-published chart:
+
+```bash
+argocd app create "$APP" \
+  --repo oci://ghcr.io/jrmatherly/mcp-context-forge \
+  --helm-chart mcp-stack \
+  --revision 1.0.0-rc.1 \
+  --dest-server https://kubernetes.default.svc \
+  --dest-namespace mcp-private \
+  --sync-policy automated
 ```
 
 Trigger the first sync:
@@ -97,7 +111,12 @@ Trigger the first sync:
 argocd app sync "$APP"
 ```
 
-Argo CD will apply all manifests and keep them in the *Synced* 🌿 / *Healthy* 💚 state.
+Argo CD will apply all manifests and keep them in the *Synced* / *Healthy* state.
+
+!!! warning "Deprecated: Raw Manifests"
+    The `deployment/k8s/` folder contains outdated raw manifests that are no longer maintained.
+    Always use the Helm chart at `charts/mcp-stack/` for production deployments.
+    See `deployment/k8s/README.md` for details.
 
 ---
 
