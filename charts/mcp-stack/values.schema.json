@@ -2032,7 +2032,15 @@
                 },
                 "nodeSelector": { "type": "object" },
                 "tolerations": { "type": "array", "items": { "type": "object" } },
-                "affinity": { "type": "object" }
+                "affinity": { "type": "object" },
+                "podSecurityContext": {
+                    "type": "object",
+                    "description": "Pod-level security context for MindsDB pods"
+                },
+                "containerSecurityContext": {
+                    "type": "object",
+                    "description": "Container-level security context for MindsDB container"
+                }
             }
         },
         "mcpFastTimeServer": {

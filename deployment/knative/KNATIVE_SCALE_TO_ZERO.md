@@ -11,16 +11,21 @@ This document describes the Knative Serving configuration that enables scale-to-
 
 ## Components
 
-### 1. PostgreSQL Configuration
-**File:** [`postgres-config.yaml`](postgres-config.yaml)
+### 1. Gateway Secrets
+**Prerequisite:** `mcpgateway-secrets` Secret (see [`mcpgateway-knative-service.yaml`](mcpgateway-knative-service.yaml) header for creation instructions)
 **Namespace:** `mcp-gateway`
 
-ConfigMap containing PostgreSQL connection settings. **Important:** Update these values before deploying:
-- `POSTGRES_HOST`: PostgreSQL service hostname
-- `POSTGRES_PORT`: PostgreSQL port (default: 5432)
-- `POSTGRES_DB`: Database name
-- `POSTGRES_USER`: Database username
-- `POSTGRES_PASSWORD`: Database password (use Kubernetes Secrets in production)
+The Knative service reads all sensitive configuration from a Kubernetes Secret named `mcpgateway-secrets`. Create it before deploying:
+
+```bash
+kubectl create secret generic mcpgateway-secrets \
+  --from-literal=DATABASE_URL='postgresql+psycopg://user:pass@host:5432/mcp' \
+  --from-literal=REDIS_URL='redis://host:6379' \
+  --from-literal=JWT_SECRET_KEY='your-jwt-secret' \
+  --from-literal=BASIC_AUTH_USER='admin' \
+  --from-literal=BASIC_AUTH_PASSWORD='changeme' \
+  -n mcp-gateway
+```
 
 ### 2. KnativeServing Custom Resource
 **File:** [`knative-serving.yaml`](knative-serving.yaml)
@@ -48,7 +53,7 @@ This replaces the traditional Deployment with a Knative Service that includes:
 - **Container concurrency: 100** - Up to 100 concurrent requests per pod
 - **Scale-to-zero retention: 30s** - Keeps pods alive for 30 seconds after traffic stops
 - **Health checks**: Readiness and liveness probes for proper traffic routing
-- **Database config**: References `postgres-config` ConfigMap for connection settings
+- **Database config**: Reads credentials from `mcpgateway-secrets` Secret
 
 ## Deployment Steps
 
@@ -81,20 +86,17 @@ kubectl patch configmap/config-network \
 kubectl create namespace mcp-gateway
 ```
 
-### 3. Deploy PostgreSQL configuration
+### 3. Create gateway secrets
 ```bash
-# Edit postgres-config.yaml with your database credentials first!
-kubectl apply -f postgres-config.yaml
-```
-
-**Security Note:** For production, use Kubernetes Secrets instead of ConfigMap:
-```bash
-kubectl create secret generic postgres-credentials \
-  --from-literal=POSTGRES_PASSWORD=your-secure-password \
+# Create the required Secret with your actual credentials
+kubectl create secret generic mcpgateway-secrets \
+  --from-literal=DATABASE_URL='postgresql+psycopg://user:pass@host:5432/mcp' \
+  --from-literal=REDIS_URL='redis://host:6379' \
+  --from-literal=JWT_SECRET_KEY='your-jwt-secret' \
+  --from-literal=BASIC_AUTH_USER='admin' \
+  --from-literal=BASIC_AUTH_PASSWORD='changeme' \
   -n mcp-gateway
 ```
-
-Then update the Knative Service to reference the Secret instead of ConfigMap.
 
 ### 4. Deploy Knative Serving configuration (optional)
 ```bash
@@ -255,25 +257,10 @@ If you need to revert to a standard Kubernetes Deployment:
 
 ## Security Best Practices
 
-1. **Use Secrets for sensitive data:**
-   ```bash
-   kubectl create secret generic postgres-credentials \
-     --from-literal=POSTGRES_PASSWORD=secure-password \
-     -n mcp-gateway
-   ```
-
-2. **Update the Knative Service to use Secrets:**
-   ```yaml
-   - name: POSTGRES_PASSWORD
-     valueFrom:
-       secretKeyRef:
-         name: postgres-credentials
-         key: POSTGRES_PASSWORD
-   ```
-
-3. **Use network policies to restrict database access**
-4. **Enable TLS for the Knative Service route**
-5. **Regularly rotate credentials**
+1. **Sensitive data is stored in `mcpgateway-secrets` Secret** -- update credentials there, not in ConfigMaps
+2. **Use network policies to restrict database access**
+3. **Enable TLS for the Knative Service route**
+4. **Regularly rotate credentials**
 
 ## Additional Resources
 

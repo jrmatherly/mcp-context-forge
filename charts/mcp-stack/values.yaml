@@ -1635,6 +1635,20 @@ mindsdb:
     tolerations: []
     affinity: {}
 
+    # -- Pod-level security context for MindsDB
+    # MindsDB image runs as root (UID 0) and writes to /root/mdb_storage
+    podSecurityContext:
+        fsGroup: 0
+    # -- Container-level security context for MindsDB
+    containerSecurityContext:
+        runAsUser: 0
+        runAsNonRoot: false
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: false  # MindsDB writes to /root/mdb_storage and /mindsdb
+        capabilities:
+            drop:
+                - ALL
+
 ########################################################################
 # MCP-FAST-TIME-SERVER - optional high-performance time server for MCP (go)
 # Provides a fast implementation including SSE and Streamable HTTP
