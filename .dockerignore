@@ -28,6 +28,15 @@ attic/
 .vscode/
 .idea/
 
+# AI agent configuration directories
+.agent/
+.agents/
+.rovodev/
+.windsurf/
+.serena/
+_bmad/
+_bmad-output/
+
 #----------------------------------------------------------------------
 # 2. Version control
 #----------------------------------------------------------------------

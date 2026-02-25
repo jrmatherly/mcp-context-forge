@@ -137,6 +137,14 @@ prune todo
 prune reports
 prune logs
 
+# AI agent configuration directories (not part of the Python package)
+prune .agent
+prune .agents
+prune .rovodev
+prune .windsurf
+prune _bmad
+prune _bmad-output
+
 # Testing caches
 prune .pytest_cache
 prune .ruff_cache
