@@ -2029,7 +2029,10 @@
                         "liveness": { "$ref": "#/$defs/probe" },
                         "startup": { "$ref": "#/$defs/probe" }
                     }
-                }
+                },
+                "nodeSelector": { "type": "object" },
+                "tolerations": { "type": "array", "items": { "type": "object" } },
+                "affinity": { "type": "object" }
             }
         },
         "mcpFastTimeServer": {

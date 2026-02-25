@@ -1630,6 +1630,11 @@ mindsdb:
             successThreshold: 1
             failureThreshold: 18 # 18 * 10s = 180s max startup
 
+    # Scheduling constraints (optional)
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
+
 ########################################################################
 # MCP-FAST-TIME-SERVER - optional high-performance time server for MCP (go)
 # Provides a fast implementation including SSE and Streamable HTTP

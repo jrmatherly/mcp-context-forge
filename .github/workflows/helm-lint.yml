@@ -71,3 +71,13 @@ jobs:
             --set pgbouncer.enabled=true \
             --debug > /dev/null
           echo "PgBouncer template render completed successfully"
+
+      # -----------------------------------------------------------
+      # 5️⃣  Template Render with MindsDB enabled
+      # -----------------------------------------------------------
+      - name: 📄  Helm template render (MindsDB enabled)
+        run: |
+          helm template test charts/mcp-stack/ \
+            --set mindsdb.enabled=true \
+            --debug > /dev/null
+          echo "MindsDB template render completed successfully"
