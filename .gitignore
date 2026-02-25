@@ -272,6 +272,9 @@ plugins_rust/Cargo.lock
 certs/
 jwt/
 
+# MindsDB storage (--profile mindsdb)
+mindsdb_data/
+
 # Static assets (downloaded during container build)
 mcpgateway/static/vendor/
 public/

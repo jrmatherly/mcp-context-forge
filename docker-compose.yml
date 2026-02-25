@@ -19,6 +19,7 @@
 #  --profile testing:     Adds Locust (web UI), A2A echo agent, fast_test_server + auto-registration
 #  --profile resilience:  Adds slow_time_server for timeout, circuit breaker, and resilience testing
 #  --profile benchmark:   Adds benchmark MCP servers for load testing
+#  --profile mindsdb:     Adds MindsDB federated data gateway (KB, SQL, 110+ integrations)
 #  --profile tls:         Enables HTTPS via nginx_tls (auto-generates certs)
 #  --profile inspector:   Adds MCP Inspector client (http://localhost:6274)
 #
@@ -2116,6 +2117,40 @@ services:
                 print(f'✅ Registration complete: {registered}/{server_count} benchmark servers')
                 "
         profiles: ["benchmark"]
+
+    ###############################################################################
+    #  MINDSDB PROFILE - Federated data gateway with Knowledge Bases
+    #  Usage: docker compose --profile mindsdb up -d
+    #
+    #  MindsDB exposes MCP tools (query, list_databases) via SSE at /mcp/sse.
+    #  Register as a Context Forge gateway, then create team-scoped Virtual Servers.
+    #  See: .scratchpad/plans/mindsdb-integration-review-and-enhanced-plan.md
+    ###############################################################################
+
+    mindsdb:
+        container_name: mindsdb
+        image: mindsdb/mindsdb:latest
+        restart: unless-stopped
+        environment:
+            - MINDSDB_APIS=http,mysql
+            - MINDSDB_HTTP_AUTH_TYPE=token
+            - MINDSDB_USERNAME=${MINDSDB_USERNAME:-admin}
+            - MINDSDB_PASSWORD=${MINDSDB_PASSWORD}  # Required: set in .env before starting
+        ports:
+            - "${MINDSDB_HTTP_PORT:-47334}:47334"
+            - "${MINDSDB_MYSQL_PORT:-47335}:47335"
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
+        volumes:
+            - ./mindsdb_data:/root/mdb_storage
+        networks: [mcpnet]
+        healthcheck:
+            test: ["CMD-SHELL", "curl -sf http://localhost:47334/api/status && curl -sf http://localhost:47334/mcp/status"]
+            interval: 30s
+            timeout: 10s
+            retries: 5
+            start_period: 90s
+        profiles: ["mindsdb"]
 
     ###############################################################################
     #  TLS PROFILE - Zero-config HTTPS via Nginx (enabled with --profile tls)

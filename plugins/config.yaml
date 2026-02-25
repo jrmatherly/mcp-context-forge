@@ -91,6 +91,14 @@ plugins:
       conditions: []
       config:
           fields: ["sql", "query", "statement"]
+          # NOTE: These regex patterns use simple word-boundary matching without
+          # SQL parsing. They WILL match inside string literals, e.g.:
+          #   SELECT * FROM kb WHERE content = 'How to create a policy'
+          # will trigger \bCREATE\b on the word "create" in the search text.
+          # This is a known limitation for MindsDB Knowledge Base queries that
+          # embed natural language in SQL WHERE clauses. For string-literal-aware
+          # matching, the plugin would need a SQL parser (tracked for Phase 9).
+          # For admin DDL operations, use the MindsDB REST API directly.
           blocked_statements:
               [
                   "\\bDROP\\b",
@@ -98,7 +106,14 @@ plugins:
                   "\\bALTER\\b",
                   "\\bGRANT\\b",
                   "\\bREVOKE\\b",
+                  "\\bINSERT\\b",
+                  "\\bUPDATE\\b",
+                  "\\bDELETE\\b",
+                  "\\bCREATE\\b",
               ]
+          # DELETE/UPDATE are fully blocked by the patterns above. These granular
+          # checks are retained as defense-in-depth if blocked_statements is
+          # later reconfigured to remove those patterns.
           block_delete_without_where: true
           block_update_without_where: true
           strip_comments: true
