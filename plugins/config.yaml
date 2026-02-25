@@ -98,6 +98,10 @@ plugins:
                   "\\bALTER\\b",
                   "\\bGRANT\\b",
                   "\\bREVOKE\\b",
+                  "\\bINSERT\\b",
+                  "\\bUPDATE\\b",
+                  "\\bDELETE\\b",
+                  "\\bCREATE\\b",
               ]
           block_delete_without_where: true
           block_update_without_where: true
