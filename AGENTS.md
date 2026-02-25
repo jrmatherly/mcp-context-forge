@@ -127,6 +127,12 @@ Optional MindsDB deployment via `docker compose --profile mindsdb`:
 - `deployment/k8s/` raw manifests are **deprecated** — use `charts/mcp-stack/` Helm chart for all Kubernetes deployments
 - MindsDB image runs as root (UID 0, no USER in Dockerfile) — `securityContext.runAsNonRoot` must be `false`, `readOnlyRootFilesystem` must be `false`
 
+## Pre-commit Configuration
+
+- `make pre-commit` uses `.pre-commit-lite.yaml` (NOT `.pre-commit-config.yaml`) — keep both files' `exclude` patterns in sync
+- When adding new directories, update exclusions in: `.pre-commit-config.yaml`, `.pre-commit-lite.yaml`, `.flake8`, `pyproject.toml` (Ruff), `.dockerignore`, `MANIFEST.in`
+- AI/agent directories (`_bmad/`, `.claude/`, `.serena/`, `.scratchpad/`, etc.) are excluded from linting but tracked in git
+
 ## Key Environment Variables
 
 ```bash
@@ -287,6 +293,8 @@ make test
 - `pyproject.toml` - Project configuration
 - `Makefile` - Build automation
 - `.env.example` - Environment template
+- `.pre-commit-lite.yaml` - Pre-commit config used by CI (`make pre-commit`)
+- `.pre-commit-config.yaml` - Full pre-commit config for local dev
 
 ## CLI Tools Available
 
