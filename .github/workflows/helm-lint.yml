@@ -1,0 +1,73 @@
+# ===============================================================
+# 🎯  Helm Chart - Lint & Template Validation
+# ===============================================================
+#
+#   - validates Helm chart syntax with `helm lint`
+#   - renders all templates with `helm template` to catch errors
+#   - runs on PRs and pushes that touch charts/ or this workflow
+#   - ensures chart is always in a deployable state
+# ---------------------------------------------------------------
+
+name: "Helm chart - lint"
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - 'charts/**'
+      - '.github/workflows/helm-lint.yml'
+  pull_request:
+    branches: ["main"]
+    paths:
+      - 'charts/**'
+      - '.github/workflows/helm-lint.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  helm-lint:
+    name: lint & template
+    runs-on: ubuntu-latest
+
+    steps:
+      # -----------------------------------------------------------
+      # 0️⃣  Checkout
+      # -----------------------------------------------------------
+      - name: ⬇️  Checkout source
+        uses: actions/checkout@v6.0.2
+        with:
+          fetch-depth: 1
+
+      # -----------------------------------------------------------
+      # 1️⃣  Install Helm
+      # -----------------------------------------------------------
+      - name: ⎈  Set up Helm
+        uses: azure/setup-helm@v4.3.0
+        with:
+          version: 'v3.17.3'
+
+      # -----------------------------------------------------------
+      # 2️⃣  Lint Chart
+      # -----------------------------------------------------------
+      - name: 🔍  Helm lint
+        run: helm lint charts/mcp-stack/
+
+      # -----------------------------------------------------------
+      # 3️⃣  Template Render (catch Go template errors)
+      # -----------------------------------------------------------
+      - name: 📄  Helm template render
+        run: |
+          helm template test charts/mcp-stack/ --debug > /dev/null
+          echo "Template render completed successfully"
+
+      # -----------------------------------------------------------
+      # 4️⃣  Template Render with PgBouncer enabled
+      # -----------------------------------------------------------
+      - name: 📄  Helm template render (PgBouncer enabled)
+        run: |
+          helm template test charts/mcp-stack/ \
+            --set pgbouncer.enabled=true \
+            --debug > /dev/null
+          echo "PgBouncer template render completed successfully"
