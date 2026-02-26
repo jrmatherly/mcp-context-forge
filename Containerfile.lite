@@ -179,6 +179,11 @@ COPY mcp-catalog.yml /app/
 COPY run.sh /app/
 
 # ----------------------------------------------------------------------------
+# Copy registration scripts (used by init containers / Helm hooks)
+# ----------------------------------------------------------------------------
+COPY scripts/register-*.py /app/scripts/
+
+# ----------------------------------------------------------------------------
 # Download CDN assets for airgapped deployment
 # This downloads external CSS/JS dependencies during build
 # ----------------------------------------------------------------------------
