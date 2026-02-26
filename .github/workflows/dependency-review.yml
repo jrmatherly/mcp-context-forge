@@ -26,8 +26,22 @@ name: Dependency Review
 on:
   push:
     branches: ["main"]
+    paths:
+      - 'pyproject.toml'
+      - '**/Cargo.toml'
+      - '**/Cargo.lock'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/dependency-review.yml'
   pull_request:
     branches: ["main"]
+    paths:
+      - 'pyproject.toml'
+      - '**/Cargo.toml'
+      - '**/Cargo.lock'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/dependency-review.yml'
   # Weekly safety-net run - useful for catching newly-disclosed CVEs
   # or upstream license changes even when no PR is open.
   schedule:

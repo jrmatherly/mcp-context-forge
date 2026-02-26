@@ -25,8 +25,24 @@ name: Full Build Pipeline
 on:
   push:
     branches: ["main"]
+    paths:
+      - 'mcpgateway/**'
+      - 'plugins/**'
+      - 'tests/**'
+      - 'pyproject.toml'
+      - 'Makefile'
+      - 'Containerfile*'
+      - '.github/workflows/full-build-pipeline.yml'
   pull_request:
     branches: ["main"]
+    paths:
+      - 'mcpgateway/**'
+      - 'plugins/**'
+      - 'tests/**'
+      - 'pyproject.toml'
+      - 'Makefile'
+      - 'Containerfile*'
+      - '.github/workflows/full-build-pipeline.yml'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

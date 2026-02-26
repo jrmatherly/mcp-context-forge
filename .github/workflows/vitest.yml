@@ -12,8 +12,22 @@ name: JavaScript Tests (Vitest)
 on:
   push:
     branches: ["main"]
+    paths:
+      - 'mcpgateway/static/**'
+      - 'tests/js/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'vitest.config.*'
+      - '.github/workflows/vitest.yml'
   pull_request:
     branches: ["main"]
+    paths:
+      - 'mcpgateway/static/**'
+      - 'tests/js/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'vitest.config.*'
+      - '.github/workflows/vitest.yml'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

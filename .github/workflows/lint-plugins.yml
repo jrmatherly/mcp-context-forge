@@ -14,8 +14,16 @@ name: Plugins Lint & Static Analysis
 on:
   push:
     branches: ["main"]
+    paths:
+      - 'plugins/**'
+      - 'pyproject.toml'
+      - '.github/workflows/lint-plugins.yml'
   pull_request:
     branches: ["main"]
+    paths:
+      - 'plugins/**'
+      - 'pyproject.toml'
+      - '.github/workflows/lint-plugins.yml'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

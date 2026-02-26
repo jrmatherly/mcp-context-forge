@@ -3,8 +3,20 @@ name: Playwright CI Smoke
 on:
   push:
     branches: ["main"]
+    paths:
+      - 'mcpgateway/**'
+      - 'tests/playwright/**'
+      - 'pyproject.toml'
+      - 'Makefile'
+      - '.github/workflows/playwright.yml'
   pull_request:
     branches: ["main"]
+    paths:
+      - 'mcpgateway/**'
+      - 'tests/playwright/**'
+      - 'pyproject.toml'
+      - 'Makefile'
+      - '.github/workflows/playwright.yml'
   workflow_dispatch:
 
 permissions:

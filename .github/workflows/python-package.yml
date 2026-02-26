@@ -6,8 +6,22 @@ name: Build Python Package
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - 'mcpgateway/**'
+      - 'plugins/**'
+      - 'pyproject.toml'
+      - 'MANIFEST.in'
+      - 'Makefile'
+      - '.github/workflows/python-package.yml'
   pull_request:
     branches: [ "main" ]
+    paths:
+      - 'mcpgateway/**'
+      - 'plugins/**'
+      - 'pyproject.toml'
+      - 'MANIFEST.in'
+      - 'Makefile'
+      - '.github/workflows/python-package.yml'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

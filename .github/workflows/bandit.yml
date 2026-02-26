@@ -18,8 +18,14 @@ name: Bandit
 on:
   push:
     branches: ["main"]
+    paths:
+      - 'mcpgateway/**'
+      - '.github/workflows/bandit.yml'
   pull_request:
     branches: ["main"] # must be a subset of the push branches
+    paths:
+      - 'mcpgateway/**'
+      - '.github/workflows/bandit.yml'
   schedule:
     - cron: "26 11 * * 6" # Saturday @ 11:26 UTC - catch new CVEs
 
