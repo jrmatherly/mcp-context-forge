@@ -194,7 +194,10 @@ packages.json
 .aider*
 aider*
 .ai*
-.claude
+.claude/*
+!.claude/settings.json
+!.claude/agents
+!.claude/skills
 CLAUDE.local.md
 .continue
 

@@ -41,7 +41,7 @@ deployment/                 # Infrastructure configs (see deployment/AGENTS.md)
 docs/                       # Architecture and usage documentation (see docs/AGENTS.md)
 a2a-agents/                 # A2A agent implementations (used for testing/examples)
 mcp-servers/                # MCP server templates (see mcp-servers/AGENTS.md)
-llms/                       # End-user LLM guidance (not for code agents)
+llms/                       # LLM guidance — update llms/mcpgateway.md when adding new integrations (follow MindsDB section pattern)
 ```
 
 ## Essential Commands
@@ -151,6 +151,8 @@ Optional MindsDB deployment via `docker compose --profile mindsdb`:
 - `docker-compose.yml` uses high-load defaults (8 CPU / 8 GB); Helm `values.yaml` uses conservative defaults (200m CPU / 1Gi) — drift is documented inline
 - `deployment/k8s/` raw manifests are **deprecated** — use `charts/mcp-stack/` Helm chart for all Kubernetes deployments
 - MindsDB image runs as root (UID 0, no USER in Dockerfile) — `securityContext.runAsNonRoot` must be `false`, `readOnlyRootFilesystem` must be `false`
+- `helm plugin install` for helm-unittest must always use `--verify=false` — the GitHub plugin source doesn't support verification, and `--help` grep detection fails in CI
+- Docker Compose monitoring ports should use env var defaults (e.g., `${PROMETHEUS_PORT:-9090}:9090`) to avoid conflicts on shared hosts
 
 ## Pre-commit Configuration
 
@@ -168,6 +170,7 @@ Optional MindsDB deployment via `docker compose --profile mindsdb`:
 - Workflows with `schedule:` triggers (`bandit`, `dependency-review`, `license-check`) still run weekly regardless of path filters
 - When adding new source directories, add them to relevant workflow `paths` filters
 - Editing workflow files triggers a security reminder hook — this is expected, not an error
+- Transient CI failures (GHCR Connect Timeout, GitHub API timeout, artifact upload ETIMEDOUT) are common — re-run before investigating code fixes
 
 ## Key Environment Variables
 

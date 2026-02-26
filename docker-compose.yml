@@ -116,9 +116,10 @@ services:
     # MCP Gateway - the main API server for the MCP stack
     # ──────────────────────────────────────────────────────────────────────
     gateway:
-        image: ${IMAGE_LOCAL:-jrmatherly/mcp-context-forge:latest} # Use the local latest image. Run `make docker-prod` to build it.
+        #image: ${IMAGE_LOCAL:-jrmatherly/mcp-context-forge:latest} # Use the local latest image. Run `make docker-prod` to build it.
         #image: ghcr.io/jrmatherly/mcp-context-forge:1.0.0-BETA-2 # Use the release MCP Context Forge image
         #image: ghcr.io/jrmatherly/mcp-context-forge:0.7.0 # Testing migration from 0.7.0
+        image: ghcr.io/jrmatherly/mcp-context-forge:latest
         build:
             context: .
             dockerfile: Containerfile.lite # Same one the Makefile builds
@@ -2152,11 +2153,7 @@ services:
             - ./mindsdb_data:/root/mdb_storage
         networks: [mcpnet]
         healthcheck:
-            test:
-                [
-                    "CMD-SHELL",
-                    "curl -sf http://localhost:47334/api/status",
-                ]
+            test: ["CMD-SHELL", "curl -sf http://localhost:47334/api/status"]
             interval: 30s
             timeout: 10s
             retries: 5

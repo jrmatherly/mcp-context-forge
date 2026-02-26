@@ -15,7 +15,7 @@ MCP Gateway: Full Project Overview
 **Project Structure**
 - App: `mcpgateway/` (FastAPI entrypoints, db.py ORM models, 50+ services, 19 routers, 15 middleware, transports, plugins framework, alembic migrations)
 - Plugins: `plugins/` (42 built-in native plugins and external plugin example)
-- MCP Servers: `mcp-servers/` (5 Go servers, 20 Python servers, scaffolding templates)
+- MCP Servers: `mcp-servers/` (6 Go servers, 21 Python servers, scaffolding templates)
 - Docs: `docs/` (MkDocs site + docs Makefile)
 - Charts: `charts/` (Helm chart `mcp-stack`)
 - Tests: `tests/{unit,integration,e2e,performance,security,fuzz,playwright}`
@@ -113,6 +113,16 @@ MCP Gateway: Full Project Overview
 - Virtual servers: `legal-team-data`, `hr-team-data` (team-scoped), `admin-data-gateway` (private).
 - Security: `sql_sanitizer` plugin blocks destructive SQL via `TOOL_PRE_INVOKE`.
 - Team provisioning guide: `docs/docs/tutorials/mindsdb-team-provisioning.md`
+
+**Atlassian Integration (Optional)**
+- Enable with `docker compose --profile atlassian up -d`.
+- Hybrid approach: Atlassian's hosted Rovo MCP server for Jira + Confluence + Compass, custom Bitbucket MCP server for repository/PR/pipeline tools.
+- Auto-registration: `scripts/register-atlassian.py` runs as init container, registers both gateways with OAuth, checks for tools, and creates team-scoped virtual servers.
+- Auth: Two separate OAuth systems — Atlassian 3LO (`auth.atlassian.com`) for Jira/Confluence, Bitbucket OAuth (`bitbucket.org`) for repositories. MCF handles per-user token storage and injection automatically.
+- Passthrough Headers: Leave empty for OAuth-managed gateways; MCF auto-injects user tokens via `TokenStorageService`.
+- Bitbucket MCP server: `mcp-servers/python/bitbucket-server/` (FastMCP skeleton, requires tool implementation).
+- Docs: `docs/docs/using/servers/external/atlassian/rovo.md`, `docs/docs/using/servers/external/atlassian/bitbucket.md`
+- Helm: `charts/mcp-stack/` supports `atlassian.enabled` with OAuth secrets, registration job, and configurable image/scopes.
 
 **Header Passthrough**
 - Disabled by default (`ENABLE_HEADER_PASSTHROUGH=false`). Enable to forward client headers to backing MCP servers.

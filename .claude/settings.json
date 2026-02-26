@@ -1,0 +1,28 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "file=$(cat | jq -r '.tool_input.file_path // empty') && if [ -n \"$file\" ] && echo \"$file\" | grep -qE '\\.(env|pem|key)$' && ! echo \"$file\" | grep -q '.env.example'; then echo 'BLOCKED: Cannot edit secret/env files directly. Edit .env.example instead.' >&2; exit 2; fi",
+            "timeout": 5000
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "file=$(cat | jq -r '.tool_input.file_path // empty') && [ -n \"$file\" ] && [[ \"$file\" == *.py ]] && .venv/bin/black --quiet --line-length 200 \"$file\" 2>/dev/null; .venv/bin/isort --quiet --profile black \"$file\" 2>/dev/null; true",
+            "timeout": 10000
+          }
+        ]
+      }
+    ]
+  }
+}
