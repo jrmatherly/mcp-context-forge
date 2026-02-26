@@ -145,6 +145,17 @@ Optional MindsDB deployment via `docker compose --profile mindsdb`:
 - `make pre-commit` uses `.pre-commit-lite.yaml` (NOT `.pre-commit-config.yaml`) — keep both files' `exclude` patterns in sync
 - When adding new directories, update exclusions in: `.pre-commit-config.yaml`, `.pre-commit-lite.yaml`, `.flake8`, `pyproject.toml` (Ruff), `.dockerignore`, `MANIFEST.in`
 - AI/agent directories (`_bmad/`, `.claude/`, `.serena/`, `.scratchpad/`, etc.) are excluded from linting but tracked in git
+- All Python files (including `scripts/`) must have `# -*- coding: utf-8 -*-` after the shebang — `fix-encoding-pragma` hook enforces this
+- If pre-commit fails with `EOFError: Compressed file ended before the end-of-stream marker`, clear the cache: `rm -rf .cache/pre-commit-home/`
+
+## CI/CD Workflows
+
+- All 21 workflows in `.github/workflows/` have path filters — doc-only or scratchpad changes skip CI
+- Each workflow includes its own `.github/workflows/<name>.yml` in `paths` so workflow edits trigger their own CI
+- `linting-full.yml` uses `paths-ignore` (broad check, excludes scratchpad/AI dirs); all others use `paths` (allowlist)
+- Workflows with `schedule:` triggers (`bandit`, `dependency-review`, `license-check`) still run weekly regardless of path filters
+- When adding new source directories, add them to relevant workflow `paths` filters
+- Editing workflow files triggers a security reminder hook — this is expected, not an error
 
 ## Key Environment Variables
 
