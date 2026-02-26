@@ -279,9 +279,9 @@ toolops = [
 # gRPC Support (EXPERIMENTAL - optional, disabled by default)
 # Install with: pip install mcp-contextforge-gateway[grpc]
 grpc = [
-    "grpcio>=1.78.1",
-    "grpcio-reflection>=1.78.1",
-    "grpcio-tools>=1.78.1",
+    "grpcio>=1.78.0",
+    "grpcio-reflection>=1.78.0",
+    "grpcio-tools>=1.78.0",
     "protobuf>=6.33.5",
 ]
 

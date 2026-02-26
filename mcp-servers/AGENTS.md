@@ -107,6 +107,15 @@ make format           # Format code
 - `pyproject.toml` - Project configuration
 - `Makefile` - Build automation
 
+### Scaffold Post-Processing
+
+The cookiecutter generates `server.py` — rename to `server_fastmcp.py` and update references in:
+- `Containerfile` (`CMD` line)
+- `Makefile` (all `python -m` invocations)
+- `README.md` (all `python -m` invocations and MCP client snippet)
+- `pyproject.toml` (`[project.scripts]` entry point)
+- `__init__.py` (update generic description)
+
 ### Example Tool Implementation (FastMCP 2.x)
 
 ```python

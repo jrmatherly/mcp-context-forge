@@ -132,10 +132,22 @@ Optional MindsDB deployment via `docker compose --profile mindsdb`:
 - Prerequisite: `docker network create shared-proxy` (run once before starting either stack)
 - Required LibreChat `.env` vars: `LIBRECHAT_DOMAIN`, `MCF_DOMAIN`
 
+## Atlassian Integration
+
+- Docker Compose: `--profile atlassian` enables `register_atlassian` init container
+- Registration script: `scripts/register-atlassian.py` — idempotent, registers Rovo + optional Bitbucket gateways
+- Bitbucket OAuth scopes: configured on the OAuth consumer, NOT in the auth URL — `scopes: []` in gateway registration
+- OAuth gateways can't auto-discover tools (requires user browser consent) — use single check, not polling
+- Bitbucket MCP server: `mcp-servers/python/bitbucket-server/` — FastMCP skeleton (stubs only)
+- Helm chart: init job only (cloud-hosted service), uses `secretKeyRef` to `gateway-secret` for JWT vars
+
 ## Helm Chart Notes
 
 - `values.schema.json` has `additionalProperties: false` — new top-level values sections require a matching schema entry or `helm lint` fails
+- `values.schema.json` nested objects should also have `additionalProperties: false` for strict validation
 - Validate with all optional combos: `helm template test charts/mcp-stack/ --set pgbouncer.enabled=true`, `--set mindsdb.enabled=true`
+- Also validate: `--set atlassian.enabled=true --set atlassian.credentials.clientId=test --set atlassian.credentials.clientSecret=test`
+- Registration job templates: use `secretKeyRef` to `gateway-secret` for JWT vars — values live under `mcpContextForge.secret.JWT_SECRET_KEY` (UPPER_SNAKE_CASE), never `mcpContextForge.config.jwtAlgorithm` (camelCase)
 - `docker-compose.yml` uses high-load defaults (8 CPU / 8 GB); Helm `values.yaml` uses conservative defaults (200m CPU / 1Gi) — drift is documented inline
 - `deployment/k8s/` raw manifests are **deprecated** — use `charts/mcp-stack/` Helm chart for all Kubernetes deployments
 - MindsDB image runs as root (UID 0, no USER in Dockerfile) — `securityContext.runAsNonRoot` must be `false`, `readOnlyRootFilesystem` must be `false`
