@@ -314,7 +314,6 @@ DEFAULT_PASSTHROUGH_HEADERS=["X-Tenant-Id", "X-Trace-Id", "X-Request-Id"]
 }
 ```
 
-
 ## Usage with One-Time Auth
 
 The One-Time Authentication feature enables integration with an authenticated MCP server without persisting server credentials in the database. Authentication is performed using a one-time token during initial registration, combined with passthrough headers to securely forward authentication context for subsequent requests.
@@ -498,7 +497,6 @@ sequenceDiagram
     MCP-->>Gateway: Return response
     Gateway-->>Client: Forward response
 ```
-
 
 ## Troubleshooting
 

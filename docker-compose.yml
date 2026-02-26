@@ -2142,6 +2142,7 @@ services:
             - MINDSDB_HTTP_AUTH_TYPE=token
             - MINDSDB_USERNAME=${MINDSDB_USERNAME:-admin}
             - MINDSDB_PASSWORD=${MINDSDB_PASSWORD} # Required: set in .env before starting
+            - MINDSDB_MCP_ALLOWED_HOSTS=mindsdb:*,gateway:* # Allow Docker hostnames for MCP SSE
         ports:
             - "${MINDSDB_HTTP_PORT:-47334}:47334"
             - "${MINDSDB_MYSQL_PORT:-47335}:47335"
@@ -2154,13 +2155,46 @@ services:
             test:
                 [
                     "CMD-SHELL",
-                    "curl -sf http://localhost:47334/api/status && curl -sf http://localhost:47334/mcp/status",
+                    "curl -sf http://localhost:47334/api/status",
                 ]
             interval: 30s
             timeout: 10s
             retries: 5
             start_period: 90s
         profiles: ["mindsdb"]
+
+    ###############################################################################
+    #  MindsDB Auto-Registration
+    #  Registers MindsDB as an upstream MCP gateway in Context Forge, waits for
+    #  tool auto-discovery, then creates team-scoped Virtual Servers with stable
+    #  UUIDs. Runs once on startup — idempotent (deletes existing before creating).
+    #  See: .scratchpad/plans/mindsdb-integration-review-and-enhanced-plan.md
+    ###############################################################################
+    register_mindsdb:
+        image: ${IMAGE_LOCAL:-mcpgateway/mcpgateway:latest}
+        networks: [mcpnet]
+        depends_on:
+            gateway:
+                condition: service_healthy
+            mindsdb:
+                condition: service_healthy
+        environment:
+            - JWT_ALGORITHM=${JWT_ALGORITHM:-HS256}
+            - JWT_SECRET_KEY=${JWT_SECRET_KEY:-my-test-key}
+            - JWT_PRIVATE_KEY_PATH=${JWT_PRIVATE_KEY_PATH:-}
+            - JWT_PUBLIC_KEY_PATH=${JWT_PUBLIC_KEY_PATH:-}
+            - JWT_AUDIENCE=${JWT_AUDIENCE:-mcpgateway-api}
+            - JWT_ISSUER=${JWT_ISSUER:-mcpgateway}
+            - PLATFORM_ADMIN_EMAIL=${PLATFORM_ADMIN_EMAIL:-admin@apollosai.dev}
+            - TOKEN_EXPIRY=${TOKEN_EXPIRY:-10080}
+            - MINDSDB_USERNAME=${MINDSDB_USERNAME:-admin}
+            - MINDSDB_PASSWORD=${MINDSDB_PASSWORD}
+        volumes:
+            - ./certs:/app/certs:ro
+            - ./scripts:/app/scripts:ro
+        restart: "no"
+        profiles: ["mindsdb"]
+        command: ["python3", "/app/scripts/register-mindsdb.py"]
 
     ###############################################################################
     #  TLS PROFILE - Zero-config HTTPS via Nginx (enabled with --profile tls)

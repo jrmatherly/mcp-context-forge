@@ -160,6 +160,31 @@ PY
 - 422 Validation Error for malformed payloads or params.
 - Plugins may block requests in `enforce` mode; look for a structured violation in the response.
 
+**Teams**
+- List teams:
+  ```bash
+  curl -s -H "Authorization: Bearer $MCPGATEWAY_BEARER_TOKEN" \
+       http://localhost:4444/teams/ | jq
+  ```
+- Create team:
+  ```bash
+  curl -s -X POST -H "Authorization: Bearer $MCPGATEWAY_BEARER_TOKEN" \
+       -H "Content-Type: application/json" \
+       -d '{
+             "name": "Engineering",
+             "slug": "engineering",
+             "description": "Engineering team",
+             "visibility": "private"
+           }' \
+       http://localhost:4444/teams/ | jq
+  ```
+- Get team by ID:
+  ```bash
+  curl -s -H "Authorization: Bearer $MCPGATEWAY_BEARER_TOKEN" \
+       http://localhost:4444/teams/<team_id> | jq
+  ```
+- Team-scoped resources: set `team_id` (UUID from POST /teams/) and `visibility: "team"` when creating servers, tools, or resources.
+
 **Gateways (MCP Server Registry)**
 - List gateways:
   ```bash
@@ -174,6 +199,36 @@ PY
              "url": "http://localhost:9000",
              "name": "my-mcp-server",
              "description": "Example MCP server"
+           }' \
+       http://localhost:4444/gateways | jq
+  ```
+- Create gateway with multi-auth headers:
+  ```bash
+  curl -s -X POST -H "Authorization: Bearer $MCPGATEWAY_BEARER_TOKEN" \
+       -H "Content-Type: application/json" \
+       -d '{
+             "url": "http://localhost:9000",
+             "name": "multi-auth-server",
+             "auth_type": "authheaders",
+             "auth_headers": [
+               {"key": "X-API-Key", "value": "secret-key"},
+               {"key": "X-Client-ID", "value": "client-456"}
+             ]
+           }' \
+       http://localhost:4444/gateways | jq
+  ```
+- Create gateway with one-time auth (credentials used once for discovery, then discarded):
+  ```bash
+  curl -s -X POST -H "Authorization: Bearer $MCPGATEWAY_BEARER_TOKEN" \
+       -H "Content-Type: application/json" \
+       -d '{
+             "url": "http://localhost:9000/mcp",
+             "name": "one-time-auth-server",
+             "transport": "STREAMABLEHTTP",
+             "auth_type": "bearer",
+             "auth_token": "one-time-secret",
+             "one_time_auth": true,
+             "passthrough_headers": ["X-Upstream-Authorization"]
            }' \
        http://localhost:4444/gateways | jq
   ```
@@ -254,6 +309,57 @@ PY
   ```bash
   curl -s http://localhost:4444/.well-known/mcp.json | jq
   ```
+
+**HTTP Header Passthrough**
+- Feature is disabled by default. Enable with `ENABLE_HEADER_PASSTHROUGH=true`.
+- Forwards specific client headers to backing MCP servers (e.g., auth tokens, tenant IDs, trace IDs).
+- Global config:
+  ```bash
+  # Set default passthrough headers
+  DEFAULT_PASSTHROUGH_HEADERS=["X-Tenant-Id", "X-Trace-Id"]
+  ```
+- Per-gateway override: set `passthrough_headers` on gateway creation/update.
+- Configuration source priority (`PASSTHROUGH_HEADERS_SOURCE`):
+    - `db` (default): database wins, env as fallback
+    - `env`: environment always wins
+    - `merge`: union of both sources
+- `X-Upstream-Authorization` header maps to `Authorization` on the upstream server (for one-time auth flows).
+- Admin config endpoints:
+  ```bash
+  # Get global passthrough config
+  curl -s -H "Authorization: Bearer $MCPGATEWAY_BEARER_TOKEN" \
+       http://localhost:4444/admin/config/passthrough-headers | jq
+  # Update global passthrough config
+  curl -s -X PUT -H "Authorization: Bearer $MCPGATEWAY_BEARER_TOKEN" \
+       -H "Content-Type: application/json" \
+       -d '{"passthrough_headers": ["X-Tenant-Id", "X-Trace-Id"]}' \
+       http://localhost:4444/admin/config/passthrough-headers | jq
+  ```
+- Full documentation: `docs/docs/overview/passthrough.md`
+
+**REST Passthrough (REST Tools)**
+- REST tools support passthrough fields for fine-grained request routing.
+- Key fields: `base_url`, `path_template` (auto-extracted from `url`), `query_mapping`, `header_mapping`, `timeout_ms`, `allowlist`, `plugin_chain_pre`, `plugin_chain_post`.
+- Create REST tool with passthrough:
+  ```bash
+  curl -s -X POST -H "Authorization: Bearer $MCPGATEWAY_BEARER_TOKEN" \
+       -H "Content-Type: application/json" \
+       -d '{
+             "name": "user-api",
+             "integration_type": "REST",
+             "request_type": "GET",
+             "url": "https://api.example.com/v1/users/{user_id}",
+             "query_mapping": {"includeMetadata": "include_metadata"},
+             "header_mapping": {"apiKey": "X-API-Key"},
+             "timeout_ms": 25000,
+             "allowlist": ["api.example.com"],
+             "plugin_chain_pre": ["rate_limit", "pii_filter"]
+           }' \
+       http://localhost:4444/tools | jq
+  ```
+- Passthrough fields only valid for `integration_type: "REST"`.
+- Allowed plugins: `deny_filter`, `rate_limit`, `pii_filter`, `response_shape`, `regex_filter`, `resource_filter`.
+- Full documentation: `docs/docs/using/rest-passthrough.md`
 
 **Tips**
 - Prefer Authorization header (bearer token) over `jwt_token` cookie.

@@ -112,12 +112,15 @@ The `teams` claim in JWT tokens determines resource visibility:
 ## MindsDB Integration
 
 Optional MindsDB deployment via `docker compose --profile mindsdb`:
+- Auto-registration: `scripts/register-mindsdb.py` runs as init container (`register_mindsdb` service)
+- The container image does NOT pip-install `mcpgateway` — avoid importing it in scripts; use pyjwt directly for JWT generation
 - `MINDSDB_HTTP_AUTH_TYPE=token` — indefinitely-valid bearer tokens, no cron refresh needed
 - MindsDB MCP endpoint: `/mcp/sse` (SSE transport, part of HTTP API — no `MINDSDB_APIS=mcp` needed)
 - `sql_sanitizer` plugin blocks destructive SQL via `TOOL_PRE_INVOKE` — regex `\b` patterns match inside string literals (known limitation)
 - Team-scoped Virtual Servers + agent permissions provide hard security enforcement; agent instructions are soft (~95% effective)
 - See `docs/docs/architecture/mindsdb-enhancements.md` for future hardening roadmap
 - See `docs/docs/tutorials/mindsdb-team-provisioning.md` for adding new teams
+- API idempotency: `POST /servers` returns 409 if server exists (use as existence check); `POST /teams/` also idempotent-safe
 
 ## Shared Nginx (Production Deployment)
 

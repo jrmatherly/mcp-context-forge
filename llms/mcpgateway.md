@@ -105,6 +105,27 @@ MCP Gateway: Full Project Overview
 - Dev overrides via `my-values.yaml`.
 - See: `llms/helm.md` for workflows and examples.
 
+**MindsDB Integration (Optional)**
+- Enable with `docker compose --profile mindsdb up -d`.
+- Auto-registration: `scripts/register-mindsdb.py` runs as init container, registers MindsDB as a federated gateway, discovers tools, provisions teams, and creates team-scoped virtual servers.
+- Auth: `MINDSDB_HTTP_AUTH_TYPE=token` for indefinitely-valid bearer tokens.
+- MCP endpoint: MindsDB exposes `/mcp/sse` (SSE transport).
+- Virtual servers: `legal-team-data`, `hr-team-data` (team-scoped), `admin-data-gateway` (private).
+- Security: `sql_sanitizer` plugin blocks destructive SQL via `TOOL_PRE_INVOKE`.
+- Team provisioning guide: `docs/docs/tutorials/mindsdb-team-provisioning.md`
+
+**Header Passthrough**
+- Disabled by default (`ENABLE_HEADER_PASSTHROUGH=false`). Enable to forward client headers to backing MCP servers.
+- Use cases: auth token forwarding, tenant identification, distributed tracing.
+- One-time auth: register a gateway with credentials used once for tool discovery, then discarded. Subsequent requests use passthrough headers (`X-Upstream-Authorization`).
+- Configuration: global via env/API, per-gateway override, source priority (db/env/merge).
+- Full docs: `docs/docs/overview/passthrough.md`, `docs/docs/using/multi-auth-headers.md`
+
+**REST Passthrough (REST Tools)**
+- REST tools support URL mapping, query/header mapping, timeouts, allowlists, and plugin chains.
+- Auto-extracts `base_url` and `path_template` from tool `url`.
+- Full docs: `docs/docs/using/rest-passthrough.md`
+
 **Security**
 - Secrets: never commit; set via `.env` or Kubernetes `Secret`.
 - Auth: set `JWT_SECRET_KEY`; emit bearer tokens with the token utility for API calls.

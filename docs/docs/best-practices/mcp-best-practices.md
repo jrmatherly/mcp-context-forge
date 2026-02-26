@@ -67,7 +67,7 @@ Make targets are grouped by functionality. Use `make help` to see them all in yo
 
 Each repo must include a `Containerfile` (Podman-compatible, Docker-compatible) to support containerized execution.
 
-### Containerfile Requirements:
+### Containerfile Requirements
 
 - Must start from a secure base (e.g., latest Red Hat UBI10 minimal image `registry.access.redhat.com/ubi10-minimal:10.0-1755721767`)
 - Should use `uv` or `pdm` to install dependencies via `pyproject.toml`
@@ -79,8 +79,8 @@ Each repo must include a `Containerfile` (Podman-compatible, Docker-compatible) 
 - All Python projects must use `pyproject.toml` and follow PEP standards.
 - Dependencies must either be:
 
-  - Included in the repo
-  - Pulled from PyPI (no external links)
+    - Included in the repo
+    - Pulled from PyPI (no external links)
 
 ## 🎯 Clear Role Definition
 - State the **specific role** of the server (e.g., GitHub tools).
@@ -168,7 +168,7 @@ MCP_GITHUB_BASE_URL=...
 
 Add tags at the top of `README.md` between YAML markers to declare your server's required capabilities.
 
-### Available Tags:
+### Available Tags
 
 - **`needs_filesystem_access`**
   Indicates the server requires access to the local filesystem (e.g., for reading/writing files).
@@ -188,7 +188,7 @@ Add tags at the top of `README.md` between YAML markers to declare your server's
 - **`needs_network_access_outbound`**
   The server needs to make outbound network requests (e.g., calling external APIs or services).
 
-### Example:
+### Example
 
 ```markdown
 ---

@@ -81,7 +81,7 @@ python3 -m mcpgateway.translate --stdio \
   --port 9001
 ```
 
-2. **Register with MCP Gateway:**
+1. **Register with MCP Gateway:**
 
 ```bash
 curl -X POST http://localhost:4444/gateways \
