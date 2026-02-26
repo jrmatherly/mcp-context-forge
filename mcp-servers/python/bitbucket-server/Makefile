@@ -16,7 +16,7 @@ dev-install: ## Install with dev extras
 	$(PYTHON) -m pip install -e ".[dev]"
 
 format: ## Format (black + ruff --fix)
-	black . && ruff --fix .
+	black . && ruff check --fix .
 
 lint: ## Lint (ruff, mypy)
 	ruff check . && mypy src/bitbucket_mcp_server
@@ -26,14 +26,14 @@ test: ## Run tests
 
 dev: ## Run stdio MCP server
 	@echo "Starting Bitbucket MCP Server (stdio)..."
-	$(PYTHON) -m bitbucket_mcp_server.server
+	$(PYTHON) -m bitbucket_mcp_server.server_fastmcp
 
 mcp-info: ## Show stdio client config snippet
-	@echo '{"command": "python", "args": ["-m", "bitbucket_mcp_server.server"], "cwd": "'$(PWD)'"}'
+	@echo '{"command": "python", "args": ["-m", "bitbucket_mcp_server.server_fastmcp"], "cwd": "'$(PWD)'"}'
 
 serve-http: ## Expose stdio server over HTTP (JSON-RPC + SSE)
 	@echo "HTTP: http://$(HTTP_HOST):$(HTTP_PORT)"
-	$(PYTHON) -m mcpgateway.translate --stdio "$(PYTHON) -m bitbucket_mcp_server.server" --host $(HTTP_HOST) --port $(HTTP_PORT) --expose-sse
+	$(PYTHON) -m mcpgateway.translate --stdio "$(PYTHON) -m bitbucket_mcp_server.server_fastmcp" --host $(HTTP_HOST) --port $(HTTP_PORT) --expose-sse
 
 test-http: ## Basic HTTP checks
 	curl -s http://$(HTTP_HOST):$(HTTP_PORT)/ | head -20 || true

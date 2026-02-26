@@ -1,13 +1,13 @@
 # Bitbucket MCP Server
 
-Example Python MCP server (stdio + optional HTTP bridge)
+Bitbucket Cloud MCP Server for repository, PR, and pipeline tools via FastMCP.
 
 ## Quickstart
 
 - Install (dev):
   - `python -m pip install -e .[dev]`
 - Run (stdio):
-  - `python -m bitbucket_mcp_server.server`
+  - `python -m bitbucket_mcp_server.server_fastmcp`
 - Test:
   - `pytest -v`
 - Makefile targets:
@@ -22,7 +22,7 @@ Example Python MCP server (stdio + optional HTTP bridge)
 Use this snippet in your MCP client configuration (e.g., Claude Desktop):
 
 ```json
-{"command": "python", "args": ["-m", "bitbucket_mcp_server.server"], "cwd": "."}
+{"command": "python", "args": ["-m", "bitbucket_mcp_server.server_fastmcp"], "cwd": "."}
 ```
 
 ## Container

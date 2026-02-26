@@ -39,8 +39,6 @@ spec:
               value: {{ .Values.atlassian.config.mcfDomain | quote }}
             - name: ATLASSIAN_OAUTH_SCOPES
               value: {{ .Values.atlassian.config.scopes | quote }}
-            - name: TOOL_DISCOVERY_TIMEOUT
-              value: {{ .Values.atlassian.config.toolDiscoveryTimeout | quote }}
             - name: JWT_ALGORITHM
               valueFrom:
                 secretKeyRef:

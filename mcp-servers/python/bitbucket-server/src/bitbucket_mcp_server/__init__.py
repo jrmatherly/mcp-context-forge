@@ -1,5 +1,1 @@
-"""
-Bitbucket MCP Server
-
-Example Python MCP server (stdio + optional HTTP bridge)
-"""
+"""Bitbucket Cloud MCP Server — repositories, PRs, pipelines, and code search."""

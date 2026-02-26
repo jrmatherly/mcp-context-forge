@@ -2046,6 +2046,7 @@
         "atlassian": {
             "type": "object",
             "description": "Atlassian integration — registers Rovo MCP server gateway with OAuth 2.0 (3LO).",
+            "additionalProperties": false,
             "properties": {
                 "enabled": {
                     "type": "boolean",
@@ -2078,8 +2079,7 @@
                     "description": "Registration configuration.",
                     "properties": {
                         "mcfDomain": { "type": "string", "description": "Public MCF domain for OAuth callback." },
-                        "scopes": { "type": "string", "description": "Comma-separated OAuth scopes." },
-                        "toolDiscoveryTimeout": { "type": "string", "description": "Seconds to wait for tool discovery." }
+                        "scopes": { "type": "string", "description": "Comma-separated OAuth scopes." }
                     },
                     "additionalProperties": false
                 },
