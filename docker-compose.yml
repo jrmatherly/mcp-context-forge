@@ -964,7 +964,7 @@ services:
     #  MONITORING STACK (enabled with --profile monitoring)
     #  Usage: docker compose --profile monitoring up -d
     #  Access: Grafana http://localhost:3000 (admin/changeme)
-    #          Prometheus http://localhost:9090
+    #          Prometheus http://localhost:${PROMETHEUS_PORT:-9090}
     ###############################################################################
 
     # ──────────────────────────────────────────────────────────────────────
@@ -1065,7 +1065,7 @@ services:
         restart: unless-stopped
         networks: [mcpnet]
         ports:
-            - "9090:9090" # http://localhost:9090
+            - "${PROMETHEUS_PORT:-9090}:9090" # http://localhost:${PROMETHEUS_PORT:-9090}
         volumes:
             - ./infra/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
             - prometheusdata:/prometheus
