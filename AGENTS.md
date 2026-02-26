@@ -112,6 +112,7 @@ The `teams` claim in JWT tokens determines resource visibility:
 ## MindsDB Integration
 
 Optional MindsDB deployment via `docker compose --profile mindsdb`:
+- Registration scripts (`scripts/register-*.py`) are baked into the image at `/app/scripts/` — when adding new registration scripts, add a `COPY` line to `Containerfile.lite`
 - Auto-registration: `scripts/register-mindsdb.py` runs as init container (`register_mindsdb` service)
 - The container image does NOT pip-install `mcpgateway` — avoid importing it in scripts; use pyjwt directly for JWT generation
 - `MINDSDB_HTTP_AUTH_TYPE=token` — indefinitely-valid bearer tokens, no cron refresh needed
@@ -134,6 +135,7 @@ Optional MindsDB deployment via `docker compose --profile mindsdb`:
 
 ## Atlassian Integration
 
+- `Containerfile.lite` must COPY any scripts used by init containers — Docker Compose volume mounts mask missing files, but Helm/K8s has no such fallback
 - Docker Compose: `--profile atlassian` enables `register_atlassian` init container
 - Registration script: `scripts/register-atlassian.py` — idempotent, registers Rovo + optional Bitbucket gateways
 - Bitbucket OAuth scopes: configured on the OAuth consumer, NOT in the auth URL — `scopes: []` in gateway registration
@@ -171,6 +173,8 @@ Optional MindsDB deployment via `docker compose --profile mindsdb`:
 - When adding new source directories, add them to relevant workflow `paths` filters
 - Editing workflow files triggers a security reminder hook — this is expected, not an error
 - Transient CI failures (GHCR Connect Timeout, GitHub API timeout, artifact upload ETIMEDOUT) are common — re-run before investigating code fixes
+- `docker-multiplatform.yml` is the ONLY workflow that creates the GHCR `latest` tag — it only triggers on `Containerfile.lite`, `mcpgateway/**`, `plugins/**`, `pyproject.toml` changes; other file changes leave `latest` stale
+- If `latest` is stale after non-Docker-path changes, manually trigger: `gh workflow run docker-multiplatform.yml --ref main`
 
 ## Key Environment Variables
 
