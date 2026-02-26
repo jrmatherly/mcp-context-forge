@@ -4195,7 +4195,7 @@ CONTAINER_RUNTIME ?= $(shell command -v docker >/dev/null 2>&1 && echo docker ||
 print-runtime:
 	@echo Using container runtime: $(CONTAINER_RUNTIME)
 # Base image name (without any prefix)
-IMAGE_BASE := mcpgateway/mcpgateway
+IMAGE_BASE := jrmatherly/mcp-context-forge
 IMAGE_TAG := latest
 
 # Handle runtime-specific image naming
@@ -7332,7 +7332,7 @@ fuzz-all: fuzz-hypothesis fuzz-atheris fuzz-api fuzz-security fuzz-report  ## ðŸ
 MIGRATION_TEST_DIR := tests/migration
 MIGRATION_REPORTS_DIR := $(MIGRATION_TEST_DIR)/reports
 UPGRADE_BASE_IMAGE ?= ghcr.io/jrmatherly/mcp-context-forge:1.0.0-BETA-2
-UPGRADE_TARGET_IMAGE ?= mcpgateway/mcpgateway:latest
+UPGRADE_TARGET_IMAGE ?= jrmatherly/mcp-context-forge:latest
 
 # Get supported versions from version config (n-2 policy)
 MIGRATION_VERSIONS := $(shell cd $(MIGRATION_TEST_DIR) && python3 -c "from version_config import get_supported_versions; print(' '.join(get_supported_versions()))" 2>/dev/null || echo "0.5.0 0.8.0 0.9.0 latest")
