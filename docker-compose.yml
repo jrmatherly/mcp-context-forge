@@ -41,8 +41,8 @@
 #  NETWORKS + VOLUMES - declared first so they can be referenced later
 ###############################################################################
 networks:
-    mcpnet: # Single user-defined bridge network keeps traffic private
-        driver: bridge
+    mcpnet: # Shared with LibreChat stack (nginx → MindsDB). Create once: docker network create mcpnet
+        external: true
     shared-proxy: # Shared network for cross-stack nginx routing (LibreChat ↔ MCF)
         external: true
 
@@ -337,6 +337,9 @@ services:
             # Plugins
             - PLUGINS_ENABLED=${PLUGINS_ENABLED:-true}
             - PLUGIN_CONFIG_FILE=${PLUGIN_CONFIG_FILE:-plugins/config.yaml}
+            # Gateway auto-refresh: re-sync tools/resources from federated gateways during health checks
+            - AUTO_REFRESH_SERVERS=${AUTO_REFRESH_SERVERS:-true}
+            - GATEWAY_AUTO_REFRESH_INTERVAL=${GATEWAY_AUTO_REFRESH_INTERVAL:-300}
             # Catalog
             - MCPGATEWAY_CATALOG_ENABLED=${MCPGATEWAY_CATALOG_ENABLED:-true}
             - MCPGATEWAY_CATALOG_FILE=/app/mcp-catalog.yml
@@ -2130,20 +2133,40 @@ services:
     #  Usage: docker compose --profile mindsdb up -d
     #
     #  MindsDB exposes MCP tools (query, list_databases) via SSE at /mcp/sse.
-    #  Register as a Context Forge gateway, then create team-scoped Virtual Servers.
-    #  See: .scratchpad/plans/mindsdb-integration-review-and-enhanced-plan.md
+    #  An nginx sidecar (mindsdb-mcp-proxy) rewrites the Host header to bypass
+    #  the MCP SDK's DNS rebinding protection (HTTP 421 on Docker hostnames).
+    #  See: .scratchpad/plans/mindsdb-enhanced-integration-plan-v3.md
     ###############################################################################
 
     mindsdb:
         container_name: mindsdb
         image: mindsdb/mindsdb:latest
         restart: unless-stopped
+        entrypoint: ["/bin/sh", "/opt/docker-entrypoint.sh"]
         environment:
             - MINDSDB_APIS=http,mysql
             - MINDSDB_HTTP_AUTH_TYPE=token
             - MINDSDB_USERNAME=${MINDSDB_USERNAME:-admin}
             - MINDSDB_PASSWORD=${MINDSDB_PASSWORD} # Required: set in .env before starting
-            - MINDSDB_MCP_ALLOWED_HOSTS=mindsdb:*,gateway:* # Allow Docker hostnames for MCP SSE
+            # Default model API keys (env vars — MindsDB reads these natively)
+            - MINDSDB_DEFAULT_LLM_API_KEY=${MINDSDB_LLM_API_KEY:-}
+            - MINDSDB_DEFAULT_EMBEDDING_MODEL_API_KEY=${MINDSDB_EMBEDDING_API_KEY:-}
+            - MINDSDB_DEFAULT_RERANKING_MODEL_API_KEY=${MINDSDB_RERANKING_API_KEY:-}
+            - MINDSDB_DATA_CATALOG_ENABLED=${MINDSDB_DATA_CATALOG_ENABLED:-1}
+            # Default model provider/URL config (assembled into config.json by entrypoint)
+            # Only needed for non-OpenAI providers (Azure, Bedrock, Ollama, etc.)
+            - MINDSDB_LLM_PROVIDER=${MINDSDB_LLM_PROVIDER:-}
+            - MINDSDB_LLM_MODEL=${MINDSDB_LLM_MODEL:-}
+            - MINDSDB_LLM_BASE_URL=${MINDSDB_LLM_BASE_URL:-}
+            - MINDSDB_LLM_API_VERSION=${MINDSDB_LLM_API_VERSION:-}
+            - MINDSDB_EMBEDDING_PROVIDER=${MINDSDB_EMBEDDING_PROVIDER:-}
+            - MINDSDB_EMBEDDING_MODEL=${MINDSDB_EMBEDDING_MODEL:-}
+            - MINDSDB_EMBEDDING_BASE_URL=${MINDSDB_EMBEDDING_BASE_URL:-}
+            - MINDSDB_EMBEDDING_API_VERSION=${MINDSDB_EMBEDDING_API_VERSION:-}
+            - MINDSDB_RERANKING_PROVIDER=${MINDSDB_RERANKING_PROVIDER:-}
+            - MINDSDB_RERANKING_MODEL=${MINDSDB_RERANKING_MODEL:-}
+            - MINDSDB_RERANKING_BASE_URL=${MINDSDB_RERANKING_BASE_URL:-}
+            - MINDSDB_RERANKING_API_VERSION=${MINDSDB_RERANKING_API_VERSION:-}
         ports:
             - "${MINDSDB_HTTP_PORT:-47334}:47334"
             - "${MINDSDB_MYSQL_PORT:-47335}:47335"
@@ -2151,9 +2174,10 @@ services:
             - "host.docker.internal:host-gateway"
         volumes:
             - ./mindsdb_data:/root/mdb_storage
+            - ./deployment/mindsdb/docker-entrypoint.sh:/opt/docker-entrypoint.sh:ro
         networks: [mcpnet]
         healthcheck:
-            test: ["CMD-SHELL", "curl -sf http://localhost:47334/api/status"]
+            test: ["CMD-SHELL", "curl -sf http://localhost:47334/api/status && curl -sf http://localhost:47334/mcp/status"]
             interval: 30s
             timeout: 10s
             retries: 5
@@ -2161,11 +2185,27 @@ services:
         profiles: ["mindsdb"]
 
     ###############################################################################
+    #  MindsDB MCP Proxy — Nginx sidecar to bypass DNS rebinding protection
+    #  The MCP SDK rejects non-localhost Host headers (HTTP 421). This proxy
+    #  rewrites Host to localhost before forwarding to MindsDB's /mcp/ endpoint.
+    #  See: GitHub Issue #12089, MCP SDK PR #861
+    ###############################################################################
+    mindsdb-mcp-proxy:
+        image: nginx:1-alpine
+        volumes:
+            - ./deployment/nginx/mindsdb-mcp-proxy.conf:/etc/nginx/conf.d/default.conf:ro
+        networks: [mcpnet]
+        depends_on:
+            mindsdb:
+                condition: service_healthy
+        profiles: ["mindsdb"]
+
+    ###############################################################################
     #  MindsDB Auto-Registration
     #  Registers MindsDB as an upstream MCP gateway in Context Forge, waits for
-    #  tool auto-discovery, then creates team-scoped Virtual Servers with stable
-    #  UUIDs. Runs once on startup — idempotent (deletes existing before creating).
-    #  See: .scratchpad/plans/mindsdb-integration-review-and-enhanced-plan.md
+    #  tool auto-discovery, provisions Knowledge Bases and team-scoped Virtual
+    #  Servers with stable UUIDs. Runs once on startup — idempotent.
+    #  See: .scratchpad/plans/mindsdb-enhanced-integration-plan-v3.md
     ###############################################################################
     register_mindsdb:
         image: ${IMAGE_LOCAL:-jrmatherly/mcp-context-forge:latest}
@@ -2175,6 +2215,8 @@ services:
                 condition: service_healthy
             mindsdb:
                 condition: service_healthy
+            mindsdb-mcp-proxy:
+                condition: service_started
         environment:
             - JWT_ALGORITHM=${JWT_ALGORITHM:-HS256}
             - JWT_SECRET_KEY=${JWT_SECRET_KEY:-my-test-key}
@@ -2186,6 +2228,8 @@ services:
             - TOKEN_EXPIRY=${TOKEN_EXPIRY:-10080}
             - MINDSDB_USERNAME=${MINDSDB_USERNAME:-admin}
             - MINDSDB_PASSWORD=${MINDSDB_PASSWORD}
+            # MCP SSE URL via nginx sidecar (rewrites Host header to bypass DNS rebinding)
+            - MINDSDB_MCP_URL=http://mindsdb-mcp-proxy:47336/mcp/sse
         volumes:
             - ./certs:/app/certs:ro
             - ./scripts:/app/scripts:ro

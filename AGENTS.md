@@ -129,9 +129,10 @@ Optional MindsDB deployment via `docker compose --profile mindsdb`:
 - MCP Context Forge's gateway joins the `shared-proxy` Docker network for cross-stack routing
 - MCF's standalone nginx is behind `profiles: ["standalone"]` — only for local dev
 - Design doc: `.scratchpad/plans/shared-nginx-consolidation.md`
-- LibreChat nginx configs: `~/dev/ai-stack/LibreChat/nginx/` (`nginx.conf`, `librechat.conf.template`, `mcf-gateway.conf.template`)
-- Prerequisite: `docker network create shared-proxy` (run once before starting either stack)
-- Required LibreChat `.env` vars: `LIBRECHAT_DOMAIN`, `MCF_DOMAIN`
+- LibreChat nginx configs: `~/dev/ai-stack/LibreChat/nginx/` (`nginx.conf`, `librechat.conf.template`, `mcf-gateway.conf.template`, `mindsdb.conf.template`)
+- Prerequisite: `docker network create shared-proxy && docker network create mcpnet` (run once before starting either stack)
+- `mcpnet` is external — shared with LibreChat's nginx so it can proxy to MindsDB (Host rewrite for DNS rebinding)
+- Required LibreChat `.env` vars: `LIBRECHAT_DOMAIN`, `MCF_DOMAIN`, `MINDSDB_DOMAIN`
 
 ## Atlassian Integration
 

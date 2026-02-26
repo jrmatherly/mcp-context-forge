@@ -8,6 +8,7 @@ provisions teams, and creates team-scoped virtual servers.
 Environment variables:
     MCPGATEWAY_URL          - Gateway base URL (default: http://gateway:4444)
     MINDSDB_URL             - MindsDB base URL (default: http://mindsdb:47334)
+    MINDSDB_MCP_URL         - MCP SSE URL via nginx sidecar (default: http://mindsdb-mcp-proxy:47336/mcp/sse)
     MINDSDB_USERNAME        - MindsDB login username
     MINDSDB_PASSWORD        - MindsDB login password
     JWT_ALGORITHM           - JWT signing algorithm (default: HS256)
@@ -35,6 +36,10 @@ import urllib.request
 
 GATEWAY_URL = os.environ.get("MCPGATEWAY_URL", "http://gateway:4444")
 MINDSDB_URL = os.environ.get("MINDSDB_URL", "http://mindsdb:47334")
+# MCP SSE URL — via nginx sidecar that rewrites Host header to bypass DNS rebinding protection.
+# The MCP SDK rejects non-localhost Host headers (HTTP 421). The sidecar proxies to MindsDB
+# with Host: localhost, making the MCP SSE endpoint accessible from Docker hostnames.
+MINDSDB_MCP_URL = os.environ.get("MINDSDB_MCP_URL", "http://mindsdb-mcp-proxy:47336/mcp/sse")
 TOOL_DISCOVERY_TIMEOUT = int(os.environ.get("TOOL_DISCOVERY_TIMEOUT", "120"))
 
 
@@ -114,7 +119,7 @@ def login_mindsdb() -> str:
         headers={"Content-Type": "application/json"},
         method="POST",
     )
-    with urllib.request.urlopen(req) as r:
+    with urllib.request.urlopen(req, timeout=30) as r:
         result = json.loads(r.read())
         return result.get("token") or result.get("session") or ""
 
@@ -132,6 +137,22 @@ def api(method: str, path: str, data: dict | None = None, token: str = "") -> di
         return json.loads(body) if body else {}
 
 
+def mindsdb_sql(token: str, query: str) -> dict:
+    """Execute SQL against MindsDB's REST API."""
+    data = json.dumps({"query": query}).encode()
+    req = urllib.request.Request(
+        f"{MINDSDB_URL}/api/sql/query",
+        data=data,
+        headers={
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {token}",
+        },
+        method="POST",
+    )
+    with urllib.request.urlopen(req, timeout=30) as r:
+        return json.loads(r.read())
+
+
 # ---------------------------------------------------------------------------
 # Step 1 — Register or update the MindsDB gateway (idempotent)
 # ---------------------------------------------------------------------------
@@ -142,7 +163,7 @@ def register_gateway(cf_token: str, mdb_token: str) -> str:
 
     gw_payload = {
         "name": "mindsdb",
-        "url": f"{MINDSDB_URL}/mcp/sse",
+        "url": MINDSDB_MCP_URL,
         "description": (
             "MindsDB federated data gateway — query databases, warehouses, "
             "knowledge bases, and SaaS applications via SQL"
@@ -169,8 +190,9 @@ def register_gateway(cf_token: str, mdb_token: str) -> str:
     if gateway_id:
         try:
             api("PUT", f"/gateways/{gateway_id}", {
+                "auth_type": "bearer",
                 "auth_token": mdb_token,
-                "url": f"{MINDSDB_URL}/mcp/sse",
+                "url": MINDSDB_MCP_URL,
             }, token=cf_token)
             print(f"  Updated existing gateway: {gateway_id}")
             return gateway_id
@@ -182,7 +204,10 @@ def register_gateway(cf_token: str, mdb_token: str) -> str:
     if not gateway_id:
         try:
             result = api("POST", "/gateways", gw_payload, token=cf_token)
-            gateway_id = result.get("id")
+            gateway_id = result.get("id") if isinstance(result, dict) else None
+            if not gateway_id:
+                print("  Gateway POST succeeded but returned no ID")
+                sys.exit(1)
             print(f"  Created gateway: {gateway_id}")
             return gateway_id
         except Exception as exc:
@@ -202,7 +227,7 @@ def discover_tools(cf_token: str, gateway_id: str) -> tuple[str, str | None]:
     list_db_tool_id = None
     poll_interval = 2  # seconds
 
-    for i in range(TOOL_DISCOVERY_TIMEOUT // poll_interval):
+    for i in range(max(1, TOOL_DISCOVERY_TIMEOUT // poll_interval)):
         try:
             tools = api("GET", "/tools", token=cf_token)
             gw_tools = [t for t in tools if t.get("gatewayId") == gateway_id]
@@ -366,6 +391,79 @@ def create_virtual_servers(
 
 
 # ---------------------------------------------------------------------------
+# Step 5 — Provision Knowledge Bases in MindsDB (idempotent)
+# ---------------------------------------------------------------------------
+
+def provision_knowledge_bases(mdb_token: str) -> None:
+    """Create team Knowledge Bases in MindsDB if they don't exist."""
+    print("Step 5: Provisioning Knowledge Bases...")
+
+    try:
+        result = mindsdb_sql(mdb_token, "SHOW KNOWLEDGE_BASES")
+        existing_kbs = [row[0] for row in result.get("data", [])]
+    except Exception as exc:
+        print(f"  Could not list KBs: {exc}")
+        existing_kbs = []
+
+    kbs_to_create = [
+        ("legal_kb", "Legal department knowledge base"),
+        ("hr_kb", "Human Resources knowledge base"),
+    ]
+
+    for kb_name, _description in kbs_to_create:
+        if kb_name in existing_kbs:
+            print(f"  KB exists: {kb_name}")
+            continue
+
+        sql = (
+            f"CREATE KNOWLEDGE_BASE {kb_name}"
+            f" USING"
+            f" content_columns = ['content'],"
+            f" metadata_columns = ['source_file', 'department']"
+        )
+
+        try:
+            mindsdb_sql(mdb_token, sql)
+            print(f"  Created KB: {kb_name}")
+        except Exception as exc:
+            print(f"  Failed to create KB {kb_name}: {exc}")
+
+
+# ---------------------------------------------------------------------------
+# Step 6 — Verify registration
+# ---------------------------------------------------------------------------
+
+def verify_registration(cf_token: str, gateway_id: str) -> None:
+    """Verify the gateway is healthy and tools are accessible."""
+    print("Step 6: Verifying registration...")
+    try:
+        gw = api("GET", f"/gateways/{gateway_id}", token=cf_token)
+        reachable = gw.get("reachable", False) if isinstance(gw, dict) else False
+        enabled = gw.get("enabled", False) if isinstance(gw, dict) else False
+        tools = gw.get("tools", []) if isinstance(gw, dict) else []
+        tool_count = len(tools)
+        print(f"  Gateway: enabled={enabled}, reachable={reachable}, tools={tool_count}")
+
+        if not reachable:
+            print("  WARNING: Gateway registered but not reachable")
+        if tool_count == 0:
+            print("  WARNING: No tools discovered — attempting manual refresh...")
+            try:
+                api("POST", f"/gateways/{gateway_id}/tools/refresh", token=cf_token)
+                time.sleep(5)
+                gw = api("GET", f"/gateways/{gateway_id}", token=cf_token)
+                tools = gw.get("tools", []) if isinstance(gw, dict) else []
+                tool_count = len(tools)
+                print(f"  After manual refresh: tools={tool_count}")
+            except Exception as refresh_exc:
+                print(f"  Manual refresh failed: {refresh_exc}")
+            if tool_count == 0:
+                print("  WARNING: Still no tools — check MCP SSE connectivity")
+    except Exception as exc:
+        print(f"  Verification failed: {exc}")
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 
@@ -375,7 +473,8 @@ def main() -> None:
 
     # Health checks
     wait_for_service(f"{GATEWAY_URL}/health", "Gateway")
-    wait_for_service(f"{MINDSDB_URL}/api/status", "MindsDB")
+    wait_for_service(f"{MINDSDB_URL}/api/status", "MindsDB HTTP")
+    wait_for_service(f"{MINDSDB_URL}/mcp/status", "MindsDB MCP")
 
     # Authentication
     print()
@@ -398,6 +497,10 @@ def main() -> None:
     legal_team_id, hr_team_id = provision_teams(cf_token)
     print()
     create_virtual_servers(cf_token, query_tool_id, list_db_tool_id, legal_team_id, hr_team_id)
+    print()
+    provision_knowledge_bases(mdb_token)
+    print()
+    verify_registration(cf_token, gateway_id)
 
     # Summary
     print()
