@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """MindsDB auto-registration for MCP Context Forge.
 
 Registers MindsDB as a federated gateway, waits for tool discovery,
