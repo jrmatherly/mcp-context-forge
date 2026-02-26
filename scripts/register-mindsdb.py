@@ -471,10 +471,9 @@ def main() -> None:
     print("=== MindsDB Registration ===")
     print()
 
-    # Health checks
+    # Health checks — only use public endpoints (MCP endpoints require auth)
     wait_for_service(f"{GATEWAY_URL}/health", "Gateway")
     wait_for_service(f"{MINDSDB_URL}/api/status", "MindsDB HTTP")
-    wait_for_service(f"{MINDSDB_URL}/mcp/status", "MindsDB MCP")
 
     # Authentication
     print()
