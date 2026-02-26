@@ -100,7 +100,7 @@ IBMCLOUD_CODE_ENGINE_APP=mcpgateway
 
 # Image details
 IBMCLOUD_IMAGE_NAME=us.icr.io/myspace/mcpgateway:latest  # target in IBM Container Registry
-IBMCLOUD_IMG_PROD=mcpgateway/mcpgateway                  # local tag produced by Make
+IBMCLOUD_IMG_PROD=jrmatherly/mcp-context-forge            # local tag produced by Make
 
 # Authentication
 IBMCLOUD_API_KEY=***your-api-key***    # leave blank to use SSO flow at login

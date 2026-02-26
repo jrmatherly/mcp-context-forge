@@ -49,7 +49,7 @@ permissions:
   packages: read      # Required for container scanning
 
 env:
-  IMAGE_NAME: mcpgateway/mcpgateway
+  IMAGE_NAME: jrmatherly/mcp-context-forge
   IMAGE_TAG: latest
   CONTAINERFILE: Containerfile.lite
 

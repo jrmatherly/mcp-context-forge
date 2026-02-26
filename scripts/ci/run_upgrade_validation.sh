@@ -4,7 +4,7 @@ set -euo pipefail
 # Validate fresh installs + release-to-current upgrades for SQLite and PostgreSQL.
 
 BASE_IMAGE="${BASE_IMAGE:-ghcr.io/jrmatherly/mcp-context-forge:1.0.0-BETA-2}"
-TARGET_IMAGE="${TARGET_IMAGE:-mcpgateway/mcpgateway:latest}"
+TARGET_IMAGE="${TARGET_IMAGE:-jrmatherly/mcp-context-forge:latest}"
 ARTIFACT_DIR="${ARTIFACT_DIR:-artifacts/upgrade-validation}"
 HEALTH_TIMEOUT_SECONDS="${HEALTH_TIMEOUT_SECONDS:-240}"
 

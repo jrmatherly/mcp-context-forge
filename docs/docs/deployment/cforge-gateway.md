@@ -59,7 +59,7 @@ deployment:
   project_name: mcp-stack-test
 
 gateway:
-  image: mcpgateway/mcpgateway:latest  # Use pre-built image
+  image: jrmatherly/mcp-context-forge:latest  # Use pre-built image
   port: 4444
   host_port: 4444                  # Expose on localhost:4444
 
@@ -522,7 +522,7 @@ Gateway server settings:
 ```yaml
 gateway:
   # Build Configuration (choose ONE)
-  image: mcpgateway/mcpgateway:latest    # Pre-built image
+  image: jrmatherly/mcp-context-forge:latest    # Pre-built image
   # OR
   repo: https://github.com/org/repo.git  # Build from source
   ref: main                              # Git branch/tag/commit
@@ -830,7 +830,7 @@ deployment:
   project_name: mcp-stack-test
 
 gateway:
-  image: mcpgateway/mcpgateway:latest
+  image: jrmatherly/mcp-context-forge:latest
   port: 4444
   host_port: 4444
 
@@ -885,7 +885,7 @@ deployment:
   project_name: mcp-stack-test
 
 gateway:
-  image: mcpgateway/mcpgateway:latest
+  image: jrmatherly/mcp-context-forge:latest
   port: 4444
   host_port: 4444
 
@@ -939,7 +939,7 @@ deployment:
   namespace: mcp-gateway-prod
 
 gateway:
-  image: mcpgateway/mcpgateway:latest
+  image: jrmatherly/mcp-context-forge:latest
   image_pull_policy: IfNotPresent
 
   replicas: 2                  # High availability
@@ -1010,7 +1010,7 @@ deployment:
   namespace: mcp-gateway-dev
 
 gateway:
-  image: mcpgateway/mcpgateway:latest
+  image: jrmatherly/mcp-context-forge:latest
 
 plugins:
   - name: OPAPluginFilter
@@ -1054,7 +1054,7 @@ deployment:
   namespace: mcp-gateway-test
 
 gateway:
-  image: mcpgateway/mcpgateway:latest
+  image: jrmatherly/mcp-context-forge:latest
   image_pull_policy: IfNotPresent
 
   port: 4444

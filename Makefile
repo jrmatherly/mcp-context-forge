@@ -4029,7 +4029,7 @@ trivy:
 
 # help: dockle               - Lint the built container image via tarball (no daemon/socket needed)
 .PHONY: dockle
-DOCKLE_IMAGE ?= $(IMG)         # mcpgateway/mcpgateway:latest
+DOCKLE_IMAGE ?= $(IMG)         # jrmatherly/mcp-context-forge:latest
 dockle:
 	@echo "🔎  dockle scan (tar mode) on $(DOCKLE_IMAGE)..."
 	@command -v dockle >/dev/null 2>&1 || { \
@@ -5429,12 +5429,12 @@ ibmcloud-ce-rm:
 #   image: $${REG_URL}/$(PROJECT_NAME):dev
 #
 #   # If you built a prod image via:
-#   #     make docker-prod   # ⇒ mcpgateway/mcpgateway:latest
+#   #     make docker-prod   # ⇒ jrmatherly/mcp-context-forge:latest
 #   # Tag & push it into Minikube:
-#   docker tag mcpgateway/mcpgateway:latest $${REG_URL}/mcpgateway:latest
-#   docker push $${REG_URL}/mcpgateway:latest
+#   docker tag jrmatherly/mcp-context-forge:latest $${REG_URL}/mcp-context-forge:latest
+#   docker push $${REG_URL}/mcp-context-forge:latest
 #   # Override the Make target variable or patch your Helm values:
-#   make minikube-k8s-apply IMAGE=$${REG_URL}/mcpgateway:latest
+#   make minikube-k8s-apply IMAGE=$${REG_URL}/mcp-context-forge:latest
 # -----------------------------------------------------------------------------
 
 # ▸ Tunables (export or pass on the command line)
@@ -5451,7 +5451,7 @@ MINIKUBE_MEMORY  ?= 6g             # RAM (supports m / g suffix)
 MINIKUBE_ADDONS  ?= ingress ingress-dns metrics-server dashboard registry registry-aliases
 # OCI image tag to preload into the cluster.
 # - By default we point to the *local* image built via `make docker-prod`, e.g.
-#   mcpgateway/mcpgateway:latest.  Override with IMAGE=<repo:tag> to use a
+#   jrmatherly/mcp-context-forge:latest.  Override with IMAGE=<repo:tag> to use a
 #   remote registry (e.g. ghcr.io/jrmatherly/mcp-context-forge:v0.9.0).
 TAG              ?= latest         # override with TAG=<ver>
 IMAGE            ?= $(IMG):$(TAG)  # or IMAGE=ghcr.io/jrmatherly/mcp-context-forge:$(TAG)

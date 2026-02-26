@@ -43,7 +43,7 @@ services:
         build:
             context: ./infra/nginx
             dockerfile: Dockerfile
-        image: mcpgateway/nginx-cache:latest
+        image: jrmatherly/nginx-cache:latest
         restart: unless-stopped
         ports:
             - "8080:80" # HTTP caching proxy (public-facing)
@@ -83,7 +83,7 @@ services:
     # MCP Gateway - the main API server for the MCP stack
     # ──────────────────────────────────────────────────────────────────────
     gateway:
-        image: ${IMAGE_LOCAL:-mcpgateway/mcpgateway:latest} # Use the local latest image. Run `make docker-prod` to build it.
+        image: ${IMAGE_LOCAL:-jrmatherly/mcp-context-forge:latest} # Use the local latest image. Run `make docker-prod` to build it.
         #image: ghcr.io/jrmatherly/mcp-context-forge:1.0.0-BETA-2 # Use the release MCP Context Forge image
         #image: ghcr.io/jrmatherly/mcp-context-forge:0.7.0 # Testing migration from 0.7.0
         build:
@@ -812,7 +812,7 @@ services:
 
     # migration:
     #   #image: ghcr.io/jrmatherly/mcp-context-forge:0.7.0 # Testing migration from 0.7.0
-    #   image: mcpgateway/mcpgateway:latest # Use the local latest image. Run `make docker-prod` to build it.
+    #   image: jrmatherly/mcp-context-forge:latest # Use the local latest image. Run `make docker-prod` to build it.
     #   build:
     #     context: .
     #     dockerfile: Containerfile
@@ -1214,7 +1214,7 @@ services:
     # Auto-registration service - registers fast_time_server with gateway
     ###############################################################################
     register_fast_time:
-        image: ${IMAGE_LOCAL:-mcpgateway/mcpgateway:latest}
+        image: ${IMAGE_LOCAL:-jrmatherly/mcp-context-forge:latest}
         networks: [mcpnet]
         depends_on:
             gateway:
@@ -1459,7 +1459,7 @@ services:
         build:
             context: ./mcp-servers/go/slow-time-server
             dockerfile: Dockerfile
-        image: mcpgateway/slow-time-server:latest
+        image: jrmatherly/slow-time-server:latest
         restart: unless-stopped
         networks: [mcpnet]
         ports:
@@ -1493,7 +1493,7 @@ services:
     # Auto-registration service - registers slow_time_server with gateway
     ###############################################################################
     register_slow_time:
-        image: ${IMAGE_LOCAL:-mcpgateway/mcpgateway:latest}
+        image: ${IMAGE_LOCAL:-jrmatherly/mcp-context-forge:latest}
         networks: [mcpnet]
         depends_on:
             gateway:
@@ -1583,7 +1583,7 @@ services:
         build:
             context: ./mcp-servers/rust/fast-test-server
             dockerfile: Containerfile
-        image: mcpgateway/fast-test-server:latest
+        image: jrmatherly/fast-test-server:latest
         restart: unless-stopped
         networks: [mcpnet]
         ports:
@@ -1620,7 +1620,7 @@ services:
     # Auto-registration service - registers fast_test_server with gateway
     ###############################################################################
     register_fast_test:
-        image: ${IMAGE_LOCAL:-mcpgateway/mcpgateway:latest}
+        image: ${IMAGE_LOCAL:-jrmatherly/mcp-context-forge:latest}
         networks: [mcpnet]
         depends_on:
             gateway:
@@ -1695,7 +1695,7 @@ services:
         build:
             context: ./mcp-servers/go/benchmark-server
             dockerfile: Dockerfile
-        image: mcpgateway/benchmark-server:latest
+        image: jrmatherly/benchmark-server:latest
         restart: unless-stopped
         networks: [mcpnet]
         command:
@@ -1726,7 +1726,7 @@ services:
     # Uses BENCHMARK_SERVER_COUNT and BENCHMARK_START_PORT environment variables
     ###############################################################################
     register_benchmark:
-        image: ${IMAGE_LOCAL:-mcpgateway/mcpgateway:latest}
+        image: ${IMAGE_LOCAL:-jrmatherly/mcp-context-forge:latest}
         networks: [mcpnet]
         depends_on:
             gateway:

@@ -35,7 +35,7 @@ jobs:
     timeout-minutes: 50
 
     env:
-      TARGET_IMAGE: mcpgateway/mcpgateway:upgrade-ci-${{ github.sha }}
+      TARGET_IMAGE: jrmatherly/mcp-context-forge:upgrade-ci-${{ github.sha }}
       ARTIFACT_DIR: artifacts/upgrade-validation
       BASE_IMAGE: ${{ github.event.inputs.base_image || format('ghcr.io/{0}:latest', github.repository) }}
 

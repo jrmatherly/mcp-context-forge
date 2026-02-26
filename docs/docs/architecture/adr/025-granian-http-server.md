@@ -188,8 +188,8 @@ make container-run-granian
 make container-run-granian-ssl
 
 # Or pass HTTP_SERVER directly
-docker run mcpgateway/mcpgateway                         # Gunicorn (default)
-docker run -e HTTP_SERVER=granian mcpgateway/mcpgateway  # Granian
+docker run jrmatherly/mcp-context-forge                         # Gunicorn (default)
+docker run -e HTTP_SERVER=granian jrmatherly/mcp-context-forge  # Granian
 ```
 
 ## Switching Servers

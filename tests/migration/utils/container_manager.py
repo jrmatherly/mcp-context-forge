@@ -11,15 +11,15 @@ for testing database migrations across different MCP Gateway versions.
 """
 
 # Standard
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import json
 import logging
 import os
-from pathlib import Path
+import stat
 import subprocess
 import tempfile
 import time
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -34,11 +34,7 @@ class ContainerConfig:
     ports: Dict[str, str]
     environment: Dict[str, str]
     volumes: Dict[str, str]
-    labels: Dict[str, str] = None
-
-    def __post_init__(self):
-        if self.labels is None:
-            self.labels = {"migration-test": "true"}
+    labels: Dict[str, str] = field(default_factory=lambda: {"migration-test": "true"})
 
 
 class ContainerManager:
@@ -82,7 +78,7 @@ class ContainerManager:
             logger.error(f"❌ {self.runtime} runtime not available: {e}")
             raise RuntimeError(f"{self.runtime} not found or not working")
 
-    def _run_command(self, cmd: List[str], capture_output: bool = False, check: bool = True, env: Dict[str, str] = None) -> subprocess.CompletedProcess:
+    def _run_command(self, cmd: List[str], capture_output: bool = False, check: bool = True, env: Optional[Dict[str, str]] = None) -> subprocess.CompletedProcess[str]:
         """Run a command with detailed logging.
 
         Args:
@@ -122,7 +118,7 @@ class ContainerManager:
                 logger.error(f"📤 stderr: {e.stderr}")
             raise
 
-    def pull_images(self, versions: List[str] = None) -> None:
+    def pull_images(self, versions: Optional[List[str]] = None) -> None:
         """Pull all required container images.
 
         Args:
@@ -132,7 +128,7 @@ class ContainerManager:
         logger.info(f"📦 Pulling container images for versions: {versions}")
 
         for version in versions:
-            image = f"ghcr.io/ibm/mcp-context-forge:{version}"
+            image = f"ghcr.io/jrmatherly/mcp-context-forge:{version}"
             logger.info(f"📥 Pulling {image}...")
 
             try:
@@ -153,7 +149,7 @@ class ContainerManager:
             self._run_command(["make", "docker-prod"], capture_output=True)
 
             # Tag the built image appropriately
-            tag_cmd = [self.runtime, "tag", "mcpgateway/mcpgateway:latest", "ghcr.io/ibm/mcp-context-forge:latest"]
+            tag_cmd = [self.runtime, "tag", "jrmatherly/mcp-context-forge:latest", "ghcr.io/jrmatherly/mcp-context-forge:latest"]
             self._run_command(tag_cmd)
             logger.info("✅ Latest image built and tagged successfully")
 
@@ -161,7 +157,7 @@ class ContainerManager:
             logger.error(f"❌ Failed to build latest image: {e}")
             raise
 
-    def start_sqlite_container(self, version: str, db_file: str = "mcp-alembic-migration-test.db", extra_env: Dict[str, str] = None, data_dir: str = None) -> str:
+    def start_sqlite_container(self, version: str, db_file: str = "mcp-alembic-migration-test.db", extra_env: Optional[Dict[str, str]] = None, data_dir: Optional[str] = None) -> str:
         """Start SQLite container with mounted test database.
 
         Args:
@@ -184,10 +180,6 @@ class ContainerManager:
             logger.info(f"📁 Created new data directory: {temp_dir}")
             # Set ownership and permissions so the app user (uid=1001) can write to it
             try:
-                # Standard
-                import os
-                import stat
-
                 # Change ownership to match the container app user (uid=1001, gid=1001)
                 os.chown(temp_dir, 1001, 1001)
                 # Also set write permissions for good measure
@@ -202,10 +194,8 @@ class ContainerManager:
                     logger.warning(f"⚠️ Could not set permissions on {temp_dir}: {e}")
             except Exception as e:
                 logger.warning(f"⚠️ Could not set ownership on {temp_dir}: {e}")
-        db_path = Path(temp_dir) / db_file
-
         config = ContainerConfig(
-            image=f"ghcr.io/ibm/mcp-context-forge:{version}",
+            image=f"ghcr.io/jrmatherly/mcp-context-forge:{version}",
             version=version,
             db_type="sqlite",
             ports={"4444": "0"},  # Let Docker assign random port
@@ -231,7 +221,7 @@ class ContainerManager:
 
         return container_id
 
-    def get_container_data_dir(self, container_id: str) -> str:
+    def get_container_data_dir(self, container_id: str) -> Optional[str]:
         """Get the data directory path from a container.
 
         Args:
@@ -381,7 +371,7 @@ class ContainerManager:
         logger.info(f"🐙 Starting compose stack for version {version}")
         logger.info(f"📄 Using compose file: {compose_file}")
 
-        env = {"IMAGE_LOCAL": f"ghcr.io/ibm/mcp-context-forge:{version}", "POSTGRES_PASSWORD": "test_migration_password_123", "POSTGRES_USER": "test_user", "POSTGRES_DB": "mcp_test"}
+        env = {"IMAGE_LOCAL": f"ghcr.io/jrmatherly/mcp-context-forge:{version}", "POSTGRES_PASSWORD": "test_migration_password_123", "POSTGRES_USER": "test_user", "POSTGRES_DB": "mcp_test"}
 
         logger.info(f"🔧 Environment variables: {env}")
 
@@ -662,7 +652,7 @@ if __name__ == "__main__":
         except Exception as e:
             logger.warning(f"⚠️ Error during final cleanup: {e}")
 
-    def get_container_info(self, container_id: str) -> Dict:
+    def get_container_info(self, container_id: str) -> Dict[str, object]:
         """Get detailed container information.
 
         Args:

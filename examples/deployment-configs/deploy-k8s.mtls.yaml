@@ -8,7 +8,7 @@ deployment:
 # MCP Gateway configuration
 gateway:
   # Use pre-built gateway image
-  image: mcpgateway/mcpgateway:latest
+  image: jrmatherly/mcp-context-forge:latest
   image_pull_policy: IfNotPresent
 
   port: 4444

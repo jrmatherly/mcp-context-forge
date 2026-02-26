@@ -8,7 +8,7 @@ deployment:
 # MCP Gateway configuration
 gateway:
   # Use local gateway image (build first with: make container-build)
-  image: mcpgateway/mcpgateway:latest
+  image: jrmatherly/mcp-context-forge:latest
 
   port: 4444
   host_port: 4444  # Expose on localhost:4444

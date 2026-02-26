@@ -139,10 +139,10 @@ The `HTTP_SERVER` environment variable controls which server to use:
 
 ```bash
 # Docker/Podman - use Gunicorn (default)
-docker run mcpgateway/mcpgateway
+docker run jrmatherly/mcp-context-forge
 
 # Docker/Podman - use Granian
-docker run -e HTTP_SERVER=granian mcpgateway/mcpgateway
+docker run -e HTTP_SERVER=granian jrmatherly/mcp-context-forge
 
 # Docker Compose - set in environment section
 environment:

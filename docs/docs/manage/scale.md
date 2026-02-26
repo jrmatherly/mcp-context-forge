@@ -477,7 +477,7 @@ The `docker-compose.yml` provides a production-ready reference architecture with
 services:
   # Nginx caching proxy (port 8080)
   nginx:
-    image: mcpgateway/nginx-cache:latest
+    image: jrmatherly/nginx-cache:latest
     ports: ["8080:80"]
     volumes:
       - nginx_cache:/var/cache/nginx
@@ -485,7 +485,7 @@ services:
 
   # Gateway application (replicas: 2)
   gateway:
-    image: mcpgateway/mcpgateway:latest
+    image: jrmatherly/mcp-context-forge:latest
     environment:
       # HTTP Server: gunicorn (stable) or granian (faster)
       - HTTP_SERVER=gunicorn

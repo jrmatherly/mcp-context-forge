@@ -845,7 +845,7 @@ openssl x509 -in certs/cert.pem -text -noout
 ```yaml
 services:
   gateway:
-    image: mcpgateway/mcpgateway:latest
+    image: jrmatherly/mcp-context-forge:latest
     ports:
       - "4444:4444"
     environment:
@@ -871,7 +871,7 @@ services:
       start_period: 30s
 
   nginx:
-    image: mcpgateway/nginx-cache:latest
+    image: jrmatherly/nginx-cache:latest
     ports:
       - "8080:80"    # HTTP
       - "8443:443"   # HTTPS

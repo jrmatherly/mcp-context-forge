@@ -1435,7 +1435,7 @@ version: '3.8'
 
 services:
   mcp-gateway:
-    image: mcpgateway/gateway:latest
+    image: jrmatherly/mcp-context-forge:latest
     ports:
       - "4444:4444"
     environment:

@@ -15,7 +15,7 @@
 #
 # Stage ❷  docker :
 #   - Uses the same repo checkout (depth-1 clone)
-#   - Builds Containerfile → mcpgateway/mcpgateway:latest
+#   - Builds Containerfile → jrmatherly/mcp-context-forge:latest
 #   - Starts the container and makes a quick health curl
 #
 # Requirements
@@ -68,11 +68,11 @@ jobs:
       script: |
         set -e
         echo "🏗️  Building container..."
-        docker build -f Containerfile -t mcpgateway/mcpgateway:latest .
+        docker build -f Containerfile -t jrmatherly/mcp-context-forge:latest .
 
         echo "🚀  Launching container..."
         docker run -d --name mcpgateway -p 4444:4444 \
-                   -e HOST=0.0.0.0 mcpgateway/mcpgateway:latest
+                   -e HOST=0.0.0.0 jrmatherly/mcp-context-forge:latest
 
         echo "⏳  Waiting for startup..."
         sleep 10

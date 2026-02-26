@@ -179,7 +179,7 @@ class BuildableConfig(BaseModel):
     2. Build from source: Specify 'repo' and optionally 'ref', 'context', 'containerfile', 'target'
 
     Attributes:
-        image: Pre-built Docker image name (e.g., "mcpgateway/mcpgateway:latest")
+        image: Pre-built Docker image name (e.g., "jrmatherly/mcp-context-forge:latest")
         repo: Git repository URL to build from
         ref: Git branch/tag/commit to checkout (default: "main")
         context: Build context subdirectory within repo (default: ".")

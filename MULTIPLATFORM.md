@@ -175,10 +175,10 @@ docker run -d -p 5000:5000 --name registry registry:2
 make container-build-multi REGISTRY=localhost:5000
 
 # Inspect
-make container-inspect-manifest REGISTRY=localhost:5000/mcpgateway/mcpgateway:latest
+make container-inspect-manifest REGISTRY=localhost:5000/jrmatherly/mcp-context-forge:latest
 
 # Pull specific platform
-docker pull --platform linux/arm64 localhost:5000/mcpgateway/mcpgateway:latest
+docker pull --platform linux/arm64 localhost:5000/jrmatherly/mcp-context-forge:latest
 ```
 
 ## Troubleshooting
