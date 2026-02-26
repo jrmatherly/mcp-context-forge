@@ -758,6 +758,19 @@ plugins:
     #   mode: "disabled"
     #   priority: 900
 
+    # # Atlassian Rate Limiter — per-user throttling for Atlassian API calls
+    # # Recommended when using the Atlassian Rovo MCP gateway to respect
+    # # Atlassian Cloud API rate limits (typically 100 req/min per user).
+    # - name: "AtlassianRateLimiter"
+    #   kind: "plugins.rate_limiter.rate_limiter.RateLimiterPlugin"
+    #   mode: "enforce"
+    #   priority: 21
+    #   conditions:
+    #     - tools: ["atlassian-rovo/*"]
+    #   config:
+    #       max_requests_per_minute: 60
+    #       max_requests_per_hour: 1000
+
     # # ALTK JSON Processor — requires watsonx/ollama provider
     # - name: "ALTKJsonProcessor"
     #   kind: "plugins.altk_json_processor.json_processor.ALTKJsonProcessor"

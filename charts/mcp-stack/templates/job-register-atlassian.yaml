@@ -1,0 +1,72 @@
+{{- if .Values.atlassian.enabled }}
+{{- $fullName := include "mcp-stack.fullname" . -}}
+{{- $gatewayHost := printf "%s-mcpgateway" $fullName -}}
+{{- $gatewayPort := .Values.mcpContextForge.service.port -}}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ $fullName }}-register-atlassian
+  labels:
+    {{- include "mcp-stack.labels" . | nindent 4 }}
+    app.kubernetes.io/component: registration
+    app.kubernetes.io/part-of: atlassian
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  backoffLimit: 3
+  activeDeadlineSeconds: 300
+  template:
+    metadata:
+      labels:
+        {{- include "mcp-stack.labels" . | nindent 8 }}
+        app.kubernetes.io/component: registration
+    spec:
+      restartPolicy: Never
+      {{- if or .Values.serviceAccount.create .Values.serviceAccount.name }}
+      serviceAccountName: {{ include "mcp-stack.serviceAccountName" . }}
+      {{- end }}
+      containers:
+        - name: register-atlassian
+          image: "{{ .Values.atlassian.image.repository }}:{{ .Values.atlassian.image.tag }}"
+          imagePullPolicy: {{ .Values.atlassian.image.pullPolicy }}
+          command: ["python3", "/app/scripts/register-atlassian.py"]
+          env:
+            - name: MCPGATEWAY_URL
+              value: "http://{{ $gatewayHost }}:{{ $gatewayPort }}"
+            - name: MCF_DOMAIN
+              value: {{ .Values.atlassian.config.mcfDomain | quote }}
+            - name: ATLASSIAN_OAUTH_SCOPES
+              value: {{ .Values.atlassian.config.scopes | quote }}
+            - name: TOOL_DISCOVERY_TIMEOUT
+              value: {{ .Values.atlassian.config.toolDiscoveryTimeout | quote }}
+            - name: JWT_ALGORITHM
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "mcp-stack.fullname" . }}-gateway-secret
+                  key: JWT_ALGORITHM
+            - name: JWT_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "mcp-stack.fullname" . }}-gateway-secret
+                  key: JWT_SECRET_KEY
+            - name: JWT_AUDIENCE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "mcp-stack.fullname" . }}-gateway-secret
+                  key: JWT_AUDIENCE
+            - name: JWT_ISSUER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "mcp-stack.fullname" . }}-gateway-secret
+                  key: JWT_ISSUER
+            - name: PLATFORM_ADMIN_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "mcp-stack.fullname" . }}-gateway-secret
+                  key: PLATFORM_ADMIN_EMAIL
+          envFrom:
+            - secretRef:
+                name: {{ .Values.atlassian.existingSecret | default (printf "%s-atlassian" $fullName) }}
+{{- end }}

@@ -2197,6 +2197,44 @@ services:
         command: ["python3", "/app/scripts/register-mindsdb.py"]
 
     ###############################################################################
+    #  ATLASSIAN PROFILE - Jira, Confluence, Compass via Atlassian Rovo MCP Server
+    #  Usage: docker compose --profile atlassian up -d
+    #
+    #  Registers Atlassian's hosted MCP server (mcp.atlassian.com) as a gateway
+    #  peer with per-user OAuth 2.0 (3LO) delegation.  No self-hosted Atlassian
+    #  service is needed — the Rovo MCP server is cloud-hosted by Atlassian.
+    #  Optionally registers a custom Bitbucket MCP server if credentials are set.
+    #  See: .scratchpad/atlassian-mcp-integration-research.md
+    ###############################################################################
+    register_atlassian:
+        image: ${IMAGE_LOCAL:-jrmatherly/mcp-context-forge:latest}
+        networks: [mcpnet]
+        depends_on:
+            gateway:
+                condition: service_healthy
+        environment:
+            - JWT_ALGORITHM=${JWT_ALGORITHM:-HS256}
+            - JWT_SECRET_KEY=${JWT_SECRET_KEY:-my-test-key}
+            - JWT_PRIVATE_KEY_PATH=${JWT_PRIVATE_KEY_PATH:-}
+            - JWT_PUBLIC_KEY_PATH=${JWT_PUBLIC_KEY_PATH:-}
+            - JWT_AUDIENCE=${JWT_AUDIENCE:-mcpgateway-api}
+            - JWT_ISSUER=${JWT_ISSUER:-mcpgateway}
+            - PLATFORM_ADMIN_EMAIL=${PLATFORM_ADMIN_EMAIL:-admin@apollosai.dev}
+            - TOKEN_EXPIRY=${TOKEN_EXPIRY:-10080}
+            - MCF_DOMAIN=${MCF_DOMAIN:-localhost:4444}
+            - ATLASSIAN_OAUTH_CLIENT_ID=${ATLASSIAN_OAUTH_CLIENT_ID}
+            - ATLASSIAN_OAUTH_CLIENT_SECRET=${ATLASSIAN_OAUTH_CLIENT_SECRET}
+            - ATLASSIAN_OAUTH_SCOPES=${ATLASSIAN_OAUTH_SCOPES:-read:jira-work,write:jira-work,read:jira-user,read:confluence-content.all,write:confluence-content,read:confluence-space.summary}
+            - BITBUCKET_OAUTH_CLIENT_ID=${BITBUCKET_OAUTH_CLIENT_ID:-}
+            - BITBUCKET_OAUTH_CLIENT_SECRET=${BITBUCKET_OAUTH_CLIENT_SECRET:-}
+        volumes:
+            - ./certs:/app/certs:ro
+            - ./scripts:/app/scripts:ro
+        restart: "no"
+        profiles: ["atlassian"]
+        command: ["python3", "/app/scripts/register-atlassian.py"]
+
+    ###############################################################################
     #  TLS PROFILE - Zero-config HTTPS via Nginx (enabled with --profile tls)
     #  Usage: make compose-tls  (or: docker compose --profile tls up -d)
     #

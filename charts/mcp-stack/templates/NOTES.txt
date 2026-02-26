@@ -91,6 +91,9 @@
   - MindsDB        : {{ .Values.mindsdb.image.repository }}:{{ .Values.mindsdb.image.tag }}
     {{- if .Values.mindsdb.persistence.enabled }} ({{ .Values.mindsdb.persistence.size }} storage){{ end }}
   {{- end }}
+  {{- if .Values.atlassian.enabled }}
+  - Atlassian      : Rovo MCP Server (cloud-hosted, OAuth 2.0 3LO)
+  {{- end }}
 
 🔧 **Configuration**
   {{- if .Values.mcpContextForge.hpa.enabled }}
@@ -244,6 +247,22 @@
        -d '{"name":"mindsdb","url":"http://{{ $mindsdbSvc }}.{{ $ns }}.svc.cluster.local:{{ .Values.mindsdb.service.httpPort }}/mcp/sse"}' \
        http://localhost:4444/gateways
   ```
+{{- end }}
+
+{{- /* ════════════  Atlassian  ════════════ */}}
+{{- if .Values.atlassian.enabled }}
+🔗 **Atlassian Integration (OAuth 2.0 3LO)**
+  - Rovo MCP Server : https://mcp.atlassian.com/v1/mcp
+  - OAuth Issuer    : https://auth.atlassian.com
+  {{- if .Values.atlassian.config.mcfDomain }}
+  - Callback URL    : https://{{ .Values.atlassian.config.mcfDomain }}/oauth/callback
+  {{- end }}
+
+  After install, each user must complete the OAuth consent flow:
+  1. Navigate to the MCF Admin UI gateway list
+  2. Click "Authorize" for the atlassian-rovo gateway
+  3. Complete consent at auth.atlassian.com
+  4. Tools appear after first successful authorization
 {{- end }}
 
 {{- /* ════════════  Cluster Information  ════════════ */}}

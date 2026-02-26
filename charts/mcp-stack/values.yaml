@@ -1650,6 +1650,41 @@ mindsdb:
                 - ALL
 
 ########################################################################
+# ATLASSIAN - Optional Atlassian integration (Jira, Confluence, Compass)
+# Registers Atlassian's cloud-hosted Rovo MCP server as a gateway peer
+# with per-user OAuth 2.0 (3LO) delegation.  No self-hosted service
+# needed — the init job only registers the gateway and virtual server.
+# Optionally registers a Bitbucket gateway if credentials are provided.
+########################################################################
+atlassian:
+    enabled: false # Set to true to register Atlassian gateway on install
+
+    # Atlassian OAuth 2.0 (3LO) credentials
+    # Create at: https://developer.atlassian.com/console/myapps/
+    existingSecret: "" # Use existing secret for OAuth credentials
+    credentials:
+        clientId: ""
+        clientSecret: ""
+
+    # Bitbucket OAuth consumer credentials (optional, separate from 3LO)
+    # Create at: Bitbucket > Workspace settings > OAuth consumers
+    bitbucket:
+        clientId: ""
+        clientSecret: ""
+
+    # Registration configuration
+    config:
+        mcfDomain: "" # Public MCF domain for OAuth callback (e.g., mcp.example.com)
+        scopes: "read:jira-work,write:jira-work,read:jira-user,read:confluence-content.all,write:confluence-content,read:confluence-space.summary"
+        toolDiscoveryTimeout: "60" # Seconds to wait for tool discovery
+
+    # Init job image (uses MCF image for the registration script)
+    image:
+        repository: jrmatherly/mcp-context-forge
+        tag: "latest"
+        pullPolicy: IfNotPresent
+
+########################################################################
 # MCP-FAST-TIME-SERVER - optional high-performance time server for MCP (go)
 # Provides a fast implementation including SSE and Streamable HTTP
 ########################################################################

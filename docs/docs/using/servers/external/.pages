@@ -1,5 +1,6 @@
 title: External Servers
 nav:
+  - Atlassian: atlassian
   - GitHub Copilot: microsoft
   - Box: box
   - monday.com: monday

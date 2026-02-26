@@ -2043,6 +2043,57 @@
                 }
             }
         },
+        "atlassian": {
+            "type": "object",
+            "description": "Atlassian integration — registers Rovo MCP server gateway with OAuth 2.0 (3LO).",
+            "properties": {
+                "enabled": {
+                    "type": "boolean",
+                    "description": "Enable Atlassian gateway registration on install.",
+                    "default": false
+                },
+                "existingSecret": {
+                    "type": "string",
+                    "description": "Name of an existing secret for Atlassian OAuth credentials."
+                },
+                "credentials": {
+                    "type": "object",
+                    "properties": {
+                        "clientId": { "type": "string" },
+                        "clientSecret": { "type": "string" }
+                    },
+                    "additionalProperties": false
+                },
+                "bitbucket": {
+                    "type": "object",
+                    "description": "Optional Bitbucket OAuth consumer credentials (separate from Atlassian 3LO).",
+                    "properties": {
+                        "clientId": { "type": "string" },
+                        "clientSecret": { "type": "string" }
+                    },
+                    "additionalProperties": false
+                },
+                "config": {
+                    "type": "object",
+                    "description": "Registration configuration.",
+                    "properties": {
+                        "mcfDomain": { "type": "string", "description": "Public MCF domain for OAuth callback." },
+                        "scopes": { "type": "string", "description": "Comma-separated OAuth scopes." },
+                        "toolDiscoveryTimeout": { "type": "string", "description": "Seconds to wait for tool discovery." }
+                    },
+                    "additionalProperties": false
+                },
+                "image": {
+                    "type": "object",
+                    "properties": {
+                        "repository": { "type": "string" },
+                        "tag": { "type": "string" },
+                        "pullPolicy": { "type": "string" }
+                    },
+                    "additionalProperties": false
+                }
+            }
+        },
         "mcpFastTimeServer": {
             "type": "object",
             "description": "MCP Fast Time Server configuration",
