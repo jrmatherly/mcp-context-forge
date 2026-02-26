@@ -243,6 +243,9 @@ mypy.ini
 #----------------------------------------------------------------------
 # 9. Application runtime files (should not be in image)
 #----------------------------------------------------------------------
+# MindsDB runtime data (created by docker volume mount, may have root-owned files)
+mindsdb_data/
+
 # Databases
 *.db
 *.sqlite
