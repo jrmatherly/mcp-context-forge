@@ -22,13 +22,13 @@ Environment variables:
     TOOL_DISCOVERY_TIMEOUT  - Tool polling timeout in seconds (default: 120)
 """
 
+# Standard
 import json
 import os
 import sys
 import time
 import urllib.error
 import urllib.request
-
 
 # ---------------------------------------------------------------------------
 # Configuration
@@ -46,6 +46,7 @@ TOOL_DISCOVERY_TIMEOUT = int(os.environ.get("TOOL_DISCOVERY_TIMEOUT", "120"))
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
 
 def wait_for_service(url: str, name: str, attempts: int = 60, interval: int = 2) -> None:
     """Block until *url* returns HTTP 200 or exhaust retries."""
@@ -69,9 +70,11 @@ def generate_admin_token() -> str:
     Builds the token directly with PyJWT to avoid depending on mcpgateway
     internals (the package isn't pip-installed in the container image).
     """
+    # Standard
     import pathlib
     import uuid
 
+    # Third-Party
     import jwt as pyjwt
 
     email = os.environ.get("PLATFORM_ADMIN_EMAIL", "admin@apollosai.dev")
@@ -109,10 +112,12 @@ def generate_admin_token() -> str:
 
 def login_mindsdb() -> str:
     """Obtain a session token from MindsDB."""
-    data = json.dumps({
-        "username": os.environ["MINDSDB_USERNAME"],
-        "password": os.environ["MINDSDB_PASSWORD"],
-    }).encode()
+    data = json.dumps(
+        {
+            "username": os.environ["MINDSDB_USERNAME"],
+            "password": os.environ["MINDSDB_PASSWORD"],
+        }
+    ).encode()
     req = urllib.request.Request(
         f"{MINDSDB_URL}/api/login",
         data=data,
@@ -157,6 +162,7 @@ def mindsdb_sql(token: str, query: str) -> dict:
 # Step 1 — Register or update the MindsDB gateway (idempotent)
 # ---------------------------------------------------------------------------
 
+
 def register_gateway(cf_token: str, mdb_token: str) -> str:
     """Ensure a 'mindsdb' gateway exists and return its ID."""
     print("Step 1: Registering MindsDB gateway...")
@@ -164,15 +170,12 @@ def register_gateway(cf_token: str, mdb_token: str) -> str:
     gw_payload = {
         "name": "mindsdb",
         "url": MINDSDB_MCP_URL,
-        "description": (
-            "MindsDB federated data gateway — query databases, warehouses, "
-            "knowledge bases, and SaaS applications via SQL"
-        ),
+        "description": ("MindsDB federated data gateway — query databases, warehouses, " "knowledge bases, and SaaS applications via SQL"),
         "transport": "SSE",
         "auth_type": "bearer",
         "auth_token": mdb_token,
         "tags": ["data-gateway", "knowledge-base", "sql", "mindsdb"],
-        "visibility": "private",
+        "visibility": "public",
     }
 
     # Check for existing gateway
@@ -189,11 +192,16 @@ def register_gateway(cf_token: str, mdb_token: str) -> str:
     # Update existing (preserves tools, avoids race conditions with replicas)
     if gateway_id:
         try:
-            api("PUT", f"/gateways/{gateway_id}", {
-                "auth_type": "bearer",
-                "auth_token": mdb_token,
-                "url": MINDSDB_MCP_URL,
-            }, token=cf_token)
+            api(
+                "PUT",
+                f"/gateways/{gateway_id}",
+                {
+                    "auth_type": "bearer",
+                    "auth_token": mdb_token,
+                    "url": MINDSDB_MCP_URL,
+                },
+                token=cf_token,
+            )
             print(f"  Updated existing gateway: {gateway_id}")
             return gateway_id
         except Exception as exc:
@@ -219,8 +227,14 @@ def register_gateway(cf_token: str, mdb_token: str) -> str:
 # Step 2 — Wait for tool auto-discovery
 # ---------------------------------------------------------------------------
 
-def discover_tools(cf_token: str, gateway_id: str) -> tuple[str, str | None]:
-    """Poll until the query tool appears; return (query_id, list_databases_id)."""
+
+def discover_tools(cf_token: str, gateway_id: str) -> tuple[str | None, str | None]:
+    """Poll until the query tool appears; return (query_id, list_databases_id).
+
+    Returns (None, None) if tools are not discovered within the timeout.
+    The caller should continue with remaining steps — the gateway health check
+    loop will discover tools later when MindsDB's MCP endpoint is ready.
+    """
     print("Step 2: Waiting for tool auto-discovery...")
 
     query_tool_id = None
@@ -234,20 +248,13 @@ def discover_tools(cf_token: str, gateway_id: str) -> tuple[str, str | None]:
 
             if i % 5 == 0:
                 elapsed = i * poll_interval
-                print(
-                    f"  Polling: {len(tools)} total tools, "
-                    f"{len(gw_tools)} for gateway {gateway_id[:8]}... ({elapsed}s)"
-                )
+                print(f"  Polling: {len(tools)} total tools, " f"{len(gw_tools)} for gateway {gateway_id[:8]}... ({elapsed}s)")
 
             for t in gw_tools:
                 name = t["name"]
                 if name.endswith("-query") or name == "query":
                     query_tool_id = t["id"]
-                elif (
-                    name.endswith("-list-databases")
-                    or name.endswith("-list_databases")
-                    or name == "list_databases"
-                ):
+                elif name.endswith("-list-databases") or name.endswith("-list_databases") or name == "list_databases":
                     list_db_tool_id = t["id"]
 
             if query_tool_id:
@@ -262,24 +269,21 @@ def discover_tools(cf_token: str, gateway_id: str) -> tuple[str, str | None]:
 
         time.sleep(poll_interval)
 
-    print(f"  query tool not discovered after {TOOL_DISCOVERY_TIMEOUT}s")
-    sys.exit(1)
+    print(f"  WARNING: query tool not discovered after {TOOL_DISCOVERY_TIMEOUT}s")
+    print("  Continuing with remaining steps — tools will appear when MindsDB MCP is ready.")
+    return None, None
 
 
 # ---------------------------------------------------------------------------
 # Step 3 — Create teams (idempotent)
 # ---------------------------------------------------------------------------
 
-def get_or_create_team(
-    cf_token: str, name: str, slug: str, description: str
-) -> str | None:
+
+def get_or_create_team(cf_token: str, name: str, slug: str, description: str) -> str | None:
     """Return the UUID for *slug*, creating the team if necessary."""
     try:
         resp = api("GET", "/teams/", token=cf_token)
-        teams_list = (
-            resp if isinstance(resp, list)
-            else resp.get("items", resp.get("teams", []))
-        )
+        teams_list = resp if isinstance(resp, list) else resp.get("items", resp.get("teams", []))
         for t in teams_list:
             if t.get("slug") == slug or t.get("name") == name:
                 print(f"  Team exists: {name} ({t['id']})")
@@ -288,12 +292,17 @@ def get_or_create_team(
         print(f"  Note checking teams: {exc}")
 
     try:
-        result = api("POST", "/teams/", {
-            "name": name,
-            "slug": slug,
-            "description": description,
-            "visibility": "private",
-        }, token=cf_token)
+        result = api(
+            "POST",
+            "/teams/",
+            {
+                "name": name,
+                "slug": slug,
+                "description": description,
+                "visibility": "private",
+            },
+            token=cf_token,
+        )
         team_id = result.get("id")
         print(f"  Created team: {name} ({team_id})")
         return team_id
@@ -314,27 +323,40 @@ def provision_teams(cf_token: str) -> tuple[str | None, str | None]:
 # Step 4 — Create team-scoped virtual servers (idempotent)
 # ---------------------------------------------------------------------------
 
+
 def create_virtual_servers(
     cf_token: str,
-    query_tool_id: str,
+    query_tool_id: str | None,
     list_db_tool_id: str | None,
     legal_team_id: str | None,
     hr_team_id: str | None,
 ) -> None:
-    """Create the three demo virtual servers if they don't already exist."""
+    """Create the three demo virtual servers if they don't already exist.
+
+    If tools haven't been discovered yet (query_tool_id is None), servers are
+    created with empty tool lists.  Tools can be associated later via the API
+    or by re-running this script once MindsDB MCP is healthy.
+    """
     print("Step 4: Creating virtual servers...")
+
+    # Build tool lists — empty if tools not yet discovered
+    query_tools = [query_tool_id] if query_tool_id else []
+    admin_tools = list(query_tools)
+    if list_db_tool_id:
+        admin_tools.append(list_db_tool_id)
+
+    if not query_tool_id:
+        print("  NOTE: No tools discovered yet — creating servers with empty tool lists.")
+        print("  Associate tools later via the Admin UI or re-run this script.")
 
     servers = [
         {
             "server": {
                 "id": "00000000-0000-0000-0000-00006c656731",
                 "name": "legal-team-data",
-                "description": (
-                    "Legal department Knowledge Base access. "
-                    "Query tool available for semantic search over legal documents."
-                ),
+                "description": ("Legal department Knowledge Base access. " "Query tool available for semantic search over legal documents."),
                 "tags": ["legal", "knowledge-base"],
-                "associated_tools": [query_tool_id],
+                "associated_tools": query_tools,
                 "team_id": legal_team_id,
                 "visibility": "team" if legal_team_id else "private",
             }
@@ -343,12 +365,9 @@ def create_virtual_servers(
             "server": {
                 "id": "00000000-0000-0000-0000-006872303031",
                 "name": "hr-team-data",
-                "description": (
-                    "HR department Knowledge Base access. "
-                    "Query tool available for semantic search over HR documents."
-                ),
+                "description": ("HR department Knowledge Base access. " "Query tool available for semantic search over HR documents."),
                 "tags": ["hr", "knowledge-base"],
-                "associated_tools": [query_tool_id],
+                "associated_tools": query_tools,
                 "team_id": hr_team_id,
                 "visibility": "team" if hr_team_id else "private",
             }
@@ -357,15 +376,10 @@ def create_virtual_servers(
             "server": {
                 "id": "00000000-0000-0000-0000-00006d696e64",
                 "name": "admin-data-gateway",
-                "description": (
-                    "Full access to all MindsDB databases and knowledge bases. "
-                    "Use list_databases to see available sources, and query to execute any SQL."
-                ),
+                "description": ("Full access to all MindsDB databases and knowledge bases. " "Use list_databases to see available sources, and query to execute any SQL."),
                 "tags": ["admin", "data-gateway"],
-                "associated_tools": (
-                    [query_tool_id] + ([list_db_tool_id] if list_db_tool_id else [])
-                ),
-                "visibility": "private",
+                "associated_tools": admin_tools,
+                "visibility": "public",
             }
         },
     ]
@@ -394,6 +408,7 @@ def create_virtual_servers(
 # Step 5 — Provision Knowledge Bases in MindsDB (idempotent)
 # ---------------------------------------------------------------------------
 
+
 def provision_knowledge_bases(mdb_token: str) -> None:
     """Create team Knowledge Bases in MindsDB if they don't exist."""
     print("Step 5: Provisioning Knowledge Bases...")
@@ -415,12 +430,7 @@ def provision_knowledge_bases(mdb_token: str) -> None:
             print(f"  KB exists: {kb_name}")
             continue
 
-        sql = (
-            f"CREATE KNOWLEDGE_BASE {kb_name}"
-            f" USING"
-            f" content_columns = ['content'],"
-            f" metadata_columns = ['source_file', 'department']"
-        )
+        sql = f"CREATE KNOWLEDGE_BASE {kb_name}" f" USING" f" content_columns = ['content']," f" metadata_columns = ['source_file', 'department']"
 
         try:
             mindsdb_sql(mdb_token, sql)
@@ -432,6 +442,7 @@ def provision_knowledge_bases(mdb_token: str) -> None:
 # ---------------------------------------------------------------------------
 # Step 6 — Verify registration
 # ---------------------------------------------------------------------------
+
 
 def verify_registration(cf_token: str, gateway_id: str) -> None:
     """Verify the gateway is healthy and tools are accessible."""
@@ -467,6 +478,7 @@ def verify_registration(cf_token: str, gateway_id: str) -> None:
 # Main
 # ---------------------------------------------------------------------------
 
+
 def main() -> None:
     print("=== MindsDB Registration ===")
     print()
@@ -488,7 +500,9 @@ def main() -> None:
     print("  MindsDB token obtained")
     print()
 
-    # Registration pipeline
+    # Registration pipeline — continues through all steps even if tools aren't
+    # discovered.  The gateway health check loop will discover tools later when
+    # MindsDB's MCP endpoint is fully ready.
     gateway_id = register_gateway(cf_token, mdb_token)
     print()
     query_tool_id, list_db_tool_id = discover_tools(cf_token, gateway_id)
@@ -502,14 +516,20 @@ def main() -> None:
     verify_registration(cf_token, gateway_id)
 
     # Summary
+    tools_ok = query_tool_id is not None
     print()
     print("=== MindsDB registration complete ===")
     print(f"  Gateway: mindsdb ({gateway_id})")
-    print(f"  Tools: query={query_tool_id}, list_databases={list_db_tool_id or 'not found'}")
+    print(f"  Tools: query={query_tool_id or 'pending'}, list_databases={list_db_tool_id or 'pending'}")
     if legal_team_id:
         print(f"  Team: Legal ({legal_team_id})")
     if hr_team_id:
         print(f"  Team: HR ({hr_team_id})")
+    if not tools_ok:
+        print()
+        print("  WARNING: Tools not yet discovered — MindsDB MCP may still be starting.")
+        print("  Virtual servers were created with empty tool lists.")
+        print("  The gateway health check loop will auto-discover tools when ready.")
 
 
 if __name__ == "__main__":

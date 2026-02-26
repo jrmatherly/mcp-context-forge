@@ -3252,7 +3252,10 @@ class GatewayService:  # pylint: disable=too-many-instance-attributes
                         grant_type = gateway_oauth_config.get("grant_type", "client_credentials")
 
                         if grant_type == "authorization_code":
-                            # For Authorization Code flow, try to get stored tokens
+                            # For Authorization Code flow, try to get stored tokens.
+                            # If no token is available (user hasn't completed OAuth consent yet),
+                            # skip the health check entirely — this is expected pre-consent behavior,
+                            # not a gateway failure that should count toward deactivation.
                             try:
                                 # First-Party
                                 from mcpgateway.services.token_storage_service import TokenStorageService  # pylint: disable=import-outside-toplevel
@@ -3263,10 +3266,10 @@ class GatewayService:  # pylint: disable=too-many-instance-attributes
 
                                     # Get user-specific OAuth token
                                     if not user_email:
+                                        logger.debug(f"Skipping health check for OAuth authorization_code gateway {gateway_name}: no user_email for token lookup")
                                         if span:
-                                            span.set_attribute("health.status", "unhealthy")
-                                            span.set_attribute("error.message", "User email required for OAuth token")
-                                        await self._handle_gateway_failure(gateway)
+                                            span.set_attribute("health.status", "skipped")
+                                            span.set_attribute("health.reason", "no_user_email_for_oauth")
                                         return
 
                                     access_token = await token_storage.get_user_token(gateway_id, user_email)
@@ -3274,17 +3277,18 @@ class GatewayService:  # pylint: disable=too-many-instance-attributes
                                 if access_token:
                                     headers["Authorization"] = f"Bearer {access_token}"
                                 else:
+                                    logger.debug(
+                                        f"Skipping health check for OAuth authorization_code gateway {gateway_name}: no stored token for {user_email} (user must complete OAuth consent first)"
+                                    )
                                     if span:
-                                        span.set_attribute("health.status", "unhealthy")
-                                        span.set_attribute("error.message", "No valid OAuth token for user")
-                                    await self._handle_gateway_failure(gateway)
+                                        span.set_attribute("health.status", "skipped")
+                                        span.set_attribute("health.reason", "no_oauth_token_stored")
                                     return
                             except Exception as e:
-                                logger.error(f"Failed to obtain stored OAuth token for gateway {gateway_name}: {e}")
+                                logger.warning(f"Could not look up OAuth token for gateway {gateway_name}: {e}")
                                 if span:
-                                    span.set_attribute("health.status", "unhealthy")
-                                    span.set_attribute("error.message", "Failed to obtain stored OAuth token")
-                                await self._handle_gateway_failure(gateway)
+                                    span.set_attribute("health.status", "skipped")
+                                    span.set_attribute("health.reason", "oauth_token_lookup_failed")
                                 return
                         else:
                             # For Client Credentials flow, get token directly

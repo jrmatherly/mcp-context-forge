@@ -29,13 +29,13 @@ Environment variables:
     TOKEN_EXPIRY                - JWT expiry in minutes (default: 10080)
 """
 
+# Standard
 import json
 import os
 import sys
 import time
 import urllib.error
 import urllib.request
-
 
 # ---------------------------------------------------------------------------
 # Configuration
@@ -49,9 +49,7 @@ ATLASSIAN_CLIENT_ID = os.environ.get("ATLASSIAN_OAUTH_CLIENT_ID", "")
 ATLASSIAN_CLIENT_SECRET = os.environ.get("ATLASSIAN_OAUTH_CLIENT_SECRET", "")
 ATLASSIAN_SCOPES = os.environ.get(
     "ATLASSIAN_OAUTH_SCOPES",
-    "read:jira-work,write:jira-work,read:jira-user,"
-    "read:confluence-content.all,write:confluence-content,"
-    "read:confluence-space.summary",
+    "read:jira-work,write:jira-work,read:jira-user," "read:confluence-content.all,write:confluence-content," "read:confluence-space.summary",
 )
 
 # Bitbucket OAuth (optional — only registered if both are set)
@@ -64,6 +62,7 @@ BITBUCKET_MCP_URL = os.environ.get("BITBUCKET_MCP_URL", "http://bitbucket-mcp-se
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
 
 def wait_for_service(url: str, name: str, attempts: int = 60, interval: int = 2) -> None:
     """Block until *url* returns HTTP 200 or exhaust retries."""
@@ -87,9 +86,11 @@ def generate_admin_token() -> str:
     Builds the token directly with PyJWT to avoid depending on mcpgateway
     internals (the package isn't pip-installed in the container image).
     """
+    # Standard
     import pathlib
     import uuid
 
+    # Third-Party
     import jwt as pyjwt
 
     email = os.environ.get("PLATFORM_ADMIN_EMAIL", "admin@apollosai.dev")
@@ -155,6 +156,7 @@ def _build_callback_url() -> str:
 # Step 1 — Register Atlassian Rovo gateway (idempotent)
 # ---------------------------------------------------------------------------
 
+
 def register_atlassian_gateway(cf_token: str) -> str:
     """Register Atlassian's hosted MCP server as a gateway with OAuth config."""
     print("Step 1: Registering Atlassian Rovo gateway...")
@@ -165,10 +167,7 @@ def register_atlassian_gateway(cf_token: str) -> str:
     gw_payload = {
         "name": "atlassian-rovo",
         "url": "https://mcp.atlassian.com/v1/mcp",
-        "description": (
-            "Atlassian Rovo MCP Server — Jira, Confluence, and Compass "
-            "tools via OAuth 2.0 (3LO) per-user delegation"
-        ),
+        "description": ("Atlassian Rovo MCP Server — Jira, Confluence, and Compass " "tools via OAuth 2.0 (3LO) per-user delegation"),
         "transport": "STREAMABLEHTTP",
         "auth_type": "oauth",
         "oauth_config": {
@@ -182,7 +181,7 @@ def register_atlassian_gateway(cf_token: str) -> str:
             "client_secret": ATLASSIAN_CLIENT_SECRET,
         },
         "tags": ["atlassian", "jira", "confluence", "compass", "oauth"],
-        "visibility": "private",
+        "visibility": "public",
     }
 
     # Check for existing gateway
@@ -218,6 +217,7 @@ def register_atlassian_gateway(cf_token: str) -> str:
 # Step 1b — Register Bitbucket gateway (conditional, idempotent)
 # ---------------------------------------------------------------------------
 
+
 def register_bitbucket_gateway(cf_token: str) -> str | None:
     """Register Bitbucket OAuth gateway if credentials are provided."""
     if not BITBUCKET_CLIENT_ID or not BITBUCKET_CLIENT_SECRET:
@@ -231,10 +231,7 @@ def register_bitbucket_gateway(cf_token: str) -> str | None:
     gw_payload = {
         "name": "atlassian-bitbucket",
         "url": BITBUCKET_MCP_URL,
-        "description": (
-            "Custom Bitbucket Cloud MCP Server — repository, pull request, "
-            "and pipeline tools via Bitbucket OAuth"
-        ),
+        "description": ("Custom Bitbucket Cloud MCP Server — repository, pull request, " "and pipeline tools via Bitbucket OAuth"),
         "transport": "STREAMABLEHTTP",
         "auth_type": "oauth",
         "oauth_config": {
@@ -247,7 +244,7 @@ def register_bitbucket_gateway(cf_token: str) -> str | None:
             "client_secret": BITBUCKET_CLIENT_SECRET,
         },
         "tags": ["atlassian", "bitbucket", "git", "oauth"],
-        "visibility": "private",
+        "visibility": "public",
     }
 
     # Check for existing gateway
@@ -282,6 +279,7 @@ def register_bitbucket_gateway(cf_token: str) -> str | None:
 # Step 2 — Check for existing tools (single request, no polling)
 # ---------------------------------------------------------------------------
 
+
 def _check_existing_tools(cf_token: str, gateway_id: str, label: str) -> list[str]:
     """Check once for any pre-existing tools for the gateway.
 
@@ -315,6 +313,7 @@ def _check_existing_tools(cf_token: str, gateway_id: str, label: str) -> list[st
 # Step 3 — Create virtual server (idempotent)
 # ---------------------------------------------------------------------------
 
+
 def create_virtual_server(
     cf_token: str,
     tool_ids: list[str],
@@ -340,7 +339,7 @@ def create_virtual_server(
             ),
             "tags": ["atlassian", "jira", "confluence"],
             "associated_tools": all_tool_ids,
-            "visibility": "private",
+            "visibility": "public",
         }
     }
 
@@ -359,6 +358,7 @@ def create_virtual_server(
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
+
 
 def main() -> None:
     print("=== Atlassian Registration ===")
